@@ -9,13 +9,13 @@ namespace Automathon.Engine
 
         public PhysicsManager()
         {
-            Rigidbody.OnAdded += OnRigidbodyAdded;
+            Rigidbody.Added += OnRigidbodyAdded;
             Rigidbody.OnRemoved += OnRigidbodyRemoved;
         }
 
         public void Dispose()
         {
-            Rigidbody.OnAdded -= OnRigidbodyAdded;
+            Rigidbody.Added -= OnRigidbodyAdded;
             Rigidbody.OnRemoved -= OnRigidbodyRemoved;
         }
 
