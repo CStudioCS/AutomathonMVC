@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Automathon.Utility;
 
-namespace Automathon
+namespace Automathon.Engine
 {
     public abstract class Entity
     {

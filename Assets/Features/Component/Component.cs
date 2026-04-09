@@ -1,4 +1,4 @@
-﻿namespace Automathon
+﻿namespace Automathon.Engine
 {
     public abstract class Component
     {

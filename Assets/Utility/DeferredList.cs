@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Automathon
+namespace Automathon.Utility
 {
     /// <summary>
     /// Adding or removing elements in this lists doesn't happen instantly, but only when Flushed is called
