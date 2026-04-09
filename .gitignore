@@ -11,6 +11,9 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 *.log
+.vscode
+ProjectSettings/TimelineSettings.asset
+ProjectSettings/ShaderGraphSettings.asset
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -27,6 +30,7 @@
 
 # Visual Studio cache directory
 .vs/
+.idea/
 
 # Gradle cache directory
 .gradle/
