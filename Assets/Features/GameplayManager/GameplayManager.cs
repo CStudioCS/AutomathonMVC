@@ -5,10 +5,11 @@ namespace Automathon.Engine
     public class GameplayManager
     {
         private DeferredList<Entity> entities = new();
+        private PhysicsManager physicsManager;
 
         public GameplayManager()
         {
-
+            physicsManager = new PhysicsManager();
         }
 
         public void Update()
@@ -17,7 +18,7 @@ namespace Automathon.Engine
 
             EntityUpdateLoop();
 
-            PhysicsUpdate();
+            physicsManager.Step();
         }
 
         public void EntityUpdateLoop()
@@ -27,11 +28,6 @@ namespace Automathon.Engine
 
             foreach (Entity entity in entities.Items)
                 entity.Update();
-        }
-
-        public void PhysicsUpdate()
-        {
-            //TODO: Implement physics update, using trygetcomponent<rigidbody>() on every entity
         }
     }
 }

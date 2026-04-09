@@ -24,5 +24,10 @@ namespace Automathon.Engine
 
         private void OnRigidbodyRemoved(Rigidbody rigidbody)
             => rigidbodies.Remove(rigidbody);
+
+        public void Step()
+        {
+            //TODO: Step one physics frame ! (maybe at a different deltaTime than Update ?)
+        }
     }
 }
