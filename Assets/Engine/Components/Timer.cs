@@ -8,8 +8,6 @@ namespace Automathon.Engine
         public int ValueMillis;
         public Func<bool> PausedFunc = () => false;
 
-        private bool destroyOnComplete;
-
         public Action OnComplete;
         public Action<Timer> UpdateAction;
 
@@ -36,14 +34,14 @@ namespace Automathon.Engine
                 {
                     ValueMillis = 0;
                     OnComplete?.Invoke();
-                    if (destroyOnComplete)
-                        ParentEntity.RemoveComponent(this);
+                    ParentEntity.RemoveComponent(this);
                 }
                 else
                     UpdateAction?.Invoke(this);
             }
         }
 
+        //by doing this we can end the timer without triggering onComplete using RemoveComponent
         public void End()
         {
             OnComplete?.Invoke();

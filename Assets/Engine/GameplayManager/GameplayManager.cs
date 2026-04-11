@@ -6,7 +6,6 @@ namespace Automathon.Engine
     {
         private DeferredList<Entity> entities = new();
         private PhysicsManager physicsManager;
-        private float deltatime;
 
         public GameplayManager()
         {
