@@ -31,12 +31,14 @@ namespace Automathon.Engine
 
         public virtual void OnDestroyed()
         {
-
+            foreach (Component component in components.Items)
+                RemoveComponent(component);
         }
 
         public T AddComponent<T>(T component) where T : Component
         {
             components.Add(component);
+            component.ParentEntity = this;
             return component;
         }
 

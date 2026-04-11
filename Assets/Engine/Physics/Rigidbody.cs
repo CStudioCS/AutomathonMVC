@@ -11,8 +11,9 @@ namespace Automathon.Engine
         public static event Action<Rigidbody> Removed;
 
         public Vector2Int Velocity;
+        //this will have a bunch of stuff in the future stay tuned
 
-        public Rigidbody(Entity parentEntity) : base(parentEntity)
+        public Rigidbody() : base()
         {
         }
 
