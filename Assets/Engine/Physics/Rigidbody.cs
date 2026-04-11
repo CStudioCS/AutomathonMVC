@@ -7,6 +7,7 @@ namespace Automathon.Engine.Physics
         public static event Action<Rigidbody> Added;
         public static event Action<Rigidbody> Removed;
 
+        public int Friction; //should this be scaled ? probably, but tiz a problem for the future
         public Vector2Int Velocity;
         //this will have a bunch of stuff in the future stay tuned
 

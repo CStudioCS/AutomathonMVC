@@ -6,17 +6,22 @@ namespace Automathon.Engine.Physics
     public class PhysicsManager : IDisposable
     {
         public readonly List<Rigidbody> rigidbodies = new();
+        public readonly List<Collider> colliders = new();
 
         public PhysicsManager()
         {
             Rigidbody.Added += OnRigidbodyAdded;
             Rigidbody.Removed += OnRigidbodyRemoved;
+            Collider.Added += OnColliderAdded;
+            Collider.Removed += OnColliderRemoved;
         }
 
         public void Dispose()
         {
             Rigidbody.Added -= OnRigidbodyAdded;
             Rigidbody.Removed -= OnRigidbodyRemoved;
+            Collider.Added -= OnColliderAdded;
+            Collider.Removed -= OnColliderRemoved;
         }
 
         private void OnRigidbodyAdded(Rigidbody rigidbody)
@@ -25,11 +30,38 @@ namespace Automathon.Engine.Physics
         private void OnRigidbodyRemoved(Rigidbody rigidbody)
             => rigidbodies.Remove(rigidbody);
 
+        private void OnColliderAdded(Collider collider)
+            => colliders.Add(collider);
+
+        private void OnColliderRemoved(Collider collider)
+            => colliders.Remove(collider);
+
+
+
+
         public void Step()
         {
-            //Physics Update all colliders here
+            foreach(Collider collider in colliders)
+                collider.PhysicsUpdate();
 
-            //TODO: Step one physics frame ! (maybe at a different deltaTime than Update ?)
+            //This is temporary and sucks balls
+            foreach(Rigidbody rb in rigidbodies)
+            {
+                bool blocked = false;
+                if(!rb.ParentEntity.TryGetComponent(out Collider c))
+                    continue;
+
+                foreach (Collider collider in colliders)
+                {
+                    if (c.CollideAt(rb.ParentEntity.Position + rb.Velocity / GameplayConstants.Framerate, collider))
+                    {
+                        blocked = true;
+                        break;
+                    }
+                }
+                if (!blocked)
+                    rb.ParentEntity.Position += rb.Velocity / GameplayConstants.Framerate; //I wanna use deltatime :(
+            }
         }
     }
 }

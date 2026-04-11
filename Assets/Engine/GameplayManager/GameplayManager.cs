@@ -1,9 +1,10 @@
 using Automathon.Engine.Physics;
 using Automathon.Utility;
+using System;
 
 namespace Automathon.Engine
 {
-    public class GameplayManager
+    public class GameplayManager : IDisposable
     {
         private DeferredList<Entity> entities = new();
         private PhysicsManager physicsManager;
@@ -29,6 +30,11 @@ namespace Automathon.Engine
 
             foreach (Entity entity in entities.Items)
                 entity.Update();
+        }
+
+        public void Dispose()
+        {
+            physicsManager.Dispose();
         }
     }
 }
