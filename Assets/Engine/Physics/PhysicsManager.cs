@@ -53,7 +53,7 @@ namespace Automathon.Engine.Physics
 
                 foreach (Collider collider in colliders)
                 {
-                    if (c.CollideAt(rb.ParentEntity.Position + rb.Velocity / GameplayConstants.Framerate, collider))
+                    if (collider != c && c.CollideAt(rb.ParentEntity.Position + rb.Velocity / GameplayConstants.Framerate, collider))
                     {
                         blocked = true;
                         break;
