@@ -69,8 +69,8 @@ namespace Automathon.Engine
 
                 if (Enumerator.Current == null)
                     waitTimer = 0;
-                else if (Enumerator.Current is int)
-                    waitTimer = (int)Enumerator.Current;
+                else if (Enumerator.Current is int returnedInt)
+                    waitTimer = returnedInt;
                 else if (Enumerator.Current is WaitForMilliseconds wait)
                 {
                     waitTimer = wait.TimeMilliseconds;
@@ -90,13 +90,13 @@ namespace Automathon.Engine
                 Enumerator = null;
         }
 
-        //Some util
-        public static IEnumerator WaitFrames(float frames)
+        //Some util that's nice when building stacks of IEnumerators
+        public static IEnumerator WaitFrames(int frames)
         {
             yield return frames;
         }
 
-        public static IEnumerator WaitFramesThen(float frames, Action action)
+        public static IEnumerator WaitFramesThen(int frames, Action action)
         {
             yield return frames;
             action();
