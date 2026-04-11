@@ -7,7 +7,7 @@ namespace Automathon.Engine.Physics
         public static event Action<Rigidbody> Added;
         public static event Action<Rigidbody> Removed;
 
-=        public Vector2Int Velocity;
+        public Vector2Int Velocity;
         //this will have a bunch of stuff in the future stay tuned
 
         public Rigidbody() : base()
