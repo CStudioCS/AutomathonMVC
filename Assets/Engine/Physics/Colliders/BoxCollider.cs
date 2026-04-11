@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Automathon.Utility;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,7 +29,18 @@ namespace Automathon.Engine.Physics
 
         public override void PhysicsUpdate()
         {
-            //Update coords using trigtable
+            Vector2Int right = new Vector2Int(TrigTable.Cos(RotationMillirad), TrigTable.Sin(RotationMillirad));
+            Vector2Int up = right.Normal();
+            int halfWidth = Width / 2; //yes if the width is non divisible by 2 this has issues but gnagnagna we gotta use ints
+            int halfHeight = Height / 2;
+
+            Coords = new Vector2Int[4]
+            {
+                LocalCenterPosition - right * halfWidth + up * halfHeight,
+                LocalCenterPosition + right * halfWidth + up * halfHeight,
+                LocalCenterPosition + right * halfWidth - up * halfHeight,
+                LocalCenterPosition - right * halfWidth - up * halfHeight,
+            };
         }
     }
 }

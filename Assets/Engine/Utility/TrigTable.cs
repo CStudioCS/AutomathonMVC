@@ -7,7 +7,6 @@ namespace Automathon.Utility
     //This was written by Claude, the cos table can be generated with the code down below
     public static class TrigTable
     {
-        private const int Scale = 1000;
         private const int FullCircle = 6284; // 2π * 1000, rounded
         private const int QuarterCircle = 1571; // π/2 * 1000, rounded
 

@@ -2,7 +2,7 @@
 
 namespace Automathon.Engine.Physics
 {
-    public abstract class Collider
+    public abstract class Collider : Component
     {
         public bool isTrigger;
         public event Action<Collider> OnTriggerEnter;
