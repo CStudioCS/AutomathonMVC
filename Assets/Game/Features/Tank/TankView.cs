@@ -15,6 +15,5 @@ public class TankView : MonoBehaviour
     private void LateUpdate()
     {
         transform.position =  tank.Position.ToV2() / GameplayConstants.SpaceScale;
-        Automathon.Debug.Log($"Tank position: {transform.position}");
     }
 }

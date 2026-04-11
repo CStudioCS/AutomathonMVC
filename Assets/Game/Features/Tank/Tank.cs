@@ -6,7 +6,7 @@ namespace Automathon.Game.Tank
 {
     public class Tank : Entity
     {
-        private const int speed = 5;
+        private const int speed = 4000;
 
         private IInputProvider inputProvider;
         private Rigidbody rb;
@@ -23,7 +23,6 @@ namespace Automathon.Game.Tank
             base.Update();
 
             rb.Velocity = inputProvider.MilliMovementDir() * speed / 1000;
-            Automathon.Debug.Log($"Velocity : {rb.Velocity}");
         }
     }
 }
