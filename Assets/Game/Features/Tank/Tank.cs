@@ -23,6 +23,7 @@ namespace Automathon.Game.Tank
             base.Update();
 
             rb.Velocity = inputProvider.MilliMovementDir() * speed / 1000;
+            Automathon.Debug.Log($"Velocity : {rb.Velocity}");
         }
     }
 }
