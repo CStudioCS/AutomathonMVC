@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Automathon
+﻿namespace Automathon
 {
     public static class GameplayConstants
     {

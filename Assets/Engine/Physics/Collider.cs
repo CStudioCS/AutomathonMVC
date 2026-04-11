@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Automathon.Engine
+namespace Automathon.Engine.Physics
 {
     public abstract class Collider
     {

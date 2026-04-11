@@ -1,9 +1,6 @@
-﻿using Automathon;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
-namespace Automathon.Engine
+namespace Automathon.Engine.Physics
 {
     public class Rigidbody : Component
     {

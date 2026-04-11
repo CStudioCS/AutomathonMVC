@@ -1,5 +1,4 @@
 ﻿using Automathon.Utility;
-using System.Linq;
 
 namespace Automathon.Engine
 {

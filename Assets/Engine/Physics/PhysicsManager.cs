@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Automathon.Engine
+namespace Automathon.Engine.Physics
 {
     public class PhysicsManager : IDisposable
     {
