@@ -12,5 +12,7 @@ namespace Automathon.Engine.Physics
         public event Action<Collider> OnCollision;
 
         public abstract bool Colliding(Collider collider);
+
+        public virtual void PhysicsUpdate() { }
     }
 }

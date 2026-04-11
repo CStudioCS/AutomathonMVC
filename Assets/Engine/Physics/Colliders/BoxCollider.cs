@@ -6,14 +6,16 @@ namespace Automathon.Engine.Physics
 {
     public class BoxCollider : Collider
     {
-        public Vector2Int LocalPosition;
+        public Vector2Int LocalCenterPosition;
         public int Width;
         public int Height;
         public int RotationMillirad;
 
+        public Vector2Int[] Coords;
+
         public BoxCollider(Vector2Int localPosition, int width, int height, int rotationMillirad)
         {
-            LocalPosition = localPosition;
+            LocalCenterPosition = localPosition;
             Width = width;
             Height = height;
             RotationMillirad = rotationMillirad;
@@ -22,6 +24,11 @@ namespace Automathon.Engine.Physics
         public override bool Colliding(Collider collider)
         {
             throw new NotImplementedException();
+        }
+
+        public override void PhysicsUpdate()
+        {
+            //Update coords using trigtable
         }
     }
 }
