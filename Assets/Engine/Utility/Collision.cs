@@ -57,36 +57,36 @@ namespace Automathon.Utility
         {
             public bool IsCollision;
             public Vector2Int MinPenetrationAxis;
-            public float Penetration;
+            public float PenetrationMilli;
             public int AxisIndex;
         }
 
         public static SATOutput SAT(Vector2Int[] polygon1, Vector2Int[] polygon2, Vector2Int[] axies)
         {
             for (int i = 0; i < axies.Length; i++)
-                axies[i].Normalize();
+                axies[i].NormalizeAtScale(1000); //normalized to a scale of 1000
 
             SATOutput result = new SATOutput();
             result.IsCollision = true;
-            result.Penetration = float.PositiveInfinity;
+            result.PenetrationMilli = float.PositiveInfinity;
 
             for (int i = 0; i < axies.Length; i++)
             {
-                float min1 = float.PositiveInfinity;
-                float max1 = float.NegativeInfinity;
-                float min2 = float.PositiveInfinity;
-                float max2 = float.NegativeInfinity;
+                int min1 = int.MaxValue;
+                int max1 = int.MinValue;
+                int min2 = int.MaxValue;
+                int max2 = int.MinValue;
 
                 foreach (Vector2Int point in polygon1)
                 {
-                    float axisPos = Vector2Int.Dot(VectorHelper.Projection(point, axies[i]), axies[i]);
+                    int axisPos = point.Dot(axies[i]);
                     min1 = Math.Min(min1, axisPos);
                     max1 = Math.Max(max1, axisPos);
                 }
 
                 foreach (Vector2Int point in polygon2)
                 {
-                    float axisPos = Vector2Int.Dot(VectorHelper.Projection(point, axies[i]), axies[i]);
+                    int axisPos = point.Dot(axies[i]);
                     min2 = Math.Min(min2, axisPos);
                     max2 = Math.Max(max2, axisPos);
                 }
@@ -95,21 +95,21 @@ namespace Automathon.Utility
                 {
                     result.IsCollision = false;
                     result.MinPenetrationAxis = Vector2Int.Zero;
-                    result.Penetration = 0;
+                    result.PenetrationMilli = 0;
                     result.AxisIndex = -1;
                     return result;
                 }
                 else
                 {
-                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < result.Penetration)
+                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < result.PenetrationMilli)
                     {
-                        result.Penetration = max1 - min2;
+                        result.PenetrationMilli = max1 - min2;
                         result.MinPenetrationAxis = axies[i];
                         result.AxisIndex = i;
                     }
-                    else if (max2 - min1 < result.Penetration)
+                    else if (max2 - min1 < result.PenetrationMilli)
                     {
-                        result.Penetration = max2 - min1;
+                        result.PenetrationMilli = max2 - min1;
                         result.MinPenetrationAxis = axies[i];
                         result.AxisIndex = i;
                     }
@@ -120,21 +120,18 @@ namespace Automathon.Utility
             return result;
         }
 
-        public static SATOutput BoxBoxSAT(Vector2Int[] box, Vector2Int[] box2)
+        public static SATOutput BoxBoxSAT(BoxCollider box, BoxCollider box2)
         {
-            if (box.Length != 4 || box2.Length != 4)
-                throw new Exception("Rect vertices are not set properly, Rectangle has more or less than 4 vertices");
-
             //Indexes: UL = 0, UR = 1, LR = 2, LL = 3
             Vector2Int[] axies = new Vector2Int[4]
             {
-                box[1] - box[0], //UR - UL
-                box[1] - box[2], //UR - LR
-                box2[1] - box2[0], //UL - UR
-                box2[1] - box2[2], //UL - LL
+                box.Coords[1] - box.Coords[0], //UR - UL
+                box.Coords[1] - box.Coords[2], //UR - LR
+                box2.Coords[1] - box2.Coords[0], //UL - UR
+                box2.Coords[1] - box2.Coords[2], //UL - LL
             };
 
-            return SAT(box, box2, axies);
+            return SAT(box.Coords, box2.Coords, axies);
         }
     }
 }
