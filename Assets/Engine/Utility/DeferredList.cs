@@ -27,13 +27,13 @@ namespace Automathon.Utility
         {
             foreach (var item in pendingRemove)
             {
-                onAdded(item);
+                onRemoved(item);
                 items.Remove(item);
             }
             foreach (var item in pendingAdd)
             {
                 items.Add(item);
-                onRemoved(item);
+                onAdded(item);
             }
             pendingAdd.Clear();
             pendingRemove.Clear();

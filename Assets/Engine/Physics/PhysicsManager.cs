@@ -36,9 +36,6 @@ namespace Automathon.Engine.Physics
         private void OnColliderRemoved(Collider collider)
             => colliders.Remove(collider);
 
-
-
-
         public void Step()
         {
             foreach(Collider collider in colliders)
