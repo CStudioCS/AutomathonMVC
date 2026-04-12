@@ -32,6 +32,17 @@ namespace Automathon.Engine
                 entity.Update();
         }
 
+        public T Instantiate<T>(T entity) where T : Entity
+        {
+            entities.Add(entity);
+            return entity;
+        }
+
+        public void Destroy(Entity entity)
+        {
+            entities.Remove(entity);
+        }
+
         public void Dispose()
         {
             physicsManager.Dispose();
