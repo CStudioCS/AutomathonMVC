@@ -10,8 +10,7 @@
         {
         }
 
-        public virtual void Start()
-        { }
+        public virtual void Start() { }
         public virtual void OnRemoved() { }
 
         public virtual void Update() { }

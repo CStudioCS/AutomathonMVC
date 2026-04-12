@@ -46,7 +46,7 @@ namespace Automathon.Engine
             components.Remove(component);
         }
 
-        public bool TryGetComponent<T>(out Component component) where T : Component
+        public bool TryGetComponent<T>(out T component) where T : Component
         {
             component = null;
             foreach(Component c in components.Items)
