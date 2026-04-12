@@ -15,5 +15,7 @@ public class TankView : MonoBehaviour
     private void LateUpdate()
     {
         transform.position =  tank.Position.ToV2() / GameplayConstants.SpaceScale;
+        if(tank.TryGetComponent<Automathon.Engine.Physics.BoxCollider>(out var b))
+            transform.rotation = Quaternion.Euler(0, 0, b.RotationMillirad * 1000 * Mathf.Rad2Deg);
     }
 }

@@ -21,6 +21,11 @@ public class WorldView : MonoBehaviour
         Tank tank = new Tank(new Automathon.Vector2Int(0, 0), playerInputProvider);
         gameplayManager.Instantiate(tank);
         tankView.Initialize(tank);
+
+        TankView tankView2 = Instantiate(tankViewPrefab);
+        Tank tank2 = new Tank(new Automathon.Vector2Int(5000, 0), new EmptyInputProvider());
+        gameplayManager.Instantiate(tank2);
+        tankView2.Initialize(tank2);
     }
 
     // Update is called once per frame

@@ -45,17 +45,18 @@ namespace Automathon.Engine.Physics
             foreach(Rigidbody rb in rigidbodies)
             {
                 bool blocked = false;
-                if(!rb.ParentEntity.TryGetComponent(out Collider c))
+                if(!rb.ParentEntity.TryGetComponent(out Collider collider))
                     continue;
 
-                foreach (Collider collider in colliders)
+                foreach (Collider otherCollider in colliders)
                 {
-                    if (collider != c && c.CollideAt(rb.ParentEntity.Position + rb.Velocity / GameplayConstants.Framerate, collider))
+                    if (otherCollider != collider && collider.CollideAt(otherCollider, rb.ParentEntity.Position + rb.Velocity / GameplayConstants.Framerate))
                     {
                         blocked = true;
                         break;
                     }
                 }
+
                 if (!blocked)
                     rb.ParentEntity.Position += rb.Velocity / GameplayConstants.Framerate; //I wanna use deltatime :(
             }

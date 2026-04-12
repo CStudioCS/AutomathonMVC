@@ -1,4 +1,6 @@
-﻿namespace Automathon
+﻿using Automathon.Engine.Utility;
+
+namespace Automathon
 {
     public struct Vector2Int
     {
@@ -16,6 +18,9 @@
 
         public static Vector2Int operator -(Vector2Int a, Vector2Int b)
             => new Vector2Int(a.X - b.X, a.Y - b.Y);
+
+        public static Vector2Int operator -(Vector2Int a)
+            => new Vector2Int(-a.X, -a.Y);
 
         public static Vector2Int operator *(Vector2Int a, int b)
             => new Vector2Int(a.X * b, a.Y * b);
@@ -36,12 +41,15 @@
         public Vector2Int ProjectedOn(Vector2Int other)
             => Dot(other) * other / other.LengthSquared();
 
+        public int Length()
+            => IntMath.Isqrt(X * X + Y * Y);
+
         public int LengthSquared()
             => X * X + Y * Y;
 
         public void NormalizeAtScale(int scale)
         {
-            int l = LengthSquared();
+            int l = Length();
             X = X * scale / l;
             Y = Y * scale / l;
         }

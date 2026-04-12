@@ -5,23 +5,26 @@ namespace Automathon.Engine.Physics
     public abstract class Collider : Component
     {
         public bool isTrigger;
-        public event Action<Collider> OnTriggerEnter;
-        public event Action<Collider> OnTriggerStay;
-        public event Action<Collider> OnTriggerExit;
+        public Action<Collider> OnTriggerEnter;
+        public Action<Collider> OnTriggerStay;
+        public Action<Collider> OnTriggerExit;
 
-        public event Action<Collider> OnCollision;
+        public Action<Collider> OnCollision;
 
         public static event Action<Collider> Added;
         public static event Action<Collider> Removed;
 
         public abstract bool Colliding(Collider collider);
 
-        public bool CollideAt(Vector2Int pos, Collider other)
+        //this sucks and will be removed with the new physics engine
+        public bool CollideAt(Collider other, Vector2Int pos)
         {
             Vector2Int oldPos = ParentEntity.Position;
             ParentEntity.Position = pos;
+            PhysicsUpdate();
             bool colliding = Colliding(other);
             ParentEntity.Position = oldPos;
+            PhysicsUpdate();
             return colliding;
         }
 
