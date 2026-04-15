@@ -7,7 +7,7 @@ namespace Automathon.Game.TankSystem
     public class TankView : MonoBehaviour
     {
         private Tank tank;
-        public PlayerInput playerInput { get; private set; }
+        public PlayerInput PlayerInput; //Can't make into a private set cuz it needs to be set in the inspector
 
         public void Initialize(Tank tank)
         {

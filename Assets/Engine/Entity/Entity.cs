@@ -19,7 +19,7 @@ namespace Automathon.Engine
         /// </summary>
         public void ApplyComponentsChanges()
         {
-            components.ProcessChanges((component) => component.Initialize(this), (component) => component.OnRemoved());
+            components.ProcessChanges((component) => component.Start(), (component) => component.OnRemoved());
         }
 
         public virtual void Update()

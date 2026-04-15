@@ -58,7 +58,7 @@ namespace Automathon.Physics
         {
             public bool IsCollision { get; private set; }
             public Vector2Int MinPenetrationAxis { get; private set; }
-            public int PenetrationMilli { get; private set; } //DOESNT WORK YET !!!
+            public int PenetrationMilli { get; private set; }
             public int AxisIndex { get; private set; }
 
             public SATOutput(bool isCollision, Vector2Int minPenetrationAxis, int penetrationMilli, int axisIndex)
@@ -79,9 +79,6 @@ namespace Automathon.Physics
             Vector2Int minPenetrationAxis = Vector2Int.Zero;
             int penetrationMilli = int.MaxValue;
             int axisIndex = -1;
-
-            isCollision = true;
-            penetrationMilli = int.MaxValue;
 
             for (int i = 0; i < axies.Length; i++)
             {

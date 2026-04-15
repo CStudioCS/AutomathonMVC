@@ -14,7 +14,7 @@ namespace Automathon.Game.TankSystem
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
             this.inputProvider = inputProvider;
-            AddComponent(new BoxCollider(Vector2Int.Zero, 1000, 1000, 0));
+            AddComponent(new BoxCollider(Vector2Int.Zero, 500, 500, 0));
             rigidbody = AddComponent(new Rigidbody());
         }
 
