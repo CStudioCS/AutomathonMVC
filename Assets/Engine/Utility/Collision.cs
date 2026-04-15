@@ -53,11 +53,14 @@ namespace Automathon.Utility
             return false;
         }
 
+        public static bool CircleCircle(CircleCollider circle1, CircleCollider circle2)
+            => (circle2.WorldPos - circle1.WorldPos).LengthSquared() < (circle1.Radius + circle2.Radius) * (circle1.Radius + circle2.Radius);
+
         public class SATOutput
         {
             public bool IsCollision;
             public Vector2Int MinPenetrationAxis;
-            public float PenetrationMilli;
+            public int PenetrationMilli;
             public int AxisIndex;
         }
 
@@ -68,25 +71,25 @@ namespace Automathon.Utility
 
             SATOutput result = new SATOutput();
             result.IsCollision = true;
-            result.PenetrationMilli = float.PositiveInfinity;
+            result.PenetrationMilli = int.MaxValue;
 
             for (int i = 0; i < axies.Length; i++)
             {
-                int min1 = int.MaxValue;
-                int max1 = int.MinValue;
-                int min2 = int.MaxValue;
-                int max2 = int.MinValue;
+                long min1 = long.MaxValue;
+                long max1 = long.MinValue;
+                long min2 = long.MaxValue;
+                long max2 = long.MinValue;
 
                 foreach (Vector2Int point in polygon1)
                 {
-                    int axisPos = point.Dot(axies[i]);
+                    long axisPos = point.Dot(axies[i]);
                     min1 = Math.Min(min1, axisPos);
                     max1 = Math.Max(max1, axisPos);
                 }
 
                 foreach (Vector2Int point in polygon2)
                 {
-                    int axisPos = point.Dot(axies[i]);
+                    long axisPos = point.Dot(axies[i]);
                     min2 = Math.Min(min2, axisPos);
                     max2 = Math.Max(max2, axisPos);
                 }
@@ -103,13 +106,13 @@ namespace Automathon.Utility
                 {
                     if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < result.PenetrationMilli)
                     {
-                        result.PenetrationMilli = max1 - min2;
+                        result.PenetrationMilli = (int)((max1 - min2) / 1000);
                         result.MinPenetrationAxis = axies[i];
                         result.AxisIndex = i;
                     }
                     else if (max2 - min1 < result.PenetrationMilli)
                     {
-                        result.PenetrationMilli = max2 - min1;
+                        result.PenetrationMilli = (int)((max2 - min1) / 1000);
                         result.MinPenetrationAxis = axies[i];
                         result.AxisIndex = i;
                     }
