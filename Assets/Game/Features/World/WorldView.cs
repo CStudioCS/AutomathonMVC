@@ -29,7 +29,7 @@ namespace Automathon.Game.World
             tankView2.Initialize(tank2);
 
             WallView wallView = Instantiate(wallViewPrefab);
-            Wall wall = new Wall(new Vector2Int(0, 0), 5, 2);
+            Wall wall = new Wall(new Vector2Int(0, 0), (int)(2.5 * WorldConstants.SPACE_SCALE), 1 * WorldConstants.SPACE_SCALE);
             gameplayManager.Instantiate(wall);
             wallView.Initialize(wall);
         }
