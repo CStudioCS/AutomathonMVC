@@ -10,7 +10,14 @@ namespace Automathon.Engine.Physics
         public Collider Collider;
 
         public bool Kinematic;
+
         public Vector2Int Velocity;
+        public int AngularVelocityMilli;
+        public int Friction;
+
+        public int InvMassMilli;
+        public int InvI;
+
         //this will have a bunch of stuff in the future stay tuned, WIP !!!
 
         public Rigidbody(Collider collider) : base()

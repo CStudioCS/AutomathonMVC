@@ -1,56 +1,94 @@
 ﻿using System;
 using System.Collections.Generic;
+using static Automathon.Engine.Physics.Collision;
 
 namespace Automathon.Engine.Physics
 {
-    public class PhysicsManager : IDisposable
+    public static class PhysicsManager
     {
-        public readonly List<Rigidbody> rigidbodies = new();
+        private static readonly List<Rigidbody> rigidbodies = new();
+        private static List<Contact> contacts = new();
 
-        public PhysicsManager()
+        public static int Iterations = 10;
+        public static float KBias = 0.2f;
+        public static float SlopPenetration = 0.1f;
+
+        static PhysicsManager()
         {
             Rigidbody.Added += OnRigidbodyAdded;
             Rigidbody.Removed += OnRigidbodyRemoved;
         }
 
-        public void Dispose()
+        public static void Dispose()
         {
             Rigidbody.Added -= OnRigidbodyAdded;
             Rigidbody.Removed -= OnRigidbodyRemoved;
         }
 
-        private void OnRigidbodyAdded(Rigidbody rigidbody)
+        private static void OnRigidbodyAdded(Rigidbody rigidbody)
             => rigidbodies.Add(rigidbody);
 
-        private void OnRigidbodyRemoved(Rigidbody rigidbody)
+        private static void OnRigidbodyRemoved(Rigidbody rigidbody)
             => rigidbodies.Remove(rigidbody);
 
-        public void Step()
+        private static void BroadPhase()
         {
-            foreach (Rigidbody rigidbody in rigidbodies)
-                rigidbody.Collider.PhysicsUpdate();
-
-            //This is temporary and sucks balls
-            foreach (Rigidbody rigidbody in rigidbodies)
+            List<Contact> newContacts = new();
+            for (int i = 0; i < rigidbodies.Count; i++)
             {
-                bool blocked = false;
-
-                foreach (Rigidbody otherRigidbody in rigidbodies)
+                for (int j = i + 1; j < rigidbodies.Count; j++)
                 {
-                    if (otherRigidbody == rigidbody)
+                    Rigidbody rigidbody = rigidbodies[i];
+                    Rigidbody otherRigidbody = rigidbodies[j];
+
+                    if (rigidbody.InvMassMilli == 0 && otherRigidbody.InvMassMilli == 0)
                         continue;
 
-                    if (rigidbody.Collider.CollideAt(otherRigidbody.Collider, rigidbody.ParentEntity.Position + rigidbody.Velocity / GameplayConstants.FRAMERATE))
+                    if(rigidbody.Collider is BoxCollider b1 && otherRigidbody.Collider is BoxCollider b2)
                     {
-                        blocked = true;
-                        rigidbody.Collider.OnCollision?.Invoke(otherRigidbody.Collider);
-                        break;
+                        //Compute BoxBox Contact
+                        BoxContact boxContact = Collision.BoxBoxClipping(b1, b2);
+                    }
+                    else if(rigidbody.Collider is BoxCollider b3 && otherRigidbody.Collider is CircleCollider c1)
+                    {
+                        //Compute BoxCircle Contact
+                    }
+                    else if(rigidbody.Collider is CircleCollider c2 && otherRigidbody.Collider is BoxCollider b4)
+                    {
+                        //Compute CircleBox Contact
+                    }
+                    else if(rigidbody.Collider is CircleCollider c3 && otherRigidbody.Collider is CircleCollider c4)
+                    {
+                        //Compute CircleCircle Contact
+                    }
+
+                    //TODO: Implement Warm start
+
+
+                    if (boxContact.Colliding)
+                    {
+                        List<Contact> separate = SeparateBoxContacts(boxContact);
+
+                        //TODO: check for edge ID
+                        Contact c = contacts.Find((c2) => (c2.Reference == rigidbody && c2.Incident == otherRigidbody) || (c2.Reference == rigidbody && c2.Incident == otherRigidbody));
+                        if (c != null)
+                        {
+                            separate[0].Pn = c.Pn; //Super ghetto
+                            separate[0].Pt = c.Pt;
+                        }
+
+                        newContacts.AddRange(separate);
                     }
                 }
-
-                if (!blocked)
-                    rigidbody.ParentEntity.Position += rigidbody.Velocity / GameplayConstants.FRAMERATE; //I wanna use deltatime :(
             }
+
+            contacts = newContacts;
+        }
+
+        public static void Step()
+        {
+            BroadPhase();
         }
     }
+}
 }
