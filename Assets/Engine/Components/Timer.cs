@@ -4,12 +4,12 @@ namespace Automathon.Engine
 {
     public class Timer : Component
     {
-        public readonly int MaxValueMillis;
-        public int ValueMillis;
+        public readonly int MaxValueFrames;
+        public int ValueFrames;
         public Func<bool> PausedFunc = () => false;
 
-        public Action OnComplete;
-        public Action<Timer> UpdateAction;
+        private Action OnComplete;
+        private Action<Timer> UpdateAction;
 
         /// <summary>
         /// Timer ticks down from the given time to 0, then calls OnComplete. UpdateAction is called every update while the timer is still ticking.
@@ -19,20 +19,20 @@ namespace Automathon.Engine
         /// <param name="OnComplete"></param>
         public Timer(int timerValueMilliseconds, Action<Timer> UpdateAction = null, Action OnComplete = null)
         {
-            this.MaxValueMillis = timerValueMilliseconds;
-            ValueMillis = timerValueMilliseconds;
+            this.MaxValueFrames = timerValueMilliseconds / GameplayConstants.FRAMERATE;
+            ValueFrames = MaxValueFrames;
             this.OnComplete = OnComplete;
             this.UpdateAction = UpdateAction;
         }
 
         public override void Update()
         {
-            if (ValueMillis > 0)
+            if (ValueFrames > 0)
             {
-                ValueMillis -= GameplayConstants.DeltatimeMillis;
-                if (ValueMillis <= 0)
+                ValueFrames--;
+                if (ValueFrames <= 0)
                 {
-                    ValueMillis = 0;
+                    ValueFrames = 0;
                     OnComplete?.Invoke();
                     ParentEntity.RemoveComponent(this);
                 }
@@ -41,7 +41,7 @@ namespace Automathon.Engine
             }
         }
 
-        //by doing this we can end the timer without triggering onComplete using RemoveComponent
+        //by calling this we can end the timer without triggering onComplete using RemoveComponent
         public void End()
         {
             OnComplete?.Invoke();
