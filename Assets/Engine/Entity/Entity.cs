@@ -1,64 +1,78 @@
 ﻿using Automathon.Utility;
+using System;
 
 namespace Automathon.Engine
 {
     public abstract class Entity
     {
         public Vector2Int Position;
-        private DeferredList<Component> components = new();
+        private Component[] components;
+        private DeferredList<Behavior> behaviors = new();
+
+        private bool initialized;
 
         public Entity(Vector2Int position)
         {
             Position = position;
         }
 
-        public virtual void Start() { }
+        protected void Initialize(params Component[] components)
+        {
+            if (initialized)
+                throw new Exception("Cannot initialize an entity twice. This entity has already been initialized !");
+
+            initialized = true;
+            this.components = components;
+
+            foreach (Component component in components)
+                component.Initialize(this);
+        }
+
+        public virtual void Start()
+        {
+            if (!initialized)
+                Initialize(new Component[] { });
+        }
 
         /// <summary>
         /// Instanties/Destroys components that need to be
         /// </summary>
         public void ApplyComponentsChanges()
         {
-            components.ProcessChanges((component) => component.Start(), (component) => component.OnRemoved());
+            behaviors.ProcessChanges((behavior) =>
+            {
+                behavior.Initialize(this);
+                behavior.Start();
+            }, (component) => component.OnRemoved());
         }
 
         public virtual void Update()
         {
-            foreach (Component component in components.Items)
+            foreach (Behavior behaviors in behaviors.Items)
+                behaviors.Update();
+
+            foreach (Component component in components)
                 component.Update();
         }
 
         public virtual void OnDestroyed()
         {
-            foreach (Component component in components.Items)
-                RemoveComponent(component);
+            foreach (Behavior component in behaviors.Items)
+                RemoveBehavior(component);
+
+            foreach (Component component in components)
+                component.OnDestroyed();
         }
 
-        public T AddComponent<T>(T component) where T : Component
+        public T AddBehavior<T>(T behavior) where T : Behavior
         {
-            components.Add(component);
-            component.Initialize(this);
-            return component;
+            behaviors.Add(behavior);
+            return behavior;
         }
 
-        public void RemoveComponent<T>(T component) where T : Component
+        public void RemoveBehavior<T>(T behavior) where T : Behavior
         {
-            components.Remove(component);
-        }
-
-        public bool TryGetComponent<T>(out T component) where T : Component
-        {
-            component = null;
-            foreach (Component currentComponent in components.Items)
-            {
-                if (currentComponent is T t)
-                {
-                    component = t;
-                    return true;
-                }
-            }
-
-            return false;
+            behaviors.Remove(behavior);
         }
     }
 }
