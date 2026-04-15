@@ -1,7 +1,6 @@
-﻿using Automathon.Engine.Physics;
-using System;
+﻿using System;
 
-namespace Automathon.Physics
+namespace Automathon.Engine.Physics
 {
     public static class Collision
     {

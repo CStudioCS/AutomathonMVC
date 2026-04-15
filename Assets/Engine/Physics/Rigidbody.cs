@@ -7,22 +7,21 @@ namespace Automathon.Engine.Physics
         public static event Action<Rigidbody> Added;
         public static event Action<Rigidbody> Removed;
 
+        public Collider Collider;
+
+        public bool Kinematic;
         public Vector2Int Velocity;
-        //this will have a bunch of stuff in the future stay tuned
+        //this will have a bunch of stuff in the future stay tuned, WIP !!!
 
-        public Rigidbody() : base()
+        public Rigidbody(Collider collider) : base()
         {
-        }
-
-        public override void Start()
-        {
+            Collider = collider;
             Added?.Invoke(this);
-            base.Start();
         }
 
-        public override void OnRemoved()
+        public override void OnDestroyed()
         {
-            base.OnRemoved();
+            base.OnDestroyed();
             Removed?.Invoke(this);
         }
     }

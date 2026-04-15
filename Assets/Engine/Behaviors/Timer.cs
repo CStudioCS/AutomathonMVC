@@ -2,7 +2,7 @@
 
 namespace Automathon.Engine
 {
-    public class Timer : Component
+    public class Timer : Behavior
     {
         public readonly int MaxValueFrames;
         public int ValueFrames;
@@ -34,7 +34,7 @@ namespace Automathon.Engine
                 {
                     ValueFrames = 0;
                     OnComplete?.Invoke();
-                    ParentEntity.RemoveComponent(this);
+                    ParentEntity.RemoveBehavior(this);
                 }
                 else
                     UpdateAction?.Invoke(this);
@@ -45,7 +45,7 @@ namespace Automathon.Engine
         public void End()
         {
             OnComplete?.Invoke();
-            ParentEntity.RemoveComponent(this);
+            ParentEntity.RemoveBehavior(this);
         }
     }
 }

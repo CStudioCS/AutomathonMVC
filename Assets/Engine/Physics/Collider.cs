@@ -11,9 +11,6 @@ namespace Automathon.Engine.Physics
 
         public Action<Collider> OnCollision;
 
-        public static event Action<Collider> Added;
-        public static event Action<Collider> Removed;
-
         public abstract bool Colliding(Collider collider);
 
         //this sucks and will be removed with the new physics engine
@@ -26,18 +23,6 @@ namespace Automathon.Engine.Physics
             ParentEntity.Position = oldPos;
             PhysicsUpdate();
             return colliding;
-        }
-
-        public override void Start()
-        {
-            Added?.Invoke(this);
-            base.Start();
-        }
-
-        public override void OnRemoved()
-        {
-            base.OnRemoved();
-            Removed?.Invoke(this);
         }
 
         public virtual void PhysicsUpdate() { }

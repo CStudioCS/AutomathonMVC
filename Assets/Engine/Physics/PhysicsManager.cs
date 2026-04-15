@@ -6,22 +6,17 @@ namespace Automathon.Engine.Physics
     public class PhysicsManager : IDisposable
     {
         public readonly List<Rigidbody> rigidbodies = new();
-        public readonly List<Collider> colliders = new();
 
         public PhysicsManager()
         {
             Rigidbody.Added += OnRigidbodyAdded;
             Rigidbody.Removed += OnRigidbodyRemoved;
-            Collider.Added += OnColliderAdded;
-            Collider.Removed += OnColliderRemoved;
         }
 
         public void Dispose()
         {
             Rigidbody.Added -= OnRigidbodyAdded;
             Rigidbody.Removed -= OnRigidbodyRemoved;
-            Collider.Added -= OnColliderAdded;
-            Collider.Removed -= OnColliderRemoved;
         }
 
         private void OnRigidbodyAdded(Rigidbody rigidbody)
@@ -30,35 +25,31 @@ namespace Automathon.Engine.Physics
         private void OnRigidbodyRemoved(Rigidbody rigidbody)
             => rigidbodies.Remove(rigidbody);
 
-        private void OnColliderAdded(Collider collider)
-            => colliders.Add(collider);
-
-        private void OnColliderRemoved(Collider collider)
-            => colliders.Remove(collider);
-
         public void Step()
         {
-            foreach(Collider collider in colliders)
-                collider.PhysicsUpdate();
+            foreach (Rigidbody rigidbody in rigidbodies)
+                rigidbody.Collider.PhysicsUpdate();
 
             //This is temporary and sucks balls
-            foreach(Rigidbody rb in rigidbodies)
+            foreach (Rigidbody rigidbody in rigidbodies)
             {
                 bool blocked = false;
-                if(!rb.ParentEntity.TryGetComponent(out Collider collider))
-                    continue;
 
-                foreach (Collider otherCollider in colliders)
+                foreach (Rigidbody otherRigidbody in rigidbodies)
                 {
-                    if (otherCollider != collider && collider.CollideAt(otherCollider, rb.ParentEntity.Position + rb.Velocity / GameplayConstants.FRAMERATE))
+                    if (otherRigidbody == rigidbody)
+                        continue;
+
+                    if (rigidbody.Collider.CollideAt(otherRigidbody.Collider, rigidbody.ParentEntity.Position + rigidbody.Velocity / GameplayConstants.FRAMERATE))
                     {
                         blocked = true;
+                        rigidbody.Collider.OnCollision?.Invoke(otherRigidbody.Collider);
                         break;
                     }
                 }
 
                 if (!blocked)
-                    rb.ParentEntity.Position += rb.Velocity / GameplayConstants.FRAMERATE; //I wanna use deltatime :(
+                    rigidbody.ParentEntity.Position += rigidbody.Velocity / GameplayConstants.FRAMERATE; //I wanna use deltatime :(
             }
         }
     }

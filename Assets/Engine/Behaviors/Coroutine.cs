@@ -6,7 +6,7 @@ using System.Linq;
 namespace Automathon.Engine
 {
     //Copied over from Fiourp with various fixes
-    public class Coroutine : Component
+    public class Coroutine : Behavior
     {
         public IEnumerator Enumerator;
         private float waitTimer;
@@ -72,7 +72,7 @@ namespace Automathon.Engine
             else if (stack != null && stack.Count > 0)
                 Enumerator = stack.Pop();
             else if (ParentEntity != null)
-                ParentEntity.RemoveComponent(this);
+                ParentEntity.RemoveBehavior(this);
             else
                 Enumerator = null;
         }

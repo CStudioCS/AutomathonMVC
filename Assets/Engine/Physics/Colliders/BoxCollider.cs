@@ -1,5 +1,4 @@
-﻿using Automathon.Physics;
-using System;
+﻿using System;
 
 namespace Automathon.Engine.Physics
 {
@@ -13,7 +12,7 @@ namespace Automathon.Engine.Physics
 
         public Vector2Int[] Coords { get; private set; }
 
-        public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int rotationMillirad)
+        public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int rotationMillirad) : base()
         {
             LocalCenterPosition = localPosition;
             Width = halfWidth * 2;
