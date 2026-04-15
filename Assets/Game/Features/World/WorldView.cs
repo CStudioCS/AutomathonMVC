@@ -1,0 +1,31 @@
+using Automathon;
+using Automathon.Engine;
+using Automathon.Game.Input;
+using Automathon.Game.Tank;
+using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
+
+public class WorldView : MonoBehaviour
+{
+    [SerializeField] private TankView tankViewPrefab;
+
+    private GameplayManager gameplayManager = new();
+
+    private void Awake()
+    {
+        Application.targetFrameRate = GameplayConstants.Framerate;
+
+        //this is ugly and temporary, let me be
+        TankView tankView = Instantiate(tankViewPrefab);
+        PlayerInputProvider playerInputProvider = tankView.GetComponent<PlayerInputProvider>();
+        Tank tank = new Tank(new Automathon.Vector2Int(0, 0), playerInputProvider);
+        gameplayManager.Instantiate(tank);
+        tankView.Initialize(tank);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        gameplayManager.Update();
+    }
+}
