@@ -1,11 +1,13 @@
 using Automathon.Game.Utility;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-namespace Automathon.Game.Tank
+namespace Automathon.Game.TankSystem
 {
     public class TankView : MonoBehaviour
     {
         private Tank tank;
+        public PlayerInput playerInput { get; private set; }
 
         public void Initialize(Tank tank)
         {

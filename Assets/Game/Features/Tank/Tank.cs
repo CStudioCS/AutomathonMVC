@@ -2,7 +2,7 @@
 using Automathon.Engine.Physics;
 using Automathon.Game.Input;
 
-namespace Automathon.Game.Tank
+namespace Automathon.Game.TankSystem
 {
     public class Tank : Entity
     {

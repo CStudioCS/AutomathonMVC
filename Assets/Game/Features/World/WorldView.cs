@@ -1,6 +1,6 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
-using Automathon.Game.Tank;
+using Automathon.Game.TankSystem;
 using UnityEngine;
 
 namespace Automathon.Game.World
@@ -17,13 +17,12 @@ namespace Automathon.Game.World
 
             //this is ugly and temporary, let me be
             TankView tankView = Instantiate(tankViewPrefab);
-            PlayerInputProvider playerInputProvider = tankView.GetComponent<PlayerInputProvider>();
-            Tank tank = new Tank(new Automathon.Vector2Int(0, 0), playerInputProvider);
+            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.playerInput));
             gameplayManager.Instantiate(tank);
             tankView.Initialize(tank);
 
             TankView tankView2 = Instantiate(tankViewPrefab);
-            Tank tank2 = new Tank(new Automathon.Vector2Int(5000, 0), new EmptyInputProvider());
+            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider());
             gameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
         }
