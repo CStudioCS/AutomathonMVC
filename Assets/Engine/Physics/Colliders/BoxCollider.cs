@@ -1,25 +1,23 @@
-﻿using Automathon.Utility;
+﻿using Automathon.Physics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Automathon.Engine.Physics
 {
     public class BoxCollider : Collider
     {
         public Vector2Int WorldPosition => ParentEntity.Position + LocalCenterPosition;
-        public Vector2Int LocalCenterPosition;
-        public int Width;
-        public int Height;
-        public int RotationMillirad;
+        public Vector2Int LocalCenterPosition { get; private set; }
+        public int Width { get; private set; }
+        public int Height { get; private set; }
+        public int RotationMillirad { get; set; }
 
-        public Vector2Int[] Coords;
+        public Vector2Int[] Coords { get; private set; }
 
-        public BoxCollider(Vector2Int localPosition, int width, int height, int rotationMillirad)
+        public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int rotationMillirad)
         {
             LocalCenterPosition = localPosition;
-            Width = width;
-            Height = height;
+            Width = halfWidth * 2;
+            Height = halfHeight * 2;
             RotationMillirad = rotationMillirad;
         }
 
@@ -38,9 +36,9 @@ namespace Automathon.Engine.Physics
 
         public override void PhysicsUpdate()
         {
-            Vector2Int right = new Vector2Int(TrigTable.Cos(RotationMillirad), TrigTable.Sin(RotationMillirad)); //cos multiplied by 1000
-            Vector2Int up = right.Normal();
-            int halfWidth = Width / 2; //yes if the width is non divisible by 2 this has issues but gnagnagna we gotta use ints
+            Vector2Int right = Vector2Int.MilliDirectionFromMilliRad(RotationMillirad); //cos multiplied by 1000
+            Vector2Int up = right.OrthogonalCounterClockwise();
+            int halfWidth = Width / 2; //width and height are divisible by 2 by design
             int halfHeight = Height / 2;
 
             Coords = new Vector2Int[4]

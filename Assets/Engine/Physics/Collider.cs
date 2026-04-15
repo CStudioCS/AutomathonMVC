@@ -30,14 +30,14 @@ namespace Automathon.Engine.Physics
 
         public override void Start()
         {
-            Added(this);
+            Added?.Invoke(this);
             base.Start();
         }
 
         public override void OnRemoved()
         {
             base.OnRemoved();
-            Removed(this);
+            Removed?.Invoke(this);
         }
 
         public virtual void PhysicsUpdate() { }

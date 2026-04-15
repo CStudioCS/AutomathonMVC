@@ -5,14 +5,14 @@ namespace Automathon.Game.Input
     public class EmptyInputProvider : IInputProvider
     {
 
-        public bool Dash() => false;
+        public bool ShouldDash() => false;
 
-        public bool Grenade() => false;
+        public bool ShouldGrenade() => false;
 
-        public Vector2Int MilliMovementDir() => Vector2Int.Zero;
+        public Vector2Int GetMilliMovementDir() => Vector2Int.Zero;
 
-        public bool Shield() => false;
+        public bool ShouldShield() => false;
 
-        public bool Shoot() => false;
+        public bool ShouldShoot() => false;
     }
 }

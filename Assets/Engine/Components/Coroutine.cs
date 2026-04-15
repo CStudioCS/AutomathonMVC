@@ -10,7 +10,6 @@ namespace Automathon.Engine
     {
         public IEnumerator Enumerator;
         private float waitTimer;
-        private bool isTimer; //if this is false we're counting frames, just like in Unity
         private Func<bool> pausedUntil;
 
         private Stack<IEnumerator> stack;
@@ -55,25 +54,15 @@ namespace Automathon.Engine
                 pausedUntil = null;
 
             if (waitTimer > 0)
-            {
-                if (isTimer)
-                    waitTimer -= GameplayConstants.DeltatimeMillis;
-                else
-                    waitTimer--;
-            }
+                waitTimer--;
             else if (Enumerator.MoveNext()) //executing the coroutine and handling different yield returns
             {
-                isTimer = false;
-
                 if (Enumerator.Current == null)
                     waitTimer = 0;
                 else if (Enumerator.Current is int returnedInt)
                     waitTimer = returnedInt;
                 else if (Enumerator.Current is WaitForMilliseconds wait)
-                {
-                    waitTimer = wait.TimeMilliseconds;
-                    isTimer = true;
-                }
+                    waitTimer = wait.TimeMilliseconds / GameplayConstants.FRAMERATE;
                 else if (Enumerator.Current is PausedUntil paused)
                 {
                     pausedUntil = paused.Until;

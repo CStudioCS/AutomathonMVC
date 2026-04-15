@@ -1,21 +1,25 @@
-using Automathon;
-using Automathon.Game.Tank;
 using Automathon.Game.Utility;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class TankView : MonoBehaviour
+namespace Automathon.Game.TankSystem
 {
-    private Tank tank;
-
-    public void Initialize(Tank tank)
+    public class TankView : MonoBehaviour
     {
-        this.tank = tank;
+        private Tank tank;
+        public PlayerInput PlayerInput; //Can't make into a private set cuz it needs to be set in the inspector
+
+        public void Initialize(Tank tank)
+        {
+            this.tank = tank;
+        }
+
+        private void LateUpdate()
+        {
+            transform.position = tank.Position.ToVector2Scaled();
+            if (tank.TryGetComponent<Automathon.Engine.Physics.BoxCollider>(out var b))
+                transform.rotation = Quaternion.Euler(0, 0, b.RotationMillirad * 1000 * Mathf.Rad2Deg);
+        }
     }
 
-    private void LateUpdate()
-    {
-        transform.position =  tank.Position.ToV2() / GameplayConstants.SpaceScale;
-        if(tank.TryGetComponent<Automathon.Engine.Physics.BoxCollider>(out var b))
-            transform.rotation = Quaternion.Euler(0, 0, b.RotationMillirad * 1000 * Mathf.Rad2Deg);
-    }
 }

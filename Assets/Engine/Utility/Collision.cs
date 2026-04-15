@@ -1,7 +1,7 @@
 ﻿using Automathon.Engine.Physics;
 using System;
 
-namespace Automathon.Utility
+namespace Automathon.Physics
 {
     public static class Collision
     {
@@ -26,12 +26,10 @@ namespace Automathon.Utility
         {
             //work in doubled coord space else it don't work
             rectTopLeftPos *= 2;
-            width *= 2;
-            height *= 2;
             cPosition *= 2;
             cRadius *= 2;
+            Vector2Int halfSize = new Vector2Int(width, height);
 
-            Vector2Int halfSize = new Vector2Int(width / 2, height / 2);
 
             int distX = Math.Abs(cPosition.X - (rectTopLeftPos.X + halfSize.X));
             int distY = Math.Abs(cPosition.Y - (rectTopLeftPos.Y - halfSize.Y));
@@ -58,10 +56,18 @@ namespace Automathon.Utility
 
         public class SATOutput
         {
-            public bool IsCollision;
-            public Vector2Int MinPenetrationAxis;
-            public int PenetrationMilli;
-            public int AxisIndex;
+            public bool IsCollision { get; private set; }
+            public Vector2Int MinPenetrationAxis { get; private set; }
+            public int PenetrationMilli { get; private set; }
+            public int AxisIndex { get; private set; }
+
+            public SATOutput(bool isCollision, Vector2Int minPenetrationAxis, int penetrationMilli, int axisIndex)
+            {
+                IsCollision = isCollision;
+                MinPenetrationAxis = minPenetrationAxis;
+                PenetrationMilli = penetrationMilli;
+                AxisIndex = axisIndex;
+            }
         }
 
         public static SATOutput SAT(Vector2Int[] polygon1, Vector2Int[] polygon2, Vector2Int[] axies)
@@ -69,9 +75,10 @@ namespace Automathon.Utility
             for (int i = 0; i < axies.Length; i++)
                 axies[i].NormalizeAtScale(1000); //normalized to a scale of 1000
 
-            SATOutput result = new SATOutput();
-            result.IsCollision = true;
-            result.PenetrationMilli = int.MaxValue;
+            bool isCollision = true;
+            Vector2Int minPenetrationAxis = Vector2Int.Zero;
+            int penetrationMilli = int.MaxValue;
+            int axisIndex = -1;
 
             for (int i = 0; i < axies.Length; i++)
             {
@@ -96,31 +103,31 @@ namespace Automathon.Utility
 
                 if (min2 >= max1 || max2 <= min1)
                 {
-                    result.IsCollision = false;
-                    result.MinPenetrationAxis = Vector2Int.Zero;
-                    result.PenetrationMilli = 0;
-                    result.AxisIndex = -1;
-                    return result;
+                    isCollision = false;
+                    minPenetrationAxis = Vector2Int.Zero;
+                    penetrationMilli = 0;
+                    axisIndex = -1;
+                    return new SATOutput(isCollision, minPenetrationAxis, penetrationMilli, axisIndex);
                 }
                 else
                 {
-                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < result.PenetrationMilli)
+                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < penetrationMilli)
                     {
-                        result.PenetrationMilli = (int)((max1 - min2) / 1000);
-                        result.MinPenetrationAxis = axies[i];
-                        result.AxisIndex = i;
+                        penetrationMilli = (int)((max1 - min2) / 1000);
+                        minPenetrationAxis = axies[i];
+                        axisIndex = i;
                     }
-                    else if (max2 - min1 < result.PenetrationMilli)
+                    else if (max2 - min1 < penetrationMilli)
                     {
-                        result.PenetrationMilli = (int)((max2 - min1) / 1000);
-                        result.MinPenetrationAxis = axies[i];
-                        result.AxisIndex = i;
+                        penetrationMilli = (int)((max2 - min1) / 1000);
+                        minPenetrationAxis = axies[i];
+                        axisIndex = i;
                     }
                 }
             }
 
-            result.IsCollision = true;
-            return result;
+            isCollision = true;
+            return new SATOutput(isCollision, minPenetrationAxis, penetrationMilli, axisIndex);
         }
 
         public static SATOutput BoxBoxSAT(BoxCollider box, BoxCollider box2)

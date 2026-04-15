@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Automathon.Game.Input
+﻿namespace Automathon.Game.Input
 {
     public interface IInputProvider
     {
-        public Vector2Int MilliMovementDir();
-        public bool Shoot();
-        public bool Shield();
-        public bool Grenade();
-        public bool Dash();
+        public Vector2Int GetMilliMovementDir();
+        public bool ShouldShoot();
+        public bool ShouldShield();
+        public bool ShouldGrenade();
+        public bool ShouldDash();
     }
 }

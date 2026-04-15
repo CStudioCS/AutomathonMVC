@@ -6,11 +6,9 @@ namespace Automathon
     {
         public static void Log(params object[] logs)
         {
-            foreach (object log in logs)
-            {
-                Console.WriteLine(log.ToString());
-                UnityEngine.Debug.Log(log.ToString());
-            }
+            string message = string.Join(";; ", logs);
+            Console.WriteLine(message.ToString());
+            UnityEngine.Debug.Log(message);
         }
     }
 }

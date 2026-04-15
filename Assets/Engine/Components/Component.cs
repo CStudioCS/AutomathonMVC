@@ -5,9 +5,14 @@
         //this is set by the entity on AddComponent,
         //so that there is no need to pass it as an argument to every component's constructor
         //So it won't be set in the components constructor, but it will be set before Start is called
-        public Entity ParentEntity; 
+        public Entity ParentEntity { get; private set; }
         public Component()
         {
+        }
+
+        public void Initialize(Entity parentEntity)
+        {
+            ParentEntity = parentEntity;
         }
 
         public virtual void Start() { }

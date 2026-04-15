@@ -50,7 +50,7 @@ namespace Automathon.Engine.Physics
 
                 foreach (Collider otherCollider in colliders)
                 {
-                    if (otherCollider != collider && collider.CollideAt(otherCollider, rb.ParentEntity.Position + rb.Velocity / GameplayConstants.Framerate))
+                    if (otherCollider != collider && collider.CollideAt(otherCollider, rb.ParentEntity.Position + rb.Velocity / GameplayConstants.FRAMERATE))
                     {
                         blocked = true;
                         break;
@@ -58,7 +58,7 @@ namespace Automathon.Engine.Physics
                 }
 
                 if (!blocked)
-                    rb.ParentEntity.Position += rb.Velocity / GameplayConstants.Framerate; //I wanna use deltatime :(
+                    rb.ParentEntity.Position += rb.Velocity / GameplayConstants.FRAMERATE; //I wanna use deltatime :(
             }
         }
     }
