@@ -20,7 +20,7 @@ namespace Automathon.Game.AbilitySystem
         {
             base.Update();
 
-            if(shouldActivate())
+            if (shouldActivate())
             {
                 TryActivate();
             }
