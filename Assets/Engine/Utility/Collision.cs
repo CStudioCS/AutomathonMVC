@@ -51,7 +51,7 @@ namespace Automathon.Engine.Physics
         }
 
         public static bool CircleCircle(CircleCollider circle1, CircleCollider circle2)
-            => (circle2.WorldPos - circle1.WorldPos).LengthSquared() < (circle1.Radius + circle2.Radius) * (circle1.Radius + circle2.Radius);
+            => (circle2.WorldPosition - circle1.WorldPosition).LengthSquared() < (circle1.Radius + circle2.Radius) * (circle1.Radius + circle2.Radius);
 
         public class SATOutput
         {
@@ -141,6 +141,102 @@ namespace Automathon.Engine.Physics
             };
 
             return SAT(box.Coords, box2.Coords, axies);
+        }
+
+        public class BoxContact
+        {
+            public bool Colliding;
+
+            public BoxCollider Reference;
+            public BoxCollider Incident;
+            public Vector2Int Normal;
+            public float PenetrationMilli;
+
+            public Vector2Int ReferenceFaceCoord1;
+            public Vector2Int ReferenceFaceCoord2;
+            public Vector2Int ClippedIncidentFaceCoord1;
+            public Vector2Int ClippedIncidentFaceCoord2;
+        }
+
+        public static BoxContact BoxBoxClipping(BoxCollider b1, BoxCollider b2)
+        {
+            SATOutput sat = BoxBoxSAT(b1, b2);
+
+            BoxContact contact = new BoxContact();
+            contact.Colliding = true;
+            bool xSatAxis;
+
+            BoxCollider reference, incident;
+            //Identify reference and incident boxes depending on SAT Axis
+            switch (sat.AxisIndex)
+            {
+                case 0:
+                    reference = b1;
+                    incident = b2;
+                    xSatAxis = true;
+                    break;
+                case 1:
+                    reference = b1;
+                    incident = b2;
+                    xSatAxis = false;
+                    break;
+                case 2:
+                    reference = b2;
+                    incident = b1;
+                    xSatAxis = true;
+                    break;
+                case 3:
+                    reference = b2;
+                    incident = b1;
+                    xSatAxis = false;
+                    break;
+                case -1:
+                    contact.Colliding = false;
+                    return contact;
+                default:
+                    throw new Exception("sat axis index is not within expected bounds");
+            }
+
+            contact.Reference = reference;
+            contact.Incident = incident;
+            contact.PenetrationMilli = sat.PenetrationMilli;
+
+            Vector2Int refToInc = incident.WorldPosition - reference.WorldPosition;
+
+            //Switch normal direction to be ref -> inc
+            if (refToInc.Dot(sat.MinPenetrationAxis) >= 0)
+                contact.Normal = sat.MinPenetrationAxis;
+            else
+                contact.Normal = -sat.MinPenetrationAxis;
+
+            (Vector2Int, Vector2Int) GetFacingEdge(Vector2Int[] c, Vector2Int dir, bool isRef, int i1, int i2, int i3, int i4)
+            {
+                return (isRef ? dir.Dot(contact.Normal) >= 0 : dir.Dot(contact.Normal) <= 0) ? (c[i1], c[i2]) : (c[i3], c[i4]);
+            }
+
+            var refC = reference.Coords;
+            if (xSatAxis)
+                (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetFacingEdge(refC, refC[1] - refC[0], true, 1, 2, 3, 0);
+            else
+                (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetFacingEdge(refC, refC[0] - refC[3], true, 0, 1, 2, 3);
+
+            var incC = incident.Coords;
+            Vector2Int inc1, inc2;
+            //ignore multiplication by height and width, just there for scaling
+            if (Math.Abs(contact.Normal.Dot((incC[1] - incC[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incC[2] - incC[1]) * incident.Width)))
+            {
+                //Contact normal is more parallel to the face along the x axis, so the incident face is along the y axis
+                (inc1, inc2) = GetFacingEdge(incC, incC[1] - incC[0], false, 1, 2, 0, 3);
+            }
+            else
+            {
+                (inc1, inc2) = GetFacingEdge(incC, incC[1] - incC[2], false, 0, 1, 2, 3);
+            }
+
+            contact.ClippedIncidentFaceCoord1 = VectorHelper.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2, inc1);
+            contact.ClippedIncidentFaceCoord2 = VectorHelper.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2, inc2);
+
+            return contact;
         }
     }
 }
