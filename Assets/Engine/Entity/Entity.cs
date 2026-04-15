@@ -19,7 +19,7 @@ namespace Automathon.Engine
         /// </summary>
         public void ApplyComponentsChanges()
         {
-            components.ProcessChanges((component) => component.Start(), (component) => component.OnRemoved());
+            components.ProcessChanges((component) => component.Initialize(this), (component) => component.OnRemoved());
         }
 
         public virtual void Update()
@@ -37,7 +37,7 @@ namespace Automathon.Engine
         public T AddComponent<T>(T component) where T : Component
         {
             components.Add(component);
-            component.ParentEntity = this;
+            component.Initialize(this);
             return component;
         }
 
@@ -49,9 +49,9 @@ namespace Automathon.Engine
         public bool TryGetComponent<T>(out T component) where T : Component
         {
             component = null;
-            foreach(Component c in components.Items)
+            foreach (Component currentComponent in components.Items)
             {
-                if (c is T t)
+                if (currentComponent is T t)
                 {
                     component = t;
                     return true;

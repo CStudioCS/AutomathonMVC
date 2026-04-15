@@ -1,12 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-//Do I need to separate the namspaces for stuff that includes unity ? idk how that'll work out at compile times
 namespace Automathon.Game.Input
 {
-    public class PlayerInputProvider : MonoBehaviour, IInputProvider
+    public class PlayerInputProvider : IInputProvider
     {
-        [SerializeField] private PlayerInput playerInput;
+        private PlayerInput playerInput;
 
         private InputAction dashAction;
         private InputAction grenadeAction;
@@ -14,8 +13,10 @@ namespace Automathon.Game.Input
         private InputAction shootAction;
         private InputAction moveAction;
 
-        private void Awake()
+        public PlayerInputProvider(PlayerInput playerInput)
         {
+            this.playerInput = playerInput;
+
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
             shieldAction = playerInput.actions["Shield"];
@@ -23,18 +24,18 @@ namespace Automathon.Game.Input
             moveAction = playerInput.actions["Move"];
         }
 
-        public bool Dash() => dashAction.IsPressed();
+        public bool ShouldDash() => dashAction.IsPressed();
 
-        public bool Grenade() => grenadeAction.IsPressed();
+        public bool ShouldGrenade() => grenadeAction.IsPressed();
 
-        public Vector2Int MilliMovementDir()
+        public Vector2Int GetMilliMovementDir()
         {
-            var move = moveAction.ReadValue<Vector2>();
-            return new Vector2Int((int)(move.x * 1000), (int)(move.y * 1000));
+            Vector2 movementDir = moveAction.ReadValue<Vector2>();
+            return new Vector2Int((int)(movementDir.x * 1000), (int)(movementDir.y * 1000));
         }
 
-        public bool Shield() => shieldAction.IsPressed();
+        public bool ShouldShield() => shieldAction.IsPressed();
 
-        public bool Shoot() => shootAction.IsPressed();
+        public bool ShouldShoot() => shootAction.IsPressed();
     }
 }

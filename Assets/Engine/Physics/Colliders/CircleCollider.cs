@@ -1,4 +1,4 @@
-﻿using Automathon.Utility;
+﻿using Automathon.Physics;
 using System;
 
 namespace Automathon.Engine.Physics
@@ -6,8 +6,8 @@ namespace Automathon.Engine.Physics
     public class CircleCollider : Collider
     {
         public Vector2Int WorldPos => ParentEntity.Position + LocalPosition;
-        public Vector2Int LocalPosition;
-        public int Radius;
+        public Vector2Int LocalPosition { get; private set; }
+        public int Radius { get; private set; }
 
         public CircleCollider(Vector2Int localPosition, int radius)
         {

@@ -1,4 +1,5 @@
 ﻿using Automathon.Engine.Utility;
+using Automathon.Utility;
 
 namespace Automathon
 {
@@ -39,7 +40,12 @@ namespace Automathon
             => X * other.X + Y * other.Y;
 
         public Vector2Int ProjectedOn(Vector2Int other)
-            => Dot(other) * other / other.LengthSquared();
+        {
+            int otherLengthSquared = other.LengthSquared();
+            if (otherLengthSquared == 0)
+                return Vector2Int.Zero;
+            return Dot(other) * other / other.LengthSquared();
+        }
 
         public int Length()
             => IntMath.Isqrt(X * X + Y * Y);
@@ -49,18 +55,20 @@ namespace Automathon
 
         public void NormalizeAtScale(int scale)
         {
-            int l = Length();
-            X = X * scale / l;
-            Y = Y * scale / l;
+            int length = Length();
+            X = X * scale / length;
+            Y = Y * scale / length;
         }
-
-        public Vector2Int Normal()
-            => new Vector2Int(-Y, X);
-
-        public Vector2Int Normal2()
+        public Vector2Int OrthogonalClockwise()
             => new Vector2Int(Y, -X);
+
+        public Vector2Int OrthogonalCounterClockwise()
+            => new Vector2Int(-Y, X);
 
         public override string ToString()
             => $"({X}, {Y})";
+
+        public static Vector2Int MilliDirectionFromMilliRad(int milliRadiants)
+            => new Vector2Int(TrigTable.Cos(milliRadiants), TrigTable.Sin(milliRadiants));
     }
 }
