@@ -163,40 +163,22 @@ namespace Automathon.Engine.Physics
             SATOutput sat = BoxBoxSAT(b1, b2);
 
             BoxContact contact = new BoxContact();
-            contact.Colliding = true;
-            bool xSatAxis;
 
-            BoxCollider reference, incident;
-            //Identify reference and incident boxes depending on SAT Axis
-            switch (sat.AxisIndex)
+            if (sat.AxisIndex == -1)
             {
-                case 0:
-                    reference = b1;
-                    incident = b2;
-                    xSatAxis = true;
-                    break;
-                case 1:
-                    reference = b1;
-                    incident = b2;
-                    xSatAxis = false;
-                    break;
-                case 2:
-                    reference = b2;
-                    incident = b1;
-                    xSatAxis = true;
-                    break;
-                case 3:
-                    reference = b2;
-                    incident = b1;
-                    xSatAxis = false;
-                    break;
-                case -1:
-                    contact.Colliding = false;
-                    return contact;
-                default:
-                    throw new Exception("sat axis index is not within expected bounds");
+                contact.Colliding = false;
+                return contact;
             }
 
+            if (sat.AxisIndex >= 4)
+                throw new Exception("sat axis index is not within expected bounds");
+
+            BoxCollider reference, incident;
+            reference = sat.AxisIndex <= 1 ? b1 : b2;
+            incident = sat.AxisIndex <= 1 ? b2 : b1;
+
+
+            contact.Colliding = true;
             contact.Reference = reference;
             contact.Incident = incident;
             contact.PenetrationMilli = sat.PenetrationMilli;
@@ -209,32 +191,37 @@ namespace Automathon.Engine.Physics
             else
                 contact.Normal = -sat.MinPenetrationAxis;
 
-            (Vector2Int, Vector2Int) GetFacingEdge(Vector2Int[] c, Vector2Int dir, bool isRef, int i1, int i2, int i3, int i4)
+            (Vector2Int, Vector2Int) GetCollisionFace(BoxCollider box, Vector2Int n, bool isXAxis)
             {
-                return (isRef ? dir.Dot(contact.Normal) >= 0 : dir.Dot(contact.Normal) <= 0) ? (c[i1], c[i2]) : (c[i3], c[i4]);
+                if (isXAxis)
+                {
+                    //Contact normal is more parallel to the face along the x axis, so the face is along the y axis
+
+                    //Check between which of the faces corresponding to the axis is actually the one being collided with
+                    //(is the one facing the other box)
+                    if (n.Dot(box.Coords[1] - box.Coords[0]) >= 0)
+                        return (box.Coords[1], box.Coords[2]);
+
+                    return (box.Coords[3], box.Coords[0]);
+                }
+                else
+                {
+                    if (n.Dot(box.Coords[0] - box.Coords[3]) >= 0)
+                        return (box.Coords[0], box.Coords[1]);
+
+                    return (box.Coords[2], box.Coords[3]);
+                }
             }
 
-            var refC = reference.Coords;
-            if (xSatAxis)
-                (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetFacingEdge(refC, refC[1] - refC[0], true, 1, 2, 3, 0);
-            else
-                (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetFacingEdge(refC, refC[0] - refC[3], true, 0, 1, 2, 3);
+            (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetCollisionFace(reference, contact.Normal, sat.AxisIndex % 2 == 0);
 
-            var incC = incident.Coords;
-            Vector2Int inc1, inc2;
             //ignore multiplication by height and width, just there for scaling
-            if (Math.Abs(contact.Normal.Dot((incC[1] - incC[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incC[2] - incC[1]) * incident.Width)))
-            {
-                //Contact normal is more parallel to the face along the x axis, so the incident face is along the y axis
-                (inc1, inc2) = GetFacingEdge(incC, incC[1] - incC[0], false, 1, 2, 0, 3);
-            }
-            else
-            {
-                (inc1, inc2) = GetFacingEdge(incC, incC[1] - incC[2], false, 0, 1, 2, 3);
-            }
+            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.Coords[1] - incident.Coords[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.Coords[2] - incident.Coords[1]) * incident.Width));
+            (Vector2Int inc1, Vector2Int inc2) = GetCollisionFace(incident, -contact.Normal, incidentXAxis); //incident face
 
-            contact.ClippedIncidentFaceCoord1 = VectorHelper.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2, inc1);
-            contact.ClippedIncidentFaceCoord2 = VectorHelper.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2, inc2);
+            //Clip the incident face to the reference face
+            contact.ClippedIncidentFaceCoord1 = inc1.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2);
+            contact.ClippedIncidentFaceCoord2 = inc2.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2);
 
             return contact;
         }
