@@ -43,6 +43,7 @@ namespace Automathon.Engine.Physics
                     if (rigidbody.Collider.CollideAt(otherRigidbody.Collider, rigidbody.ParentEntity.Position + rigidbody.Velocity / GameplayConstants.FRAMERATE))
                     {
                         blocked = true;
+                        rigidbody.Collider.OnCollision?.Invoke(otherRigidbody.Collider);
                         break;
                     }
                 }
