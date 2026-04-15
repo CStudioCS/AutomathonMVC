@@ -19,7 +19,7 @@ namespace Automathon.Game.World
 
             //this is ugly and temporary, let me be
             TankView tankView = Instantiate(tankViewPrefab);
-            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
+            Tank tank = new Tank(new Vector2Int(-5000, 0), new PlayerInputProvider(tankView.PlayerInput));
             gameplayManager.Instantiate(tank);
             tankView.Initialize(tank);
 
