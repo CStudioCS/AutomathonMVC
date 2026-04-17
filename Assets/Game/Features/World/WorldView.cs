@@ -1,5 +1,4 @@
 using Automathon.Engine;
-using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
 using UnityEngine;
 
@@ -9,22 +8,12 @@ namespace Automathon.Game.World
     {
         [SerializeField] private TankView tankViewPrefab;
 
-        private GameplayManager gameplayManager = new();
+        private GameplayManager gameplayManager = new GameplayManager();
 
         private void Awake()
         {
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
-
-            //this is ugly and temporary, let me be
-            TankView tankView = Instantiate(tankViewPrefab);
-            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
-            gameplayManager.Instantiate(tank);
-            tankView.Initialize(tank);
-
-            TankView tankView2 = Instantiate(tankViewPrefab);
-            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider());
-            gameplayManager.Instantiate(tank2);
-            tankView2.Initialize(tank2);
+            gameplayManager.Awake();
         }
 
         // Update is called once per frame

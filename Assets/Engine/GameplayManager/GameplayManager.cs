@@ -7,8 +7,18 @@ namespace Automathon.Engine
     public class GameplayManager : IDisposable
     {
         private DeferredList<Entity> entities = new();
+        public enum GameState { Lobby, Game }
         private PhysicsManager physicsManager = new();
+        public GameState State { get; private set; }
+        public static GameplayManager Instance { get; private set; }
 
+        public void Awake()
+        {
+            State = GameState.Lobby;
+            if (Instance != null)
+                return;
+            Instance = this;
+        }
         public void Update()
         {
             EntityUpdateLoop();

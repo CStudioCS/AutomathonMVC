@@ -24,7 +24,6 @@ namespace Automathon.Engine.Physics
         {
             if (collider is BoxCollider b)
             {
-                //Debug.Log(Collision.BoxBoxSAT(b, this).IsCollision);
                 return Collision.BoxBoxSAT(b, this).IsCollision;
             }
             else if (collider is CircleCollider c)
