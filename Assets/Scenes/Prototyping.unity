@@ -483,6 +483,10 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 9006724919031008835, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: tankPrefab
+      value: 
+      objectReference: {fileID: 1308921089331223049, guid: ad31b30bc385c6f428255645caf6f07a, type: 3}
+    - target: {fileID: 9006724919031008835, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: tankViewPrefab
       value: 
       objectReference: {fileID: 4615492633683904130, guid: ad31b30bc385c6f428255645caf6f07a, type: 3}
