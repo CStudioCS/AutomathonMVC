@@ -7,7 +7,6 @@ namespace Automathon.Engine
     public class GameplayManager : IDisposable
     {
         private DeferredList<Entity> entities = new();
-        private PhysicsManager physicsManager = new();
 
         public void Update()
         {
@@ -18,7 +17,7 @@ namespace Automathon.Engine
             foreach (Entity entity in entities.Items) //Add/Remove new entity components
                 entity.ApplyComponentsChanges();
 
-            physicsManager.Step();
+            PhysicsManager.Step();
         }
 
         public void EntityUpdateLoop()
@@ -40,7 +39,7 @@ namespace Automathon.Engine
 
         public void Dispose()
         {
-            physicsManager.Dispose();
+            PhysicsManager.Dispose();
         }
     }
 }

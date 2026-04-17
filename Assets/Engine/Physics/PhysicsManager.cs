@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static Automathon.Engine.Physics.Collision;
+﻿using System.Collections.Generic;
 
 namespace Automathon.Engine.Physics
 {
@@ -33,6 +31,28 @@ namespace Automathon.Engine.Physics
 
         private static void BroadPhase()
         {
+            void HandleBoxBoxContact(BoxCollider boxCollider1, BoxCollider boxCollider2)
+            {
+                Collision.BoxContact boxContact = Collision.BoxBoxClipping(boxCollider1, boxCollider2);
+
+                List<Contact> contacts = new();
+                if (boxContact.Reference.Collider.Collide(boxContact.ClippedIncidentFace1))
+                    contacts.Add(new Contact(boxContact.Reference.ParentEntity.GetComponent<Rigidbody>(), boxContact.Incident, boxContact.ClippedIncidentFace1, boxContact.Normal, boxContact.Penetration));
+                if (boxContact.Reference.Collider.Collide(boxContact.ClippedIncidentFace2))
+                    contacts.Add(new Contact(boxContact.Reference.ParentEntity.GetComponent<Rigidbody>(), boxContact.Incident, boxContact.ClippedIncidentFace2, boxContact.Normal, boxContact.Penetration));
+            }
+
+            void HandleBoxCircleContact(BoxCollider boxCollider, CircleCollider circleCollider)
+            {
+
+            }
+
+            void HandleCircleCircleContact(CircleCollider circleCollider1, CircleCollider circleCollider2)
+            {
+
+            }
+
+
             List<Contact> newContacts = new();
             for (int i = 0; i < rigidbodies.Count; i++)
             {
@@ -44,41 +64,27 @@ namespace Automathon.Engine.Physics
                     if (rigidbody.InvMassMilli == 0 && otherRigidbody.InvMassMilli == 0)
                         continue;
 
-                    if(rigidbody.Collider is BoxCollider b1 && otherRigidbody.Collider is BoxCollider b2)
-                    {
-                        //Compute BoxBox Contact
-                        BoxContact boxContact = Collision.BoxBoxClipping(b1, b2);
-                    }
-                    else if(rigidbody.Collider is BoxCollider b3 && otherRigidbody.Collider is CircleCollider c1)
-                    {
-                        //Compute BoxCircle Contact
-                    }
-                    else if(rigidbody.Collider is CircleCollider c2 && otherRigidbody.Collider is BoxCollider b4)
-                    {
-                        //Compute CircleBox Contact
-                    }
-                    else if(rigidbody.Collider is CircleCollider c3 && otherRigidbody.Collider is CircleCollider c4)
-                    {
-                        //Compute CircleCircle Contact
-                    }
+                    if (rigidbody.Collider is BoxCollider b1 && otherRigidbody.Collider is BoxCollider b2)
+                        HandleBoxBoxContact(b1, b2);
+                    else if ((rigidbody.Collider is BoxCollider b3 && otherRigidbody.Collider is CircleCollider c1))
+                        HandleBoxCircleContact(b3, c1);
+                    else if (rigidbody.Collider is CircleCollider c2 && otherRigidbody.Collider is BoxCollider b4)
+                        HandleBoxCircleContact(b4, c2);
+                    else if (rigidbody.Collider is CircleCollider c3 && otherRigidbody.Collider is CircleCollider c4)
+                        HandleCircleCircleContact(c3, c4);
 
                     //TODO: Implement Warm start
 
 
-                    if (boxContact.Colliding)
+
+                    /*Contact c = contacts.Find((c2) => (c2.Reference == rigidbody && c2.Incident == otherRigidbody) || (c2.Reference == rigidbody && c2.Incident == otherRigidbody));
+                    if (c != null)
                     {
-                        List<Contact> separate = SeparateBoxContacts(boxContact);
-
-                        //TODO: check for edge ID
-                        Contact c = contacts.Find((c2) => (c2.Reference == rigidbody && c2.Incident == otherRigidbody) || (c2.Reference == rigidbody && c2.Incident == otherRigidbody));
-                        if (c != null)
-                        {
-                            separate[0].Pn = c.Pn; //Super ghetto
-                            separate[0].Pt = c.Pt;
-                        }
-
-                        newContacts.AddRange(separate);
+                        separate[0].Pn = c.Pn; //Super ghetto
+                        separate[0].Pt = c.Pt;
                     }
+
+                    newContacts.AddRange(separate);*/
                 }
             }
 
@@ -90,5 +96,4 @@ namespace Automathon.Engine.Physics
             BroadPhase();
         }
     }
-}
 }

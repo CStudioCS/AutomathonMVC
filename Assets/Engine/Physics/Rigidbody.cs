@@ -20,7 +20,7 @@ namespace Automathon.Engine.Physics
 
         //this will have a bunch of stuff in the future stay tuned, WIP !!!
 
-        public Rigidbody(Collider collider) : base()
+        public Rigidbody(Collider collider)
         {
             Collider = collider;
             Added?.Invoke(this);
