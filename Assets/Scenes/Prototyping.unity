@@ -340,6 +340,161 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1111613422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9006724919031008835, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+  m_PrefabInstance: {fileID: 1631124461084468513}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00bbdfe849ed3b7469c566bc3ab3471d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1111613425 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+  m_PrefabInstance: {fileID: 1631124461084468513}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &1631124461084468513
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1838889476645099403, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_Name
+      value: SpawnTankManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8456063048248676845, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_AllowJoining
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_JoinBehavior
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerPrefab
+      value: 
+      objectReference: {fileID: 4391566894406749956, guid: eca4b8ee1a4bef94f955319f95fbd27b, type: 3}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_NotificationBehavior
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_JoinAction.m_Action.m_Name
+      value: Join
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1111613422}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1111613422}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPlayerLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnPlayerJoined
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Automathon.Game.Lobby.MultiTankManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Automathon.Game.Lobby.MultiTankManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 9006724919031008835, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: tankViewPrefab
+      value: 
+      objectReference: {fileID: 4615492633683904130, guid: ad31b30bc385c6f428255645caf6f07a, type: 3}
+    - target: {fileID: 9006724919031008835, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
+      propertyPath: playerInputManager
+      value: 
+      objectReference: {fileID: 1111613425}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
 --- !u!1001 &7609000916932480226
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -404,3 +559,4 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 7609000916932480226}
+  - {fileID: 1631124461084468513}
