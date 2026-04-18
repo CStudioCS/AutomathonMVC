@@ -23,5 +23,8 @@ namespace Automathon.Engine.Physics
             else
                 throw new NotImplementedException();
         }
+
+        public override bool Contains(Vector2Int point)
+            => (point - WorldPosition).LengthSquared() <= Radius * Radius;
     }
 }

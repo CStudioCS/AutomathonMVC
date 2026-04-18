@@ -33,6 +33,16 @@ namespace Automathon.Engine.Physics
                 throw new NotImplementedException();
         }
 
+        public override bool Contains(Vector2Int point)
+        {
+            Vector2Int r = point - Coords[0];
+            float sc1 = r.Dot(Coords[1] - Coords[0]);
+            float sc2 = r.Dot(Coords[3] - Coords[0]);
+            if (sc1 < 0 || sc1 > (Coords[1] - Coords[0]).LengthSquared() || sc2 < 0 || sc2 > (Coords[3] - Coords[0]).LengthSquared())
+                return false;
+            return true;
+        }
+
         public override void PhysicsUpdate()
         {
             Vector2Int right = Vector2Int.MilliDirectionFromMilliRad(RotationMillirad); //cos multiplied by 1000

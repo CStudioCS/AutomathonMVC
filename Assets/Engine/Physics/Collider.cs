@@ -12,6 +12,7 @@ namespace Automathon.Engine.Physics
         public Action<Collider> OnCollision;
 
         public abstract bool Colliding(Collider collider);
+        public abstract bool Contains(Vector2Int point);
 
         //this sucks and will be removed with the new physics engine
         public bool CollideAt(Collider other, Vector2Int pos)

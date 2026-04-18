@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Automathon.Engine.Physics
 {
@@ -31,15 +32,38 @@ namespace Automathon.Engine.Physics
 
         private static void BroadPhase()
         {
-            void HandleBoxBoxContact(BoxCollider boxCollider1, BoxCollider boxCollider2)
+            List<Contact> newContacts = new();
+
+            void WarmStart(Contact contact)
+            {
+                Contact previousContact = contacts.Find((foundContact) => (foundContact.Reference == contact.Reference && foundContact.Incident == contact.Incident) || (foundContact.Reference == contact.Incident && foundContact.Incident == contact.Reference));
+                
+                if (previousContact != null)
+                {
+                    contact.Pn = previousContact.Pn;
+                    contact.Pt = previousContact.Pt;
+                }
+            }
+
+            void HandleBoxBoxContact(Rigidbody rigidbody1, BoxCollider boxCollider1, Rigidbody rigidbody2, BoxCollider boxCollider2)
             {
                 Collision.BoxContact boxContact = Collision.BoxBoxClipping(boxCollider1, boxCollider2);
+                Rigidbody referenceBody = boxContact.Reference == boxCollider1 ? rigidbody1 : rigidbody2;
+                Rigidbody incidentBody = boxContact.Reference == boxCollider1 ? rigidbody2 : rigidbody1;
 
-                List<Contact> contacts = new();
-                if (boxContact.Reference.Collider.Collide(boxContact.ClippedIncidentFace1))
-                    contacts.Add(new Contact(boxContact.Reference.ParentEntity.GetComponent<Rigidbody>(), boxContact.Incident, boxContact.ClippedIncidentFace1, boxContact.Normal, boxContact.Penetration));
-                if (boxContact.Reference.Collider.Collide(boxContact.ClippedIncidentFace2))
-                    contacts.Add(new Contact(boxContact.Reference.ParentEntity.GetComponent<Rigidbody>(), boxContact.Incident, boxContact.ClippedIncidentFace2, boxContact.Normal, boxContact.Penetration));
+                void AddContact(Vector2Int position)
+                {
+                    if (!boxContact.Reference.Contains(boxContact.ClippedIncidentFaceCoord1))
+                        return;
+
+                    Contact contact = new Contact(referenceBody, incidentBody, boxContact.ClippedIncidentFaceCoord1, boxContact.Normal, boxContact.PenetrationMilli);
+
+                    WarmStart(contact);
+                    newContacts.Add(contact);
+                }
+
+                AddContact(boxContact.ClippedIncidentFaceCoord1);
+                AddContact(boxContact.ClippedIncidentFaceCoord2);
             }
 
             void HandleBoxCircleContact(BoxCollider boxCollider, CircleCollider circleCollider)
@@ -53,7 +77,7 @@ namespace Automathon.Engine.Physics
             }
 
 
-            List<Contact> newContacts = new();
+            
             for (int i = 0; i < rigidbodies.Count; i++)
             {
                 for (int j = i + 1; j < rigidbodies.Count; j++)
@@ -65,7 +89,7 @@ namespace Automathon.Engine.Physics
                         continue;
 
                     if (rigidbody.Collider is BoxCollider b1 && otherRigidbody.Collider is BoxCollider b2)
-                        HandleBoxBoxContact(b1, b2);
+                        HandleBoxBoxContact(rigidbody, b1, otherRigidbody, b2);
                     else if ((rigidbody.Collider is BoxCollider b3 && otherRigidbody.Collider is CircleCollider c1))
                         HandleBoxCircleContact(b3, c1);
                     else if (rigidbody.Collider is CircleCollider c2 && otherRigidbody.Collider is BoxCollider b4)
