@@ -420,15 +420,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: m_JoinBehavior
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: m_PlayerPrefab
       value: 
-      objectReference: {fileID: 4391566894406749956, guid: eca4b8ee1a4bef94f955319f95fbd27b, type: 3}
+      objectReference: {fileID: 1308921089331223049, guid: ad31b30bc385c6f428255645caf6f07a, type: 3}
     - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: m_NotificationBehavior
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: m_JoinAction.m_Action.m_Name
@@ -468,7 +468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: m_PlayerLeftEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Automathon.Game.Lobby.MultiTankManager, Assembly-CSharp
+      value: Automathon.Game.Lobby.WorldTankSpawnerView, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8812667420042053550, guid: 750b70051ffd1db4e9ad67b70e7566c2, type: 3}
       propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName

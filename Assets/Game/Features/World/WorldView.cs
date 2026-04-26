@@ -1,13 +1,10 @@
 using Automathon.Engine;
-using Automathon.Game.TankSystem;
 using UnityEngine;
 
 namespace Automathon.Game.World
 {
     public class WorldView : MonoBehaviour
     {
-        [SerializeField] private TankView tankViewPrefab;
-
         private GameplayManager gameplayManager = new GameplayManager();
 
         private void Awake()

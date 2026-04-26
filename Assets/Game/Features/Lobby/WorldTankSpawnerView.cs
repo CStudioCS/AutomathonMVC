@@ -114,7 +114,7 @@ namespace Automathon.Game.Lobby
                 return;
             }
 
-            foreach(PlayerInput playerInputTemp in PlayerInput.all)
+            foreach (PlayerInput playerInputTemp in PlayerInput.all)
             {
                 if (playerInputTemp.currentControlScheme == "Keyboard&Mouse")
                     return;
@@ -122,7 +122,7 @@ namespace Automathon.Game.Lobby
             // 2. Manually trigger the join
             // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
             PlayerInput playerInput = playerInputManager.JoinPlayer(
-                playerIndex: 1,
+                playerIndex: -1,
                 splitScreenIndex: -1,
                 controlScheme: "Keyboard&Mouse",
                 pairWithDevice: Keyboard.current
@@ -137,14 +137,20 @@ namespace Automathon.Game.Lobby
         }
         public void OnPlayerJoined(PlayerInput playerInput)
         {
+
             if (playerInput == null) return;
 
-            playerInput.transform.position = new Vector3(0, 0, 0);
+            playerInput.transform.position = new Vector3(2, 0, 0);
 
             players.Add(playerInput);
         }
         public void OnPlayerLeft(PlayerInput playerInput)
         {
+            if (playerInput == null) return;
+
+            TankView tankView = playerInput.GetComponent<TankView>();
+            tankView.PlayerInput = null;
+            Debug.Log($"Player {playerInput.playerIndex} left the lobby.");
 
         }
     }
