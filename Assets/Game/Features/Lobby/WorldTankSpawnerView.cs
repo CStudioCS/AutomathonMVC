@@ -97,12 +97,7 @@ namespace Automathon.Game.Lobby
             controlScheme: "Gamepad",
             pairWithDevice: gamepad);
 
-            TankView tankView = playerInput.GetComponent<TankView>();
-            tankView.PlayerInput = playerInput;
-            Tank tank = new Tank(new Automathon.Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
-
-            GameplayManager.Instance.Instantiate(tank);
-            tankView.Initialize(tank);
+            
         }
         private void JoinKeyboardPlayer()
         {
@@ -128,21 +123,20 @@ namespace Automathon.Game.Lobby
                 pairWithDevice: Keyboard.current
             );
 
-            TankView tankView = playerInput.GetComponent<TankView>();
-            tankView.PlayerInput = playerInput;
-            Tank tank = new Tank(new Automathon.Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
-
-            GameplayManager.Instance.Instantiate(tank);
-            tankView.Initialize(tank);
+            
         }
         public void OnPlayerJoined(PlayerInput playerInput)
         {
 
             if (playerInput == null) return;
 
-            playerInput.transform.position = new Vector3(2, 0, 0);
+            TankView tankView = playerInput.GetComponent<TankView>();
+            tankView.PlayerInput = playerInput;
+            Tank tank = new Tank(new Automathon.Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
 
-            players.Add(playerInput);
+            GameplayManager.Instance.Instantiate(tank);
+            tankView.Initialize(tank);
+
         }
         public void OnPlayerLeft(PlayerInput playerInput)
         {
