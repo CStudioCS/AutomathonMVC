@@ -114,7 +114,7 @@ namespace Automathon.Engine.Physics
             foreach (Rigidbody rb in rigidbodies)
             {
                 rb.Velocity += rb.InvMassMilli * rb.Forces / (GameplayConstants.FRAMERATE * 1000);
-                rb.AngularVelocityMilli += rb.InvIMilli * rb.TorqueMilli / (GameplayConstants.FRAMERATE * 1000 * 1000);
+                rb.AngularVelocityMilli += rb.InvIMicro * rb.TorqueMilli / (GameplayConstants.FRAMERATE * 1000 * 1000) / 1000000;
             }
         }
 
@@ -140,7 +140,6 @@ namespace Automathon.Engine.Physics
 
             foreach (Rigidbody rb in rigidbodies)
             {
-                Debug.Log(rb.Velocity);
                 rb.ParentEntity.Position += rb.Velocity / GameplayConstants.FRAMERATE;
                 rb.ParentEntity.RotationMilli += rb.AngularVelocityMilli / GameplayConstants.FRAMERATE;
 

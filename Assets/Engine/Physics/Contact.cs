@@ -57,7 +57,7 @@ namespace Automathon.Engine.Physics
                 => new Vector2Int(-r.Y * (r.X * n.Y - r.Y * n.X), r.X * (r.X * n.Y - r.Y * n.X));
 
             //one division by 1000 because the normal is mult by 1000, and another one because of InvIMilli
-            Vector2Int v = (Reference.InvIMilli * DoubleVectProd(r1, normalMilli) + Incident.InvIMilli * DoubleVectProd(r2, normalMilli)) / 1000000000;
+            Vector2Int v = (Reference.InvIMicro * DoubleVectProd(r1, normalMilli) + Incident.InvIMicro * DoubleVectProd(r2, normalMilli)) / 1000000000 / 1000000;
             normalMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(normalMilli));
 
             Vector2Int tangent = normalMilli.OrthogonalCounterClockwise();
@@ -84,8 +84,8 @@ namespace Automathon.Engine.Physics
             Pn = Math.Max(Pn + pnt, 0);
             pnt = Pn - temp;
 
-            if (Math.Abs(tpp - pnt) >= 0.01f)   
-                Debug.Log(pnt - tpp);
+            /*if (Math.Abs(tpp - pnt) >= 0.01f)   
+                Debug.Log(pnt - tpp);*/
 
             Vector2Int tangent = normalMilli.OrthogonalCounterClockwise();
             int vt = dV.Dot(tangent) / 1000;
@@ -98,9 +98,9 @@ namespace Automathon.Engine.Physics
             Vector2Int P = pnt * normalMilli / 1000 + ptt * tangent / 1000;
 
             Reference.Velocity -= P * Reference.InvMassMilli / 1000;
-            Reference.AngularVelocityMilli -= Reference.InvIMilli * (r1.X * P.Y - r1.Y * P.X) / 1000;
+            Reference.AngularVelocityMilli -= Reference.InvIMicro * (r1.X * P.Y - r1.Y * P.X) / 1000000;
             Incident.Velocity += P * Incident.InvMassMilli / 1000;
-            Incident.AngularVelocityMilli += Incident.InvIMilli * (r2.X * P.Y - r2.Y * P.X) / 1000;
+            Incident.AngularVelocityMilli += Incident.InvIMicro * (r2.X * P.Y - r2.Y * P.X) / 1000000;
         }
     }
 }

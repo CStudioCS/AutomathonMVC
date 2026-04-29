@@ -16,26 +16,21 @@ namespace Automathon.Engine.Physics
         public int FrictionMilli;
 
         public int InvMassMilli;
-        public int InvIMilli;
+        public int InvIMicro;
 
         public Vector2Int Forces;
         public int TorqueMilli;
 
         //this will have a bunch of stuff in the future stay tuned, WIP !!!
 
-        public Rigidbody(Collider collider)
+        public Rigidbody(Collider collider, int invMassMilli, int invIMicro, int frictionMilli)
         {
             Collider = collider;
             Added?.Invoke(this);
 
-            //TEMPORARY
-            InvMassMilli = 1000;
-            if (collider is BoxCollider box)
-                InvIMilli = 1000 / ((box.Width * box.Width + box.Height * box.Height) / 12);
-            else if (collider is CircleCollider circle)
-                InvIMilli = 1000 / (circle.Radius * circle.Radius / 2);
-            
-            FrictionMilli = 200;
+            InvMassMilli = invMassMilli;
+            InvIMicro = invIMicro;
+            FrictionMilli = frictionMilli;
         }
 
         public override void OnDestroyed()
