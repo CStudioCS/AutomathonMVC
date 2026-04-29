@@ -11,23 +11,37 @@ namespace Automathon.Game.TankSystem
 
         private IInputProvider inputProvider;
         public Rigidbody Rigidbody { get; private set; }
-        public Shield shield { get; private set; }
+        public ShieldAbility shieldAbility { get; private set; }
+        public GameplayManager gameplayManager { get; private set; }
+        public Vector2Int lastMilliDirection { get; private set; }//should be defined at the collider level?
 
-        public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
+        public Tank(Vector2Int position, IInputProvider inputProvider, GameplayManager gameplayManager) : base(position)
         {
             this.inputProvider = inputProvider;
             Collider coll = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
             Rigidbody = new Rigidbody(coll);
-            shield = new Shield(inputProvider.ShouldShield);
+            shieldAbility = new ShieldAbility(this, inputProvider.ShouldShield, gameplayManager);
 
-            Initialize(coll, Rigidbody, shield);
+            Initialize(coll, Rigidbody, shieldAbility);
+            this.gameplayManager = gameplayManager;
         }
 
         public override void Update()
         {
             base.Update();
 
-            Rigidbody.Velocity = inputProvider.GetMilliMovementDir() * SPEED / 1000;
+            Vector2Int movementInput = inputProvider.GetMilliMovementDir();
+
+            Rigidbody.Velocity = movementInput * SPEED / 1000;
+
+            Vector2Int directionInput = inputProvider.GetMilliAimingDir();
+
+            ((BoxCollider)Rigidbody.Collider).RotationMillirad = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
+
+            if ((movementInput.X, movementInput.Y) != (0, 0))
+            {
+                lastMilliDirection = movementInput;
+            }
         }
     }
 }
