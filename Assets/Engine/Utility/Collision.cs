@@ -57,14 +57,14 @@ namespace Automathon.Engine.Physics
         {
             public bool IsCollision { get; private set; }
             public Vector2Int MinPenetrationAxis { get; private set; }
-            public int PenetrationMilli { get; private set; }
+            public int Penetration { get; private set; }
             public int AxisIndex { get; private set; }
 
             public SATOutput(bool isCollision, Vector2Int minPenetrationAxis, int penetrationMilli, int axisIndex)
             {
                 IsCollision = isCollision;
                 MinPenetrationAxis = minPenetrationAxis;
-                PenetrationMilli = penetrationMilli;
+                Penetration = penetrationMilli;
                 AxisIndex = axisIndex;
             }
         }
@@ -76,7 +76,7 @@ namespace Automathon.Engine.Physics
 
             bool isCollision = true;
             Vector2Int minPenetrationAxis = Vector2Int.Zero;
-            int penetrationMilli = int.MaxValue;
+            int penetration = int.MaxValue;
             int axisIndex = -1;
 
             for (int i = 0; i < axies.Length; i++)
@@ -104,21 +104,21 @@ namespace Automathon.Engine.Physics
                 {
                     isCollision = false;
                     minPenetrationAxis = Vector2Int.Zero;
-                    penetrationMilli = 0;
+                    penetration = 0;
                     axisIndex = -1;
-                    return new SATOutput(isCollision, minPenetrationAxis, penetrationMilli, axisIndex);
+                    return new SATOutput(isCollision, minPenetrationAxis, penetration, axisIndex);
                 }
                 else
                 {
-                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < penetrationMilli)
+                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < penetration)
                     {
-                        penetrationMilli = (int)((max1 - min2) / 1000);
+                        penetration = (int)(max1 - min2);
                         minPenetrationAxis = axies[i];
                         axisIndex = i;
                     }
-                    else if (max2 - min1 < penetrationMilli)
+                    else if (max2 - min1 < penetration)
                     {
-                        penetrationMilli = (int)((max2 - min1) / 1000);
+                        penetration = (int)(max2 - min1);
                         minPenetrationAxis = axies[i];
                         axisIndex = i;
                     }
@@ -126,7 +126,8 @@ namespace Automathon.Engine.Physics
             }
 
             isCollision = true;
-            return new SATOutput(isCollision, minPenetrationAxis, penetrationMilli, axisIndex);
+            //The true penetration is penetration / 1000 since the axis is normalized at a scale by 1000
+            return new SATOutput(isCollision, minPenetrationAxis, penetration / 1000, axisIndex);
         }
 
         public static SATOutput BoxBoxSAT(BoxCollider box, BoxCollider box2)
@@ -150,7 +151,7 @@ namespace Automathon.Engine.Physics
             public Collider Reference;
             public Collider Incident;
             public Vector2Int Normal;
-            public int PenetrationMilli;
+            public int Penetration;
         }
 
         public class BoxContact : CollisionContact
@@ -184,7 +185,7 @@ namespace Automathon.Engine.Physics
             contact.Colliding = true;
             contact.Reference = reference;
             contact.Incident = incident;
-            contact.PenetrationMilli = sat.PenetrationMilli;
+            contact.Penetration = sat.Penetration;
 
             Vector2Int refToInc = incident.WorldPosition - reference.WorldPosition;
 

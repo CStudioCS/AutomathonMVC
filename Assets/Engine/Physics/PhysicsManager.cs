@@ -63,7 +63,7 @@ namespace Automathon.Engine.Physics
                     if (!boxContact.Reference.Contains(position))
                         return;
 
-                    Contact contact = new Contact(referenceBody, incidentBody, position, boxContact.Normal, boxContact.PenetrationMilli);
+                    Contact contact = new Contact(referenceBody, incidentBody, position, boxContact.Normal, boxContact.Penetration);
 
                     WarmStart(contact);
                     newContacts.Add(contact);
