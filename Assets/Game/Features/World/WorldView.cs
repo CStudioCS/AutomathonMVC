@@ -22,8 +22,7 @@ namespace Automathon.Game.World
         void Update()
         {
             gameplayManager.Update();
-            if (multiTankManager.IsGameReady())
-                gameplayManager.State = GameplayManager.GameState.Lobby;
+            multiTankManager.IsGameReady();
             TankSpawnerView.Instance.TrySetPlayersReady();
         }
 

@@ -30,17 +30,16 @@ namespace Automathon.Game.Lobby.MultiTankManagement
             tanks.Remove(tank);
         }
 
-        public bool IsGameReady()
+        public void IsGameReady()
         {
             if (tanks.Count < 2)
-                return false;
+                return;
 
             foreach (Tank tank in tanks)
             {
                 if (!tank.IsReady)
-                    return false;
+                    GameplayManager.Instance.State = GameplayManager.GameState.Lobby;
             }
-            return true;
         }
     }
 }
