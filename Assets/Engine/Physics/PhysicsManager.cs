@@ -12,7 +12,7 @@ namespace Automathon.Engine.Physics
         public static int substeps = 10;
 
         public static int Iterations = 10;
-        public static int KBias = 20;
+        public static int KBiasMilli = 200;
         public static int SlopPenetration = 10;
 
         static PhysicsManager()

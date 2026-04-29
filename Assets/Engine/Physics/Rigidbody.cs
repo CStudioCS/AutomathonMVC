@@ -13,7 +13,7 @@ namespace Automathon.Engine.Physics
 
         public Vector2Int Velocity;
         public int AngularVelocityMilli;
-        public int Friction;
+        public int FrictionMilli;
 
         public int InvMassMilli;
         public int InvIMilli;
@@ -27,6 +27,15 @@ namespace Automathon.Engine.Physics
         {
             Collider = collider;
             Added?.Invoke(this);
+
+            //TEMPORARY
+            InvMassMilli = 1000;
+            if (collider is BoxCollider box)
+                InvIMilli = 1000 / ((box.Width * box.Width + box.Height * box.Height) / 12);
+            else if (collider is CircleCollider circle)
+                InvIMilli = 1000 / (circle.Radius * circle.Radius / 2);
+            
+            FrictionMilli = 200;
         }
 
         public override void OnDestroyed()

@@ -12,15 +12,15 @@ namespace Automathon.Engine.Physics
         public Rigidbody Incident;
 
         private Vector2Int position;
-        private Vector2Int normal;
+        private Vector2Int normalMilli;
         private int penetration;
 
         public int Pn; //accumulated impulses
         public int Pt;
 
-        private int normalMass;
-        private int tangentialMass;
-        private int friction;
+        private int normalMassMilli;
+        private int tangentialMassMilli;
+        private int frictionMilli;
 
         private Vector2Int r1;
         private Vector2Int r2;
@@ -30,9 +30,9 @@ namespace Automathon.Engine.Physics
             Reference = reference;
             Incident = incident;
             this.position = position;
-            this.normal = normal;
+            this.normalMilli = normal;
             this.penetration = penetration;
-            friction = IntMath.Isqrt(reference.Friction * incident.Friction);
+            frictionMilli = IntMath.Isqrt(reference.FrictionMilli * incident.FrictionMilli) / 1000;
 
             r1 = ComputeR(reference.Collider);
             r2 = ComputeR(incident.Collider);
@@ -56,38 +56,46 @@ namespace Automathon.Engine.Physics
             Vector2Int DoubleVectProd(Vector2Int r, Vector2Int n)
                 => new Vector2Int(-r.Y * (r.X * n.Y - r.Y * n.X), r.X * (r.X * n.Y - r.Y * n.X));
 
-            Vector2Int v = Reference.InvIMilli * DoubleVectProd(r1, normal) + Incident.InvIMilli * DoubleVectProd(r2, normal);
-            normalMass = 1 / (Reference.InvMassMilli + Incident.InvMassMilli + v.Dot(normal));
+            //one division by 1000 because the normal is mult by 1000, and another one because of InvIMilli
+            Vector2Int v = (Reference.InvIMilli * DoubleVectProd(r1, normalMilli) + Incident.InvIMilli * DoubleVectProd(r2, normalMilli)) / 1000000000;
+            normalMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(normalMilli));
 
-            Vector2Int tangent = normal.OrthogonalCounterClockwise();
-            tangentialMass = 1 / (Reference.InvMassMilli + Incident.InvMassMilli + v.Dot(tangent));
+            Vector2Int tangent = normalMilli.OrthogonalCounterClockwise();
+            tangentialMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(tangent));
         }
 
         public void ApplyImpulse()
         {
-            Vector2Int dV = Incident.Velocity + Incident.AngularVelocityMilli * new Vector2Int(-r2.Y, r2.X) - (Reference.Velocity + Reference.AngularVelocityMilli * new Vector2Int(-r1.Y, r1.X)); //Vector Product translated in coords because not 3D lol
+            //You will fucking cry reading this
+            //The normalMilli vector is scaled by 1000
+            //InvMassMilli and InvIMilli are also scaled by 1000
+            //normalMassMilli and tangentialMassMilli are also scaled by 1000
+            //oh yeah also frictionMilli
+            //Therefore there is a bunch of /1000 everywhere in the code
 
-            int vn = dV.Dot(normal);
-            int vbias = PhysicsManager.KBias * Math.Max(0, penetration - PhysicsManager.SlopPenetration) / GameplayConstants.FRAMERATE;
-            int pnt = Math.Max((-vn + vbias) * normalMass, 0);
+            Vector2Int dV = Incident.Velocity + Incident.AngularVelocityMilli * new Vector2Int(-r2.Y, r2.X) / 1000 - (Reference.Velocity + Reference.AngularVelocityMilli * new Vector2Int(-r1.Y, r1.X) / 1000); //Vector Product translated in coords because not 3D lol
+
+            int vn = dV.Dot(normalMilli) / 1000;
+            int vbias = PhysicsManager.KBiasMilli * Math.Max(0, penetration - PhysicsManager.SlopPenetration) * GameplayConstants.FRAMERATE / 1000;
+            int pnt = Math.Max((-vn + vbias) * normalMassMilli / 1000, 0);
             int tpp = pnt;
 
             int temp = Pn; //Accumulated impulse
             Pn = Math.Max(Pn + pnt, 0);
             pnt = Pn - temp;
 
-            if (Math.Abs(tpp - pnt) >= 0.01f)
+            if (Math.Abs(tpp - pnt) >= 0.01f)   
                 Debug.Log(pnt - tpp);
 
-            Vector2Int tangent = normal.OrthogonalCounterClockwise();
-            int vt = dV.Dot(tangent);
+            Vector2Int tangent = normalMilli.OrthogonalCounterClockwise();
+            int vt = dV.Dot(tangent) / 1000;
 
-            int ptt = Math.Clamp(-vt * tangentialMass, -friction * Pn, friction * Pn);
+            int ptt = (int)Math.Clamp(-vt * tangentialMassMilli / 1000, -frictionMilli * Pn / 1000, frictionMilli * Pn / 1000);
             temp = Pt;
-            Pt = Math.Clamp(Pt + ptt, -friction * Pn, friction * Pn);
+            Pt = Math.Clamp(Pt + ptt, -frictionMilli * Pn, frictionMilli * Pn);
             ptt = Pt - temp;
 
-            Vector2Int P = pnt * normal + ptt * tangent;
+            Vector2Int P = pnt * normalMilli / 1000 + ptt * tangent / 1000;
 
             Reference.Velocity -= P * Reference.InvMassMilli / 1000;
             Reference.AngularVelocityMilli -= Reference.InvIMilli * (r1.X * P.Y - r1.Y * P.X) / 1000;
