@@ -8,16 +8,17 @@ namespace Automathon.Engine.Physics
         public Vector2Int LocalCenterPosition { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
-        public int RotationMillirad { get; set; }
+        public int LocalRotationMillirad { get; private set; }
+        public int RotationMillirad => ParentEntity.RotationMilli + LocalRotationMillirad;
 
         public Vector2Int[] Coords { get; private set; }
 
-        public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int rotationMillirad) : base()
+        public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int localRotationMillirad) : base()
         {
             LocalCenterPosition = localPosition;
             Width = halfWidth * 2;
             Height = halfHeight * 2;
-            RotationMillirad = rotationMillirad;
+            LocalRotationMillirad = localRotationMillirad;
         }
 
         public override bool Colliding(Collider collider)

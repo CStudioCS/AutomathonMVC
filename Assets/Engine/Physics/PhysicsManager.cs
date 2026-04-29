@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Automathon.Engine.Physics
@@ -7,6 +8,8 @@ namespace Automathon.Engine.Physics
     {
         private static readonly List<Rigidbody> rigidbodies = new();
         private static List<Contact> contacts = new();
+
+        public static int substeps = 10;
 
         public static int Iterations = 10;
         public static float KBias = 0.2f;
@@ -68,12 +71,12 @@ namespace Automathon.Engine.Physics
 
             void HandleBoxCircleContact(BoxCollider boxCollider, CircleCollider circleCollider)
             {
-
+                throw new NotImplementedException();
             }
 
             void HandleCircleCircleContact(CircleCollider circleCollider1, CircleCollider circleCollider2)
             {
-
+                throw new NotImplementedException();
             }
 
 
@@ -96,28 +99,52 @@ namespace Automathon.Engine.Physics
                         HandleBoxCircleContact(b4, c2);
                     else if (rigidbody.Collider is CircleCollider c3 && otherRigidbody.Collider is CircleCollider c4)
                         HandleCircleCircleContact(c3, c4);
-
-                    //TODO: Implement Warm start
-
-
-
-                    /*Contact c = contacts.Find((c2) => (c2.Reference == rigidbody && c2.Incident == otherRigidbody) || (c2.Reference == rigidbody && c2.Incident == otherRigidbody));
-                    if (c != null)
-                    {
-                        separate[0].Pn = c.Pn; //Super ghetto
-                        separate[0].Pt = c.Pt;
-                    }
-
-                    newContacts.AddRange(separate);*/
                 }
             }
 
             contacts = newContacts;
         }
 
+        private static void ApplyForces()
+        {
+            foreach (Rigidbody rb in rigidbodies)
+            {
+                rb.Velocity += rb.InvMassMilli * rb.Forces / GameplayConstants.FRAMERATE;
+                rb.AngularVelocityMilli += rb.InvIMilli * rb.TorqueMilli / GameplayConstants.FRAMERATE;
+            }
+        }
+
         public static void Step()
         {
             BroadPhase();
+
+            ApplyForces();
+
+            foreach (Contact contact in contacts)
+                contact.PreStep();
+
+            //Loop to solve all constraints
+            for (int i = 0; i < substeps; i++)
+            {
+                foreach (Contact contact in contacts)
+                    contact.ApplyImpulse();
+            }
+
+
+            foreach (Rigidbody rb in rigidbodies)
+            {
+                rb.ParentEntity.Position += rb.Velocity / GameplayConstants.FRAMERATE;
+                rb.ParentEntity.RotationMilli += rb.AngularVelocityMilli / GameplayConstants.FRAMERATE;
+
+                //Putting it between -pi and +pi
+                int twoPiApprox = 6282; // 2 * 3.1415 * 1000;
+                rb.ParentEntity.RotationMilli = rb.ParentEntity.RotationMilli % twoPiApprox;
+                if (rb.ParentEntity.RotationMilli > twoPiApprox / 2)
+                    rb.ParentEntity.RotationMilli -= twoPiApprox;
+
+                rb.Forces = Vector2Int.Zero;
+                rb.TorqueMilli = 0;
+            }
         }
     }
 }

@@ -16,7 +16,10 @@ namespace Automathon.Engine.Physics
         public int Friction;
 
         public int InvMassMilli;
-        public int InvI;
+        public int InvIMilli;
+
+        public Vector2Int Forces;
+        public int TorqueMilli;
 
         //this will have a bunch of stuff in the future stay tuned, WIP !!!
 

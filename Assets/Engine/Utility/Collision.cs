@@ -143,15 +143,18 @@ namespace Automathon.Engine.Physics
             return SAT(box.Coords, box2.Coords, axies);
         }
 
-        public class BoxContact
+        public class CollisionContact
         {
             public bool Colliding;
 
-            public BoxCollider Reference;
-            public BoxCollider Incident;
+            public Collider Reference;
+            public Collider Incident;
             public Vector2Int Normal;
-            public float PenetrationMilli;
+            public int PenetrationMilli;
+        }
 
+        public class BoxContact : CollisionContact
+        {
             public Vector2Int ReferenceFaceCoord1;
             public Vector2Int ReferenceFaceCoord2;
             public Vector2Int ClippedIncidentFaceCoord1;
@@ -225,5 +228,19 @@ namespace Automathon.Engine.Physics
 
             return contact;
         }
+
+        /*public static CollisionContact CircleCircleContact(CircleCollider c1, CircleCollider c2)
+        {
+            CollisionContact contact = new();
+
+            if (!c1.Colliding(c2))
+            {
+                contact.Colliding = false;
+                return contact;
+            }
+
+            contact.Colliding = true;
+            contact.Normal = (c2.WorldPosition - c1.WorldPosition).NormalizeAtScale(1000);
+        }*/
     }
 }
