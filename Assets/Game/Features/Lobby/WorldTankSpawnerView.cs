@@ -2,7 +2,6 @@ using Automathon.Engine;
 using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,21 +11,15 @@ namespace Automathon.Game.Lobby
     {
         [Header("Setup")]
         [SerializeField] private PlayerInputManager playerInputManager;
-        [SerializeField] private TankView tankViewPrefab;
-        [SerializeField] private GameObject tankPrefab;
         public event Action<PlayerInput> PlayerJoined;
-
-        List<PlayerInput> players = new();
+        public event Action<PlayerInput> PlayerLeft;
         public static WorldTankSpawnerView Instance { get; private set; }
-        private bool hasGamepadPlayerConnected = false;
-        private bool hasKeyboardPlayerConnected = false;
+
         public void Awake()
         {
-            if (Instance != null)
-                Destroy(Instance);
+            Destroy(Instance);
             Instance = this;
         }
-
         private void Update()
         {
             if (GameplayManager.Instance.State != GameplayManager.GameState.Lobby)
@@ -34,6 +27,20 @@ namespace Automathon.Game.Lobby
 
             HandleGamepadJoinInput();
             HandleKeyboardJoinInput();
+
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.escapeKey.wasPressedThisFrame)
+                {
+                    foreach (var player in PlayerInput.all)
+                    {
+                        if (player.currentControlScheme == "Keyboard&Mouse")
+                        {
+                            Destroy(player.gameObject);
+                        }
+                    }
+                }
+            }
         }
         private void HandleKeyboardJoinInput()
         {
@@ -88,9 +95,6 @@ namespace Automathon.Game.Lobby
                 }
             }
 
-            // Join using the Gamepad device. 
-            // Leave controlScheme null or set to "Gamepad" if you have a specific scheme named that.
-
             PlayerInput playerInput = playerInputManager.JoinPlayer(
             playerIndex: -1,
             splitScreenIndex: -1,
@@ -119,6 +123,7 @@ namespace Automathon.Game.Lobby
                 if (playerInputTemp.currentControlScheme == "Keyboard&Mouse")
                     return;
             }
+
             // 2. Manually trigger the join
             // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
             PlayerInput playerInput = playerInputManager.JoinPlayer(
@@ -130,26 +135,25 @@ namespace Automathon.Game.Lobby
 
             TankView tankView = playerInput.GetComponent<TankView>();
             tankView.PlayerInput = playerInput;
-            Tank tank = new Tank(new Automathon.Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
+            Tank tank = new Tank(new Automathon.Vector2Int(1, 0), new PlayerInputProvider(tankView.PlayerInput));
 
             GameplayManager.Instance.Instantiate(tank);
             tankView.Initialize(tank);
         }
         public void OnPlayerJoined(PlayerInput playerInput)
         {
-
-            if (playerInput == null) return;
-
-            playerInput.transform.position = new Vector3(2, 0, 0);
-
-            players.Add(playerInput);
+            PlayerJoined?.Invoke(playerInput);
+            Debug.Log($"Player {playerInput.playerIndex} joined the game");
         }
         public void OnPlayerLeft(PlayerInput playerInput)
         {
             if (playerInput == null) return;
 
-            TankView tankView = playerInput.GetComponent<TankView>();
-            tankView.PlayerInput = null;
+            playerInput.gameObject.GetComponent<TankView>().PlayerInput = null;
+            Tank tank = playerInput.gameObject.GetComponent<TankView>().Tank;
+            GameplayManager.Instance.Destroy(tank);
+            PlayerLeft?.Invoke(playerInput);
+
             Debug.Log($"Player {playerInput.playerIndex} left the lobby.");
 
         }

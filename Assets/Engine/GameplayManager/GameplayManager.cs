@@ -9,7 +9,7 @@ namespace Automathon.Engine
         private DeferredList<Entity> entities = new();
         public enum GameState { Lobby, Game }
         private PhysicsManager physicsManager = new();
-        public GameState State { get; private set; }
+        public GameState State { get; set; }
         public static GameplayManager Instance { get; private set; }
 
         public void Awake()

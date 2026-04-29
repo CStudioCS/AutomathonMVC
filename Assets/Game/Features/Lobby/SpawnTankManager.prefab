@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8456063048248676845}
   - component: {fileID: 9006724919031008835}
-  - component: {fileID: 6646623699954492385}
   - component: {fileID: 8812667420042053550}
   m_Layer: 0
   m_Name: SpawnTankManager
@@ -47,19 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerInputManager: {fileID: 0}
---- !u!114 &6646623699954492385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1838889476645099403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50252f1cd323dc34da9b79ba7c491204, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tankViewPrefab: {fileID: 4615492633683904130, guid: ad31b30bc385c6f428255645caf6f07a, type: 3}
 --- !u!114 &8812667420042053550
 MonoBehaviour:
   m_ObjectHideFlags: 0

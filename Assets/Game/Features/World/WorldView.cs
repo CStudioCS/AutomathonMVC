@@ -1,23 +1,31 @@
 using Automathon.Engine;
+using Automathon.Game.Lobby.MultiTankManagement;
 using UnityEngine;
 
 namespace Automathon.Game.World
 {
     public class WorldView : MonoBehaviour
     {
-        private GameplayManager gameplayManager = new GameplayManager();
-
+        GameplayManager gameplayManager = new GameplayManager();
+        MultiTankManager multiTankManager = new MultiTankManager();
         private void Awake()
         {
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
             gameplayManager.Awake();
         }
-
-        // Update is called once per frame
+        //On fait un Start pas un Awake car on a besoin qhe WorldTanSpawnerView soit Awake
+        private void Start()
+        {
+            multiTankManager.Start();
+        }
         void Update()
         {
             gameplayManager.Update();
+            if (multiTankManager.IsGameReady())
+                gameplayManager.State = GameplayManager.GameState.Lobby;
+            multiTankManager.SetPlayerReady();
         }
+
     }
 
 }
