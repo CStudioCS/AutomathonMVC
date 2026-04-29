@@ -9,8 +9,6 @@ namespace Automathon.Engine.Physics
 
         public Collider Collider;
 
-        public bool Kinematic;
-
         public Vector2Int Velocity;
         public int AngularVelocityMilli;
         public int FrictionMilli;
