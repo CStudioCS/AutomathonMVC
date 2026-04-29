@@ -67,12 +67,12 @@ namespace Automathon.Engine.Physics
         {
             Vector2Int dV = Incident.Velocity + Incident.AngularVelocityMilli * new Vector2Int(-r2.Y, r2.X) - (Reference.Velocity + Reference.AngularVelocityMilli * new Vector2Int(-r1.Y, r1.X)); //Vector Product translated in coords because not 3D lol
 
-            int vn = Vector2Int.Dot(dV, normal);
-            int vbias = KBias * Math.Max(0, penetration - SlopPenetration) / GameplayConstants.FRAMERATE;
+            int vn = dV.Dot(normal);
+            int vbias = PhysicsManager.KBias * Math.Max(0, penetration - PhysicsManager.SlopPenetration) / GameplayConstants.FRAMERATE;
             int pnt = Math.Max((-vn + vbias) * normalMass, 0);
             int tpp = pnt;
 
-            float temp = Pn; //Accumulated impulse
+            int temp = Pn; //Accumulated impulse
             Pn = Math.Max(Pn + pnt, 0);
             pnt = Pn - temp;
 
@@ -88,13 +88,11 @@ namespace Automathon.Engine.Physics
             ptt = Pt - temp;
 
             Vector2Int P = pnt * normal + ptt * tangent;
-            Reference.Velocity -= P * Reference.InvMass;
-            Reference.AngularVelocityMilli -= Reference.InvI * (r1.X * P.Y - r1.Y * P.X);
-            Incident.Velocity += P * Incident.InvMass;
-            Incident.AngularVelocityMilli += Incident.InvI * (r2.X * P.Y - r2.Y * P.X);
 
-            //TODO: Angular velocity
-            //TODO: Add bias impulse
+            Reference.Velocity -= P * Reference.InvMassMilli / 1000;
+            Reference.AngularVelocityMilli -= Reference.InvIMilli * (r1.X * P.Y - r1.Y * P.X) / 1000;
+            Incident.Velocity += P * Incident.InvMassMilli / 1000;
+            Incident.AngularVelocityMilli += Incident.InvIMilli * (r2.X * P.Y - r2.Y * P.X) / 1000;
         }
     }
 }

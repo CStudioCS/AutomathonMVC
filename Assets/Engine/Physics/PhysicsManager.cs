@@ -12,8 +12,8 @@ namespace Automathon.Engine.Physics
         public static int substeps = 10;
 
         public static int Iterations = 10;
-        public static float KBias = 0.2f;
-        public static float SlopPenetration = 0.1f;
+        public static int KBias = 20;
+        public static int SlopPenetration = 10;
 
         static PhysicsManager()
         {
@@ -109,8 +109,8 @@ namespace Automathon.Engine.Physics
         {
             foreach (Rigidbody rb in rigidbodies)
             {
-                rb.Velocity += rb.InvMassMilli * rb.Forces / GameplayConstants.FRAMERATE;
-                rb.AngularVelocityMilli += rb.InvIMilli * rb.TorqueMilli / GameplayConstants.FRAMERATE;
+                rb.Velocity += rb.InvMassMilli * rb.Forces / (GameplayConstants.FRAMERATE * 1000);
+                rb.AngularVelocityMilli += rb.InvIMilli * rb.TorqueMilli / (GameplayConstants.FRAMERATE * 1000 * 1000);
             }
         }
 
@@ -133,6 +133,7 @@ namespace Automathon.Engine.Physics
 
             foreach (Rigidbody rb in rigidbodies)
             {
+                Debug.Log(rb.Velocity);
                 rb.ParentEntity.Position += rb.Velocity / GameplayConstants.FRAMERATE;
                 rb.ParentEntity.RotationMilli += rb.AngularVelocityMilli / GameplayConstants.FRAMERATE;
 
