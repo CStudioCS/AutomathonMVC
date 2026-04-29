@@ -12,7 +12,7 @@ namespace Automathon.Game.BulletSystem
         public void Initialize(Bullet bullet)
         {
             this.bullet = bullet;
-            transform.localScale = Vector3.one * bullet.circleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
+            transform.localScale = Vector3.one * bullet.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
         }
 
         private void LateUpdate()
