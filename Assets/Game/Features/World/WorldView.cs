@@ -15,7 +15,7 @@ namespace Automathon.Game.World
 
         private void Awake()
         {
-            Bullet.OnSpawn += SpawnBulletView;
+            Bullet.Spawned += SpawnBulletView;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
@@ -46,7 +46,7 @@ namespace Automathon.Game.World
 
         private void OnDisable()
         {
-            Bullet.OnSpawn -= SpawnBulletView;
+            Bullet.Spawned -= SpawnBulletView;
         }
     }
 

@@ -6,20 +6,19 @@ namespace Automathon.Game.BulletSystem
 {
     public class Bullet : Entity
     {
-        public static event Action<Bullet> OnSpawn;
+        public static event Action<Bullet> Spawned;
         public Rigidbody Rigidbody { get; private set; }
+        public CircleCollider circleCollider { get; private set; }
 
         public Bullet(Vector2Int position, Vector2Int direction, int speed, int radius) : base(position)
         {
-            Collider coll = new CircleCollider(Vector2Int.Zero, radius);
-            Rigidbody = new Rigidbody(coll);
+            circleCollider = new CircleCollider(Vector2Int.Zero, radius);
+            Rigidbody = new Rigidbody(circleCollider);
             Rigidbody.Velocity = direction * speed / 1000;
 
-            // Ensure components have their ParentEntity set
-            Initialize(coll, Rigidbody);
+            Initialize(circleCollider, Rigidbody);
 
-            // Notify listeners after the bullet is fully initialized
-            OnSpawn?.Invoke(this);
+            Spawned?.Invoke(this);
         }
     }
 }
