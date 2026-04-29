@@ -51,15 +51,19 @@ namespace Automathon.Engine.Physics
             void HandleBoxBoxContact(Rigidbody rigidbody1, BoxCollider boxCollider1, Rigidbody rigidbody2, BoxCollider boxCollider2)
             {
                 Collision.BoxContact boxContact = Collision.BoxBoxClipping(boxCollider1, boxCollider2);
+
+                if (!boxContact.Colliding)
+                    return;
+
                 Rigidbody referenceBody = boxContact.Reference == boxCollider1 ? rigidbody1 : rigidbody2;
                 Rigidbody incidentBody = boxContact.Reference == boxCollider1 ? rigidbody2 : rigidbody1;
 
                 void AddContact(Vector2Int position)
                 {
-                    if (!boxContact.Reference.Contains(boxContact.ClippedIncidentFaceCoord1))
+                    if (!boxContact.Reference.Contains(position))
                         return;
 
-                    Contact contact = new Contact(referenceBody, incidentBody, boxContact.ClippedIncidentFaceCoord1, boxContact.Normal, boxContact.PenetrationMilli);
+                    Contact contact = new Contact(referenceBody, incidentBody, position, boxContact.Normal, boxContact.PenetrationMilli);
 
                     WarmStart(contact);
                     newContacts.Add(contact);
@@ -116,6 +120,9 @@ namespace Automathon.Engine.Physics
 
         public static void Step()
         {
+            foreach (Rigidbody rigidbody in rigidbodies)
+                rigidbody.Collider.PhysicsUpdate();
+
             BroadPhase();
 
             ApplyForces();
