@@ -101,12 +101,7 @@ namespace Automathon.Game.Lobby
             controlScheme: "Gamepad",
             pairWithDevice: gamepad);
 
-            TankView tankView = playerInput.GetComponent<TankView>();
-            tankView.PlayerInput = playerInput;
-            Tank tank = new Tank(new Automathon.Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
-
-            GameplayManager.Instance.Instantiate(tank);
-            tankView.Initialize(tank);
+            
         }
         private void JoinKeyboardPlayer()
         {
