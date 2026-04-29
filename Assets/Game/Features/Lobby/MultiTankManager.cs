@@ -1,54 +1,46 @@
-using System;
+using Automathon.Engine;
+using Automathon.Game.Input;
+using Automathon.Game.TankSystem;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Automathon.Game.Lobby.MultiTankManagement
 {
-    public class MultiTankManager : IDisposable
+    public class MultiTankManager
     {
-        List<PlayerInput> players = new();
-
+        List<Tank> tanks = new();
+        public static MultiTankManager Instance { get; private set; }
         public void Start()
         {
-            WorldTankSpawnerView.Instance.PlayerJoined += OnPlayerJoined;
-            WorldTankSpawnerView.Instance.PlayerLeft += OnPlayerLeft;
+            if (Instance != null)
+                return;
+            Instance = this;
         }
-        public void OnPlayerJoined(PlayerInput playerInput)
+
+        public Tank CreateTank(PlayerInputProvider playerInputProvider)
         {
-            players.Add(playerInput);
+            Tank tank = new Tank(Vector2Int.Zero, playerInputProvider);
+            GameplayManager.Instance.Instantiate(tank);
+            tanks.Add(tank);
+            return tank;
         }
-        public void OnPlayerLeft(PlayerInput playerInput)
+
+        public void OnPlayerLeft(Tank tank)
         {
-            players.Remove(playerInput);
+            GameplayManager.Instance.Destroy(tank);
+            tanks.Remove(tank);
         }
+
         public bool IsGameReady()
         {
-            if (players.Count < 2)
+            if (tanks.Count < 2)
                 return false;
 
-            foreach (PlayerInput player in players)
+            foreach (Tank tank in tanks)
             {
-                if (player.gameObject.GetComponent<SpriteRenderer>().color != Color.green)
+                if (!tank.IsReady)
                     return false;
             }
             return true;
-        }
-        public void SetPlayerReady()
-        {
-            foreach (PlayerInput player in players)
-            {
-                if (player.actions["Join"].IsPressed())
-                {
-                    if (player.gameObject.GetComponent<SpriteRenderer>().color == Color.white)
-                        player.gameObject.GetComponent<SpriteRenderer>().color = Color.green;
-                }
-            }
-        }
-        void IDisposable.Dispose()
-        {
-            WorldTankSpawnerView.Instance.PlayerJoined -= OnPlayerJoined;
-            WorldTankSpawnerView.Instance.PlayerLeft -= OnPlayerLeft;
         }
     }
 }

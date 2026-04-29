@@ -1,19 +1,19 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
+using Automathon.Game.Lobby.MultiTankManagement;
 using Automathon.Game.TankSystem;
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Automathon.Game.Lobby
 {
-    public class WorldTankSpawnerView : MonoBehaviour
+    public class TankSpawnerView : MonoBehaviour
     {
         [Header("Setup")]
         [SerializeField] private PlayerInputManager playerInputManager;
-        public event Action<PlayerInput> PlayerJoined;
-        public event Action<PlayerInput> PlayerLeft;
-        public static WorldTankSpawnerView Instance { get; private set; }
+        List<PlayerInput> playersInput = new();
+        public static TankSpawnerView Instance { get; private set; }
 
         public void Awake()
         {
@@ -36,7 +36,7 @@ namespace Automathon.Game.Lobby
                     {
                         if (player.currentControlScheme == "Keyboard&Mouse")
                         {
-                            Destroy(player.gameObject);
+                            MultiTankManager.Instance.OnPlayerLeft(player.gameObject.GetComponent<TankView>().Tank);
                         }
                     }
                 }
@@ -101,7 +101,10 @@ namespace Automathon.Game.Lobby
             controlScheme: "Gamepad",
             pairWithDevice: gamepad);
 
-            
+            TankView tankView = playerInput.GetComponent<TankView>();
+            tankView.PlayerInput = playerInput;
+
+            tankView.Initialize(MultiTankManager.Instance.CreateTank(new PlayerInputProvider(playerInput)));
         }
         private void JoinKeyboardPlayer()
         {
@@ -130,27 +133,33 @@ namespace Automathon.Game.Lobby
 
             TankView tankView = playerInput.GetComponent<TankView>();
             tankView.PlayerInput = playerInput;
-            Tank tank = new Tank(new Automathon.Vector2Int(1, 0), new PlayerInputProvider(tankView.PlayerInput));
 
-            GameplayManager.Instance.Instantiate(tank);
-            tankView.Initialize(tank);
+            tankView.Initialize(MultiTankManager.Instance.CreateTank(new PlayerInputProvider(playerInput)));
         }
+
         public void OnPlayerJoined(PlayerInput playerInput)
         {
-            PlayerJoined?.Invoke(playerInput);
-            Debug.Log($"Player {playerInput.playerIndex} joined the game");
+            playersInput.Add(playerInput);
         }
+
         public void OnPlayerLeft(PlayerInput playerInput)
         {
             if (playerInput == null) return;
 
             playerInput.gameObject.GetComponent<TankView>().PlayerInput = null;
-            Tank tank = playerInput.gameObject.GetComponent<TankView>().Tank;
-            GameplayManager.Instance.Destroy(tank);
-            PlayerLeft?.Invoke(playerInput);
+            MultiTankManager.Instance.OnPlayerLeft(playerInput.gameObject.GetComponent<TankView>().Tank);
+            playersInput.Remove(playerInput);
+        }
 
-            Debug.Log($"Player {playerInput.playerIndex} left the lobby.");
-
+        public void TrySetPlayersReady()
+        {
+            foreach (PlayerInput player in playersInput)
+            {
+                if (player.actions["Join"].IsPressed())
+                {
+                    player.GetComponent<TankView>().Tank.IsReady = !player.GetComponent<TankView>().Tank.IsReady;
+                }
+            }
         }
     }
 }

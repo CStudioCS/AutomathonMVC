@@ -1,4 +1,5 @@
 using Automathon.Engine;
+using Automathon.Game.Lobby;
 using Automathon.Game.Lobby.MultiTankManagement;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace Automathon.Game.World
             gameplayManager.Update();
             if (multiTankManager.IsGameReady())
                 gameplayManager.State = GameplayManager.GameState.Lobby;
-            multiTankManager.SetPlayerReady();
+            TankSpawnerView.Instance.TrySetPlayersReady();
         }
 
     }

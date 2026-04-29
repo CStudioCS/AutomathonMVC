@@ -12,6 +12,7 @@ namespace Automathon.Game.TankSystem
         private IInputProvider inputProvider;
         public Rigidbody Rigidbody { get; private set; }
         public Shield shield { get; private set; }
+        public bool IsReady { get; set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
