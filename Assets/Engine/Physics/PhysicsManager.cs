@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Automathon.Engine.Physics
 {
@@ -9,7 +8,7 @@ namespace Automathon.Engine.Physics
         private static readonly List<Rigidbody> rigidbodies = new();
         private static List<Contact> contacts = new();
 
-        public static int substeps = 10;
+        public static int substeps = 5;
 
         public static int Iterations = 10;
         public static int KBiasMilli = 200;
@@ -40,7 +39,7 @@ namespace Automathon.Engine.Physics
             void WarmStart(Contact contact)
             {
                 Contact previousContact = contacts.Find((foundContact) => (foundContact.Reference == contact.Reference && foundContact.Incident == contact.Incident) || (foundContact.Reference == contact.Incident && foundContact.Incident == contact.Reference));
-                
+
                 if (previousContact != null)
                 {
                     contact.Pn = previousContact.Pn;
@@ -63,7 +62,7 @@ namespace Automathon.Engine.Physics
                     if (!boxContact.Reference.Contains(position))
                         return;
 
-                    Contact contact = new Contact(referenceBody, incidentBody, position, boxContact.Normal, boxContact.Penetration);
+                    Contact contact = new Contact(referenceBody, incidentBody, boxCollider1, boxCollider2, position, boxContact.Normal, boxContact.Penetration);
 
                     WarmStart(contact);
                     newContacts.Add(contact);
@@ -84,7 +83,7 @@ namespace Automathon.Engine.Physics
             }
 
 
-            
+
             for (int i = 0; i < rigidbodies.Count; i++)
             {
                 for (int j = i + 1; j < rigidbodies.Count; j++)
@@ -151,6 +150,12 @@ namespace Automathon.Engine.Physics
 
                 rb.Forces = Vector2Int.Zero;
                 rb.TorqueMilli = 0;
+            }
+
+            foreach (Contact contact in contacts)
+            {
+                contact.ReferenceCollider.OnCollision?.Invoke(contact);
+                contact.IncidentCollider.OnCollision?.Invoke(contact);
             }
         }
     }

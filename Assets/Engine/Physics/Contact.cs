@@ -1,8 +1,5 @@
-﻿using Automathon.Engine.Physics;
-using Automathon.Engine.Utility;
+﻿using Automathon.Engine.Utility;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Automathon.Engine.Physics
 {
@@ -10,6 +7,9 @@ namespace Automathon.Engine.Physics
     {
         public Rigidbody Reference;
         public Rigidbody Incident;
+
+        public Collider ReferenceCollider;
+        public Collider IncidentCollider;
 
         private Vector2Int position;
         private Vector2Int normalMilli;
@@ -25,10 +25,12 @@ namespace Automathon.Engine.Physics
         private Vector2Int r1;
         private Vector2Int r2;
 
-        public Contact(Rigidbody reference, Rigidbody incident, Vector2Int position, Vector2Int normal, int penetration)
+        public Contact(Rigidbody reference, Rigidbody incident, Collider referenceCollider, Collider incidentCollider, Vector2Int position, Vector2Int normal, int penetration)
         {
             Reference = reference;
             Incident = incident;
+            ReferenceCollider = referenceCollider;
+            IncidentCollider = incidentCollider;
             this.position = position;
             this.normalMilli = normal;
             this.penetration = penetration;
