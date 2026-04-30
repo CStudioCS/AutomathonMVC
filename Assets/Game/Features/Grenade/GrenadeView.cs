@@ -14,7 +14,7 @@ namespace Automathon.Game.GrenadeSystem
         public void Initialize(Grenade grenade)
         {
             this.grenade = grenade;
-            transform.localScale = Vector3.one * grenade.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
+            transform.localScale = Vector3.one * 2 * grenade.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
             grenade.Blowed += OnBlow;
         }
 
