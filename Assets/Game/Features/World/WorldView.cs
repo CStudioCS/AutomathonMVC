@@ -18,7 +18,7 @@ namespace Automathon.Game.World
         private void Awake()
         {
             Bullet.Spawned += SpawnBulletView;
-            Grenade.Spawned += SpawnGrenadeView; ;
+            Grenade.OnSpawned += SpawnGrenadeView; ;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
@@ -33,7 +33,7 @@ namespace Automathon.Game.World
             gameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
 
-            Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12, 1500);
+            Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12);
             gameplayManager.Instantiate(grenade);
 
         }
@@ -60,7 +60,7 @@ namespace Automathon.Game.World
         private void OnDisable()
         {
             Bullet.Spawned -= SpawnBulletView;
-            Grenade.Spawned -= SpawnGrenadeView;
+            Grenade.OnSpawned -= SpawnGrenadeView;
         }
     }
 

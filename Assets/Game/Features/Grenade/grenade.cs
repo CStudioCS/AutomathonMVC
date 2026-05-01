@@ -11,42 +11,43 @@ namespace Automathon.Game.GrenadeSystem
 {
     public class Grenade : Entity
     {
-        public static event Action<Grenade> Spawned;
+        public static event Action<Grenade> OnSpawned;
         public event Action Blowed;
 
         public GameplayManager gameplayManager;
 
         public CircleCollider CircleCollider { get; private set; }
-        public Rigidbody Rb { get; private set; }
+        public Rigidbody Rigidbody { get; private set; }
 
-        public Grenade(Vector2Int position, Vector2Int direction, int speed, int delayMilisecond, int fragNumber, int fragSpeed) : base(position)
+        private const int bulletSpeed = 1500;
+        private const int fragmentRadius = 1000 / 50;
+
+        public Grenade(Vector2Int position, Vector2Int direction, int speed, int delayMilisecond, int fragmentNumber) : base(position)
         {
-            CircleCollider = new CircleCollider(position, WorldConstants.SPACE_SCALE/2);
-            Rb = new Rigidbody(CircleCollider);
-            Rb.Velocity = direction * speed / WorldConstants.SPACE_SCALE;
+            CircleCollider = new CircleCollider(position, 1000/2);
+            Rigidbody = new Rigidbody(CircleCollider);
+            Rigidbody.Velocity = direction * speed / 1000;
 
-            Initialize(CircleCollider, Rb);
+            Initialize(CircleCollider, Rigidbody);
 
-            this.AddBehavior(new Timer(500, null, () => BlowUp(fragNumber, fragSpeed)));
+            AddBehavior(new Timer(500, null, () => BlowUp(fragmentNumber)));
 
-            Spawned?.Invoke(this);
+            OnSpawned?.Invoke(this);
         }
 
-        private void BlowUp(int n, int speed)
+        private void BlowUp(int numBullets)
         {
-            for(int i = 0; i < n; i ++)
+            for(int i = 0; i < numBullets; i ++)
             {
-                int theta = i * 6283 / n;
+                int theta = i * 6283 / numBullets;
 
                 Vector2Int dir = new Vector2Int(TrigTable.Cos(theta), TrigTable.Sin(theta));
-                int radius = WorldConstants.SPACE_SCALE / 50;
 
                 //calcule la distance min du centre pour que les fragments ne se touchent pas
-                int alpha = 6283 / n;
-                int dist = 2 * radius * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
+                int alpha = 6283 / numBullets;
+                int dist = 2 * fragmentRadius * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
 
-
-                Bullet bullet = new Bullet(this.Position + dir * dist / 1000, dir, speed, radius);
+                Bullet bullet = new Bullet(this.Position + dir * dist / 1000, dir, bulletSpeed, fragmentRadius);
                 gameplayManager.Instantiate(bullet);
             }
             Blowed?.Invoke();
