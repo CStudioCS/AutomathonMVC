@@ -12,7 +12,7 @@ namespace Automathon.Game.GrenadeSystem
     public class Grenade : Entity
     {
         public static event Action<Grenade> OnSpawned;
-        public event Action Blowed;
+        public event Action OnBlowedUp;
 
         public GameplayManager gameplayManager;
 
@@ -50,7 +50,7 @@ namespace Automathon.Game.GrenadeSystem
                 Bullet bullet = new Bullet(this.Position + dir * dist / 1000, dir, bulletSpeed, fragmentRadius);
                 gameplayManager.Instantiate(bullet);
             }
-            Blowed?.Invoke();
+            OnBlowedUp?.Invoke();
         }
 
     }

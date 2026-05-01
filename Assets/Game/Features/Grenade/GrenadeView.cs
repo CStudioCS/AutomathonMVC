@@ -15,7 +15,7 @@ namespace Automathon.Game.GrenadeSystem
         {
             this.grenade = grenade;
             transform.localScale = Vector3.one * 2 * grenade.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
-            grenade.Blowed += OnBlowedUp;
+            grenade.OnBlowedUp += OnBlowUp;
         }
 
         private void LateUpdate()
@@ -23,7 +23,7 @@ namespace Automathon.Game.GrenadeSystem
             transform.position = grenade.Position.ToVector2Scaled();
         }
 
-        private void OnBlowedUp()
+        private void OnBlowUp()
         {
             Destroy(this.gameObject);
         }
@@ -32,7 +32,7 @@ namespace Automathon.Game.GrenadeSystem
         {
             if(grenade != null)
             {
-                grenade.Blowed -= OnBlowedUp;
+                grenade.OnBlowedUp -= OnBlowUp;
             }
         }
     }
