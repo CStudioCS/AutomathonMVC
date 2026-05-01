@@ -8,13 +8,11 @@ namespace Automathon.Engine.Physics
         private static readonly List<Rigidbody> rigidbodies = new();
         private static List<Contact> contacts = new();
 
-        public static int substeps = 5;
-
-        public static int Iterations = 10;
+        public static int Substeps = 6;
         public static int KBiasMilli = 200;
         public static int SlopPenetration = 10;
 
-        static PhysicsManager()
+        public static void Initialize()
         {
             Rigidbody.Added += OnRigidbodyAdded;
             Rigidbody.Removed += OnRigidbodyRemoved;
@@ -172,7 +170,7 @@ namespace Automathon.Engine.Physics
                 contact.PreStep();
 
             //Loop to solve all constraints
-            for (int i = 0; i < substeps; i++)
+            for (int i = 0; i < Substeps; i++)
             {
                 foreach (Contact contact in contacts)
                     contact.ApplyImpulse();

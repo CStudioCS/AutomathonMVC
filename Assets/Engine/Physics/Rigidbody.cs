@@ -22,12 +22,11 @@ namespace Automathon.Engine.Physics
         public Rigidbody(Collider collider, int invMassMilli, int invIMicro, int frictionMilli)
         {
             Collider = collider;
-            Added?.Invoke(this);
-
-            //For infinite mass (kinematic body), put an inverse mass and inverse inertia of 0
             InvMassMilli = invMassMilli;
             InvIMicro = invIMicro;
             FrictionMilli = frictionMilli;
+
+            Added?.Invoke(this);
         }
 
         public override void OnDestroyed()
