@@ -2,6 +2,7 @@ using Automathon.Engine;
 using Automathon.Game.BulletSystem;
 using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
+using Automathon.Game.WallSystem;
 using UnityEngine;
 
 namespace Automathon.Game.World
@@ -10,12 +11,14 @@ namespace Automathon.Game.World
     {
         [SerializeField] private TankView tankViewPrefab;
         [SerializeField] private BulletView bulletViewPrefab;
+        [SerializeField] private WallView wallViewPrefab;
 
         private GameplayManager gameplayManager = new();
 
         private void Awake()
         {
             Bullet.Spawned += SpawnBulletView;
+            Wall.Spawned += SpawnWallView;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
@@ -30,12 +33,20 @@ namespace Automathon.Game.World
             gameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
 
+            Wall wall = new Wall(new Vector2Int(3200, 2600), new Vector2Int(1500, 500), 200);
+            gameplayManager.Instantiate(wall);
         }
 
         private void SpawnBulletView(Bullet bullet)
         {
             BulletView bulletView = Instantiate(bulletViewPrefab);
             bulletView.Initialize(bullet);
+        }
+
+        private void SpawnWallView(Wall wall)
+        {
+            WallView wallView = Instantiate(wallViewPrefab);
+            wallView.Initialize(wall);
         }
 
         // Update is called once per frame
@@ -47,6 +58,7 @@ namespace Automathon.Game.World
         private void OnDisable()
         {
             Bullet.Spawned -= SpawnBulletView;
+            Wall.Spawned -= SpawnWallView;
         }
     }
 
