@@ -21,7 +21,7 @@ namespace Automathon.Game.TankSystem
         {
             this.inputProvider = inputProvider;
             BoxCollider = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
-            Rigidbody = new Rigidbody(coll, 1000, 500, 200);
+            Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
             ShieldAbility = new ShieldAbility(this, inputProvider.ShouldShield, gameplayManager);
 
             Initialize(BoxCollider, Rigidbody, ShieldAbility);
@@ -38,7 +38,7 @@ namespace Automathon.Game.TankSystem
 
             Vector2Int directionInput = inputProvider.GetMilliAimingDir();
 
-            BoxCollider.RotationMillirad = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
+            base.RotationMilli = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
 
             if ((movementInput.X, movementInput.Y) != (0, 0))
             {

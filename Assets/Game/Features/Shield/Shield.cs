@@ -12,7 +12,7 @@ namespace Automathon.Game.ShieldSystem
         public Shield(Vector2Int position, int rotationMillirad) : base(position)
         {
             BoxCollider = new BoxCollider(Vector2Int.Zero, SHIELD_HALF_LENGTH, SHIELD_HALF_HEIGHT, rotationMillirad);
-            Rigidbody = new Rigidbody(BoxCollider);
+            Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
             Initialize(Rigidbody, BoxCollider);
         }
     }
