@@ -17,7 +17,7 @@ namespace Automathon.Game.TankSystem
         private void LateUpdate()
         {
             transform.position = tank.Position.ToVector2Scaled();
-            transform.rotation = Quaternion.Euler(0, 0, ((Automathon.Engine.Physics.BoxCollider)tank.Rigidbody.Collider).RotationMillirad * 1000 * Mathf.Rad2Deg);
+            transform.rotation = Quaternion.Euler(0, 0, ((Automathon.Engine.Physics.BoxCollider)tank.Rigidbody.Collider).RotationMillirad * Mathf.Rad2Deg / 1000);
         }
     }
 

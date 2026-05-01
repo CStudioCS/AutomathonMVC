@@ -6,6 +6,8 @@ namespace Automathon.Engine
     public abstract class Entity
     {
         public Vector2Int Position;
+        public int RotationMilli;
+
         private Component[] components;
         private DeferredList<Behavior> behaviors = new();
 
