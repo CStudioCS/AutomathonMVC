@@ -51,20 +51,20 @@ namespace Automathon.Engine.Physics
         }
 
         public static bool CircleCircle(CircleCollider circle1, CircleCollider circle2)
-            => (circle2.WorldPos - circle1.WorldPos).LengthSquared() < (circle1.Radius + circle2.Radius) * (circle1.Radius + circle2.Radius);
+            => (circle2.WorldPosition - circle1.WorldPosition).LengthSquared() < (circle1.Radius + circle2.Radius) * (circle1.Radius + circle2.Radius);
 
         public class SATOutput
         {
             public bool IsCollision { get; private set; }
             public Vector2Int MinPenetrationAxis { get; private set; }
-            public int PenetrationMilli { get; private set; }
+            public int Penetration { get; private set; }
             public int AxisIndex { get; private set; }
 
             public SATOutput(bool isCollision, Vector2Int minPenetrationAxis, int penetrationMilli, int axisIndex)
             {
                 IsCollision = isCollision;
                 MinPenetrationAxis = minPenetrationAxis;
-                PenetrationMilli = penetrationMilli;
+                Penetration = penetrationMilli;
                 AxisIndex = axisIndex;
             }
         }
@@ -76,7 +76,7 @@ namespace Automathon.Engine.Physics
 
             bool isCollision = true;
             Vector2Int minPenetrationAxis = Vector2Int.Zero;
-            int penetrationMilli = int.MaxValue;
+            long penetration = int.MaxValue;
             int axisIndex = -1;
 
             for (int i = 0; i < axies.Length; i++)
@@ -104,21 +104,21 @@ namespace Automathon.Engine.Physics
                 {
                     isCollision = false;
                     minPenetrationAxis = Vector2Int.Zero;
-                    penetrationMilli = 0;
+                    penetration = 0;
                     axisIndex = -1;
-                    return new SATOutput(isCollision, minPenetrationAxis, penetrationMilli, axisIndex);
+                    return new SATOutput(isCollision, minPenetrationAxis, (int)penetration, axisIndex);
                 }
                 else
                 {
-                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < penetrationMilli)
+                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < penetration)
                     {
-                        penetrationMilli = (int)((max1 - min2) / 1000);
+                        penetration = (int)(max1 - min2);
                         minPenetrationAxis = axies[i];
                         axisIndex = i;
                     }
-                    else if (max2 - min1 < penetrationMilli)
+                    else if (max2 - min1 < penetration)
                     {
-                        penetrationMilli = (int)((max2 - min1) / 1000);
+                        penetration = (int)(max2 - min1);
                         minPenetrationAxis = axies[i];
                         axisIndex = i;
                     }
@@ -126,7 +126,8 @@ namespace Automathon.Engine.Physics
             }
 
             isCollision = true;
-            return new SATOutput(isCollision, minPenetrationAxis, penetrationMilli, axisIndex);
+            //The true penetration is penetration / 1000 since the axis is normalized at a scale by 1000
+            return new SATOutput(isCollision, minPenetrationAxis, (int)(penetration / 1000), axisIndex);
         }
 
         public static SATOutput BoxBoxSAT(BoxCollider box, BoxCollider box2)
@@ -142,5 +143,105 @@ namespace Automathon.Engine.Physics
 
             return SAT(box.Coords, box2.Coords, axies);
         }
+
+        public class CollisionContact
+        {
+            public bool Colliding;
+
+            public Collider Reference;
+            public Collider Incident;
+            public Vector2Int Normal;
+            public int Penetration;
+        }
+
+        public class BoxContact : CollisionContact
+        {
+            public Vector2Int ReferenceFaceCoord1;
+            public Vector2Int ReferenceFaceCoord2;
+            public Vector2Int ClippedIncidentFaceCoord1;
+            public Vector2Int ClippedIncidentFaceCoord2;
+        }
+
+        public static BoxContact BoxBoxClipping(BoxCollider b1, BoxCollider b2)
+        {
+            SATOutput sat = BoxBoxSAT(b1, b2);
+
+            BoxContact contact = new BoxContact();
+
+            if (sat.AxisIndex == -1)
+            {
+                contact.Colliding = false;
+                return contact;
+            }
+
+            if (sat.AxisIndex >= 4)
+                throw new Exception("sat axis index is not within expected bounds");
+
+            BoxCollider reference, incident;
+            reference = sat.AxisIndex <= 1 ? b1 : b2;
+            incident = sat.AxisIndex <= 1 ? b2 : b1;
+
+
+            contact.Colliding = true;
+            contact.Reference = reference;
+            contact.Incident = incident;
+            contact.Penetration = sat.Penetration;
+
+            Vector2Int refToInc = incident.WorldPosition - reference.WorldPosition;
+
+            //Switch normal direction to be ref -> inc
+            if (refToInc.Dot(sat.MinPenetrationAxis) >= 0)
+                contact.Normal = sat.MinPenetrationAxis;
+            else
+                contact.Normal = -sat.MinPenetrationAxis;
+
+            (Vector2Int, Vector2Int) GetCollisionFace(BoxCollider box, Vector2Int n, bool isXAxis)
+            {
+                if (isXAxis)
+                {
+                    //Contact normal is more parallel to the face along the x axis, so the face is along the y axis
+
+                    //Check between which of the faces corresponding to the axis is actually the one being collided with
+                    //(is the one facing the other box)
+                    if (n.Dot(box.Coords[1] - box.Coords[0]) >= 0)
+                        return (box.Coords[1], box.Coords[2]);
+
+                    return (box.Coords[3], box.Coords[0]);
+                }
+                else
+                {
+                    if (n.Dot(box.Coords[0] - box.Coords[3]) >= 0)
+                        return (box.Coords[0], box.Coords[1]);
+
+                    return (box.Coords[2], box.Coords[3]);
+                }
+            }
+
+            (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetCollisionFace(reference, contact.Normal, sat.AxisIndex % 2 == 0);
+
+            //ignore multiplication by height and width, just there for scaling
+            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.Coords[1] - incident.Coords[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.Coords[2] - incident.Coords[1]) * incident.Width));
+            (Vector2Int inc1, Vector2Int inc2) = GetCollisionFace(incident, -contact.Normal, incidentXAxis); //incident face
+
+            //Clip the incident face to the reference face
+            contact.ClippedIncidentFaceCoord1 = inc1.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2);
+            contact.ClippedIncidentFaceCoord2 = inc2.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2);
+
+            return contact;
+        }
+
+        /*public static CollisionContact CircleCircleContact(CircleCollider c1, CircleCollider c2)
+        {
+            CollisionContact contact = new();
+
+            if (!c1.Colliding(c2))
+            {
+                contact.Colliding = false;
+                return contact;
+            }
+
+            contact.Colliding = true;
+            contact.Normal = (c2.WorldPosition - c1.WorldPosition).NormalizeAtScale(1000);
+        }*/
     }
 }
