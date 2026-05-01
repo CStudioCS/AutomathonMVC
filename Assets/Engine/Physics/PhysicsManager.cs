@@ -62,7 +62,7 @@ namespace Automathon.Engine.Physics
                     if (!boxContact.Reference.Contains(position))
                         return;
 
-                    Contact contact = new Contact(referenceBody, incidentBody, boxCollider1, boxCollider2, position, boxContact.Normal, boxContact.Penetration);
+                    Contact contact = new Contact(referenceBody, incidentBody, boxContact.Reference, boxContact.Incident, position, boxContact.Normal, boxContact.Penetration);
 
                     WarmStart(contact);
 
@@ -120,14 +120,17 @@ namespace Automathon.Engine.Physics
 
         private static void DispatchCollisionEvents()
         {
-            Dictionary<Collider, CollisionEvent> colliderEvents = new();
+            Dictionary<Collider, Dictionary<Collider, CollisionEvent>> colliderEvents = new();
 
             void AddToCollisionEvent(Collider self, Collider other, Vector2Int position, Vector2Int normalMilli, int penetration)
             {
                 if (!colliderEvents.ContainsKey(self))
-                    colliderEvents[self] = new CollisionEvent(self, other);
+                    colliderEvents[self] = new Dictionary<Collider, CollisionEvent>();
 
-                colliderEvents[self].Contacts.Add(new CollisionEvent.ContactData(position, normalMilli, penetration));
+                if (!colliderEvents[self].ContainsKey(other))
+                    colliderEvents[self][other] = new CollisionEvent(self, other);
+
+                colliderEvents[self][other].Contacts.Add(new CollisionEvent.ContactData(position, normalMilli, penetration));
             }
 
             foreach (Contact contact in contacts)
@@ -136,20 +139,23 @@ namespace Automathon.Engine.Physics
                 AddToCollisionEvent(contact.IncidentCollider, contact.ReferenceCollider, contact.Position, -contact.NormalMilli, contact.Penetration);
             }
 
-            foreach (CollisionEvent collisionEvent in colliderEvents.Values)
+            foreach (Dictionary<Collider, CollisionEvent> collisionEvents in colliderEvents.Values)
             {
-                collisionEvent.AverageNormal = Vector2Int.Zero;
-
-                collisionEvent.MaxPenetration = 0;
-                foreach (CollisionEvent.ContactData contactData in collisionEvent.Contacts)
+                foreach (CollisionEvent collisionEvent in collisionEvents.Values)
                 {
-                    collisionEvent.AverageNormal += contactData.Normal;
-                    collisionEvent.MaxPenetration = Math.Max(collisionEvent.MaxPenetration, contactData.Penetration);
+                    collisionEvent.AverageNormal = Vector2Int.Zero;
+
+                    collisionEvent.MaxPenetration = 0;
+                    foreach (CollisionEvent.ContactData contactData in collisionEvent.Contacts)
+                    {
+                        collisionEvent.AverageNormal += contactData.Normal;
+                        collisionEvent.MaxPenetration = Math.Max(collisionEvent.MaxPenetration, contactData.Penetration);
+                    }
+
+                    collisionEvent.AverageNormal = collisionEvent.AverageNormal / collisionEvent.Contacts.Count;
+
+                    collisionEvent.Self.OnCollision?.Invoke(collisionEvent);
                 }
-
-                collisionEvent.AverageNormal = collisionEvent.AverageNormal / collisionEvent.Contacts.Count;
-
-                collisionEvent.Self.OnCollision?.Invoke(collisionEvent);
             }
         }
 
