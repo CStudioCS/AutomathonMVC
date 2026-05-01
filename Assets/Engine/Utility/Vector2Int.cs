@@ -72,6 +72,9 @@ namespace Automathon
         public int LengthSquared()
             => X * X + Y * Y;
 
+        public static Vector2Int MilliDirectionFromAngle(int angleMillirad)
+            => new Vector2Int(TrigTable.Cos(angleMillirad), TrigTable.Sin(angleMillirad));
+
         public void NormalizeAtScale(int scale)
         {
             int length = Length();
@@ -89,5 +92,20 @@ namespace Automathon
 
         public static Vector2Int MilliDirectionFromMilliRad(int milliRadiants)
             => new Vector2Int(TrigTable.Cos(milliRadiants), TrigTable.Sin(milliRadiants));
+
+        public Vector2Int ClipBetween(Vector2Int bound1, Vector2Int bound2)
+        {
+            int lengthSquared = (bound2 - bound1).LengthSquared();
+            if (lengthSquared == 0) return this;
+
+            int scal = (bound2 - bound1).Dot(this - bound1);
+            Vector2Int projOnNormal = (this - bound1).ProjectedOn((bound2 - bound1).OrthogonalCounterClockwise());
+
+            if (scal <= 0)
+                return projOnNormal + bound1;
+            else if (scal >= lengthSquared)
+                return projOnNormal + bound2;
+            return this;
+        }
     }
 }

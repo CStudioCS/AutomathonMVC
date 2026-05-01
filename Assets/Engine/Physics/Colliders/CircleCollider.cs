@@ -4,7 +4,7 @@ namespace Automathon.Engine.Physics
 {
     public class CircleCollider : Collider
     {
-        public Vector2Int WorldPos => ParentEntity.Position + LocalPosition;
+        public Vector2Int WorldPosition => ParentEntity.Position + LocalPosition;
         public Vector2Int LocalPosition { get; private set; }
         public int Radius { get; private set; }
 
@@ -23,5 +23,8 @@ namespace Automathon.Engine.Physics
             else
                 throw new NotImplementedException();
         }
+
+        public override bool Contains(Vector2Int point)
+            => (point - WorldPosition).LengthSquared() <= Radius * Radius;
     }
 }
