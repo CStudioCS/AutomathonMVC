@@ -10,7 +10,9 @@ namespace Automathon.Game.ShieldSystem
     {
         private const int SHIELD_COOLDOWN_MILLIS = 3000;
         private const int SPAWN_DISTANCE_FROM_TANK = 2000;
+        private const int SHIELD_DURATION_MILLIS = 5000;
         public event Action<Shield> ShieldActivated;
+        public event Action<Shield> ShieldDestroyed;
         public Tank Tank { get; private set; }
         private GameplayManager gameplayManager;
 
@@ -28,6 +30,11 @@ namespace Automathon.Game.ShieldSystem
             Shield shieldEntity = new Shield(position, rotationMilliRad);
             ShieldActivated?.Invoke(shieldEntity);
             gameplayManager.Instantiate(shieldEntity);
+            ParentEntity.AddBehavior(new Timer(SHIELD_DURATION_MILLIS, null, OnComplete: () =>
+            {
+                gameplayManager.Destroy(shieldEntity);
+                ShieldDestroyed?.Invoke(shieldEntity);
+            }));
         }
     }
 }
