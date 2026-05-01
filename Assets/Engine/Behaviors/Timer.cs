@@ -19,7 +19,7 @@ namespace Automathon.Engine
         /// <param name="OnComplete"></param>
         public Timer(int timerValueMilliseconds, Action<Timer> UpdateAction = null, Action OnComplete = null)
         {
-            this.MaxValueFrames = timerValueMilliseconds * GameplayConstants.FRAMERATE / 1000;
+            this.MaxValueFrames = Math.Max(timerValueMilliseconds * GameplayConstants.FRAMERATE / 1000, 1);
             ValueFrames = MaxValueFrames;
             this.OnComplete = OnComplete;
             this.UpdateAction = UpdateAction;

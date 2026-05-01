@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Automathon.Utility
+﻿namespace Automathon.Utility
 {
     //This was written by Claude, the cos table can be generated with the code down below
     public static class TrigTable
     {
-        private const int FullCircle = 6284; // 2π * 1000, rounded
-        private const int QuarterCircle = 1571; // π/2 * 1000, rounded
+        private const int FULL_CIRCLE = 6284; // 2π * 1000, rounded
+        private const int QUARTER_CIRCLE = 1571; // π/2 * 1000, rounded
 
         //Déso Thomas mais c bien hardcodé bien méchant, sur VS c'est collapsed après
         private static readonly int[] CosTable = new int[6284] {
@@ -409,11 +405,11 @@ namespace Automathon.Utility
 
         public static int Cos(int milliradians)
         {
-            milliradians = ((milliradians % FullCircle) + FullCircle) % FullCircle;
+            milliradians = ((milliradians % FULL_CIRCLE) + FULL_CIRCLE) % FULL_CIRCLE;
             return CosTable[milliradians];
         }
 
-        public static int Sin(int milliradians) => Cos(milliradians - QuarterCircle);
+        public static int Sin(int milliradians) => Cos(milliradians - QUARTER_CIRCLE);
     }
 
     //Code to generate the cos table:

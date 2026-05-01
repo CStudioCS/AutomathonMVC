@@ -46,3 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tankViewPrefab: {fileID: 4615492633683904130, guid: ad31b30bc385c6f428255645caf6f07a, type: 3}
   bulletViewPrefab: {fileID: 6579174837797381790, guid: 459ab5560539d394a83cbcce9bdca252, type: 3}
+  grenadeViewPrefab: {fileID: 4990754825559724599, guid: e75d35c22d58139498b8cde1d46faa92, type: 3}
