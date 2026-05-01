@@ -3,6 +3,7 @@ using Automathon.Game.BulletSystem;
 using Automathon.Game.GrenadeSystem;
 using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
+using Automathon.Game.WallSystem;
 using UnityEngine;
 
 namespace Automathon.Game.World
@@ -12,6 +13,7 @@ namespace Automathon.Game.World
         [SerializeField] private TankView tankViewPrefab;
         [SerializeField] private BulletView bulletViewPrefab;
         [SerializeField] private GrenadeView grenadeViewPrefab;
+        [SerializeField] private WallView wallViewPrefab;
 
         private GameplayManager GameplayManager;
 
@@ -20,6 +22,7 @@ namespace Automathon.Game.World
             GameplayManager = new();
             Bullet.Spawned += SpawnBulletView;
             Grenade.OnSpawned += SpawnGrenadeView; ;
+            Wall.Spawned += SpawnWallView;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
@@ -37,6 +40,8 @@ namespace Automathon.Game.World
             /*Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12);
             gameplayManager.Instantiate(grenade);*/
 
+            Wall wall = new Wall(new Vector2Int(3200, 2600), new Vector2Int(1500, 500), 200);
+            GameplayManager.Instantiate(wall);
         }
 
         private void SpawnBulletView(Bullet bullet)
@@ -48,8 +53,14 @@ namespace Automathon.Game.World
         private void SpawnGrenadeView(Grenade grenade)
         {
             GrenadeView grenadeView = Instantiate(grenadeViewPrefab);
-            grenade.gameplayManager = gameplayManager;
+            grenade.gameplayManager = GameplayManager;
             grenadeView.Initialize(grenade);
+        }
+
+        private void SpawnWallView(Wall wall)
+        {
+            WallView wallView = Instantiate(wallViewPrefab);
+            wallView.Initialize(wall);
         }
 
         // Update is called once per frame
@@ -62,7 +73,7 @@ namespace Automathon.Game.World
         {
             Bullet.Spawned -= SpawnBulletView;
             Grenade.OnSpawned -= SpawnGrenadeView;
+            Wall.Spawned -= SpawnWallView;
         }
     }
-
 }

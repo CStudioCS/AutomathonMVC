@@ -10,7 +10,7 @@ namespace Automathon.Engine.Physics
 
         public static int Substeps = 6;
         public static int KBiasMilli = 200;
-        public static int SlopPenetration = 10;
+        public static int SlopPenetration = 30;
 
         public static void Initialize()
         {
