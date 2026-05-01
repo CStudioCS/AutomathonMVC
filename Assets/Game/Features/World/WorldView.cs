@@ -1,4 +1,5 @@
 using Automathon.Engine;
+using Automathon.Game.BulletSystem;
 using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
 using UnityEngine;
@@ -8,11 +9,14 @@ namespace Automathon.Game.World
     public class WorldView : MonoBehaviour
     {
         [SerializeField] private TankView tankViewPrefab;
-        private GameplayManager GameplayManager;
+        [SerializeField] private BulletView bulletViewPrefab;
+
+        private GameplayManager gameplayManager = new();
 
         private void Awake()
         {
-            GameplayManager = new GameplayManager();
+            Bullet.Spawned += SpawnBulletView;
+
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
             //this is ugly and temporary, let me be
@@ -25,12 +29,24 @@ namespace Automathon.Game.World
             Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider(), GameplayManager);
             GameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
+
+        }
+
+        private void SpawnBulletView(Bullet bullet)
+        {
+            BulletView bulletView = Instantiate(bulletViewPrefab);
+            bulletView.Initialize(bullet);
         }
 
         // Update is called once per frame
         void Update()
         {
             GameplayManager.Update();
+        }
+
+        private void OnDisable()
+        {
+            Bullet.Spawned -= SpawnBulletView;
         }
     }
 
