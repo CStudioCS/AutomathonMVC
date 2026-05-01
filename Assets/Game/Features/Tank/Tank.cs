@@ -19,7 +19,7 @@ namespace Automathon.Game.TankSystem
         {
             this.inputProvider = inputProvider;
             Collider coll = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
-            Rigidbody = new Rigidbody(coll);
+            Rigidbody = new Rigidbody(coll, 1000, 500, 200);
             shieldAbility = new ShieldAbility(this, inputProvider.ShouldShield, gameplayManager);
 
             Initialize(coll, Rigidbody, shieldAbility);
