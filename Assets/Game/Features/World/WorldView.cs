@@ -33,8 +33,8 @@ namespace Automathon.Game.World
             gameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
 
-            Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12);
-            gameplayManager.Instantiate(grenade);
+            /*Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12);
+            gameplayManager.Instantiate(grenade);*/
 
         }
 
