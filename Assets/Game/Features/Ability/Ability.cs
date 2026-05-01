@@ -10,8 +10,8 @@ namespace Automathon.Game.AbilitySystem
         private bool isOnCooldown = false;
         private Func<bool> shouldActivate;
 
-        public event Action OnAbilityActivated;
-        public event Action OnCooldownElapsed;
+        public event Action AbilityActivated;
+        public event Action CooldownElapsed;
 
         public Ability(int cooldown, Func<bool> shouldActivate)
         {
@@ -38,10 +38,10 @@ namespace Automathon.Game.AbilitySystem
             ParentEntity.AddBehavior(new Timer(coolDownMillis, null, OnComplete: () =>
             {
                 isOnCooldown = false;
-                OnCooldownElapsed?.Invoke();
+                CooldownElapsed?.Invoke();
             }));
             Activate();
-            OnAbilityActivated?.Invoke();
+            AbilityActivated?.Invoke();
         }
 
         protected abstract void Activate();

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Numerics;
-
-namespace Automathon.Engine.Utility
+﻿namespace Automathon.Engine.Utility
 {
     public static class IntMath
     {
+        public const int PI = 3142;
         // Fast Log2 via unrolled right-shifts (no BitOperations needed)
         private static int Log2(uint n)
         {

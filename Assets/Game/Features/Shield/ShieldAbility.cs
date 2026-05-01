@@ -1,4 +1,5 @@
 using Automathon.Engine;
+using Automathon.Engine.Utility;
 using Automathon.Game.AbilitySystem;
 using Automathon.Game.TankSystem;
 using System;
@@ -23,7 +24,7 @@ namespace Automathon.Game.ShieldSystem
         {
             Debug.Log("Shield activated!");
             Vector2Int position = Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000;
-            int rotationMilliRad = Tank.BoxCollider.RotationMillirad + GameplayConstants.PI / 2;
+            int rotationMilliRad = Tank.BoxCollider.RotationMillirad + IntMath.PI / 2;
             Shield shieldEntity = new Shield(position, rotationMilliRad);
             ShieldActivated?.Invoke(shieldEntity);
             gameplayManager.Instantiate(shieldEntity);
