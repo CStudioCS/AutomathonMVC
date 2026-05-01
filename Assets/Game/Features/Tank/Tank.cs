@@ -1,6 +1,7 @@
 ﻿using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.Input;
+using Automathon.Game.ShieldSystem;
 
 namespace Automathon.Game.TankSystem
 {
@@ -10,14 +11,16 @@ namespace Automathon.Game.TankSystem
 
         private IInputProvider inputProvider;
         public Rigidbody Rigidbody { get; private set; }
+        public Shield shield { get; private set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
             this.inputProvider = inputProvider;
             Collider coll = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
-            Rigidbody = new Rigidbody(coll, 1000, 500, 200);
+            Rigidbody = new Rigidbody(coll);
+            shield = new Shield(inputProvider.ShouldShield);
 
-            Initialize(coll, Rigidbody);
+            Initialize(coll, Rigidbody, shield);
         }
 
         public override void Update()
