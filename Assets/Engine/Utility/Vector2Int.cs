@@ -53,6 +53,9 @@ namespace Automathon
         public int LengthSquared()
             => X * X + Y * Y;
 
+        public static Vector2Int MilliDirectionFromAngle(int angleMillirad)
+            => new Vector2Int(TrigTable.Cos(angleMillirad), TrigTable.Sin(angleMillirad));
+
         public void NormalizeAtScale(int scale)
         {
             int length = Length();

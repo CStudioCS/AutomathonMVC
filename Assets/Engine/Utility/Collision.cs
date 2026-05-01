@@ -76,7 +76,7 @@ namespace Automathon.Engine.Physics
 
             bool isCollision = true;
             Vector2Int minPenetrationAxis = Vector2Int.Zero;
-            int penetration = int.MaxValue;
+            long penetration = int.MaxValue;
             int axisIndex = -1;
 
             for (int i = 0; i < axies.Length; i++)
@@ -106,7 +106,7 @@ namespace Automathon.Engine.Physics
                     minPenetrationAxis = Vector2Int.Zero;
                     penetration = 0;
                     axisIndex = -1;
-                    return new SATOutput(isCollision, minPenetrationAxis, penetration, axisIndex);
+                    return new SATOutput(isCollision, minPenetrationAxis, (int)penetration, axisIndex);
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace Automathon.Engine.Physics
 
             isCollision = true;
             //The true penetration is penetration / 1000 since the axis is normalized at a scale by 1000
-            return new SATOutput(isCollision, minPenetrationAxis, penetration / 1000, axisIndex);
+            return new SATOutput(isCollision, minPenetrationAxis, (int)(penetration / 1000), axisIndex);
         }
 
         public static SATOutput BoxBoxSAT(BoxCollider box, BoxCollider box2)

@@ -8,6 +8,11 @@ namespace Automathon.Engine
     {
         private DeferredList<Entity> entities = new();
 
+        public GameplayManager()
+        {
+            PhysicsManager.Initialize();
+        }
+
         public void Update()
         {
             EntityUpdateLoop();

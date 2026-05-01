@@ -1,8 +1,5 @@
-﻿using Automathon.Engine.Physics;
-using Automathon.Engine.Utility;
+﻿using Automathon.Engine.Utility;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Automathon.Engine.Physics
 {

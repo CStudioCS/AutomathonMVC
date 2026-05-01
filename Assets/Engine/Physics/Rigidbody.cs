@@ -24,11 +24,11 @@ namespace Automathon.Engine.Physics
         public Rigidbody(Collider collider, int invMassMilli, int invIMicro, int frictionMilli)
         {
             Collider = collider;
-            Added?.Invoke(this);
-
             InvMassMilli = invMassMilli;
             InvIMicro = invIMicro;
             FrictionMilli = frictionMilli;
+
+            Added?.Invoke(this);
         }
 
         public override void OnDestroyed()

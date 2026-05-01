@@ -11,10 +11,11 @@ namespace Automathon.Game.World
         [SerializeField] private TankView tankViewPrefab;
         [SerializeField] private BulletView bulletViewPrefab;
 
-        private GameplayManager gameplayManager = new();
+        private GameplayManager gameplayManager;
 
         private void Awake()
         {
+            gameplayManager = new();
             Bullet.Spawned += SpawnBulletView;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
