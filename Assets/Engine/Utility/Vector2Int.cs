@@ -60,11 +60,11 @@ namespace Automathon
             {
                 if (Y >= 0)
                 {
-                    return (Atan2Int.Atan2(X, Y) + 3142);
+                    return (Atan2Int.Atan2(X, Y) + GameplayConstants.PI);
                 }
                 else
                 {
-                    return (Atan2Int.Atan2(X, Y) - 3142);
+                    return (Atan2Int.Atan2(X, Y) - GameplayConstants.PI);
                 }
             }
         }

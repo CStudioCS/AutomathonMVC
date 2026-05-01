@@ -11,19 +11,21 @@ namespace Automathon.Game.TankSystem
 
         private IInputProvider inputProvider;
         public Rigidbody Rigidbody { get; private set; }
-        public ShieldAbility shieldAbility { get; private set; }
-        public GameplayManager gameplayManager { get; private set; }
-        public Vector2Int lastMilliDirection { get; private set; }//should be defined at the collider level?
+        public ShieldAbility ShieldAbility { get; private set; }
+        public GameplayManager GameplayManager { get; private set; }
+        public Vector2Int LastMilliDirection { get; private set; }//should be defined at the collider level?
+
+        public BoxCollider BoxCollider { get; private set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider, GameplayManager gameplayManager) : base(position)
         {
             this.inputProvider = inputProvider;
-            Collider coll = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
-            Rigidbody = new Rigidbody(coll);
-            shieldAbility = new ShieldAbility(this, inputProvider.ShouldShield, gameplayManager);
+            BoxCollider = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
+            Rigidbody = new Rigidbody(BoxCollider);
+            ShieldAbility = new ShieldAbility(this, inputProvider.ShouldShield, gameplayManager);
 
-            Initialize(coll, Rigidbody, shieldAbility);
-            this.gameplayManager = gameplayManager;
+            Initialize(BoxCollider, Rigidbody, ShieldAbility);
+            GameplayManager = gameplayManager;
         }
 
         public override void Update()
@@ -36,11 +38,11 @@ namespace Automathon.Game.TankSystem
 
             Vector2Int directionInput = inputProvider.GetMilliAimingDir();
 
-            ((BoxCollider)Rigidbody.Collider).RotationMillirad = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
+            BoxCollider.RotationMillirad = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
 
             if ((movementInput.X, movementInput.Y) != (0, 0))
             {
-                lastMilliDirection = movementInput;
+                LastMilliDirection = movementInput;
             }
         }
     }
