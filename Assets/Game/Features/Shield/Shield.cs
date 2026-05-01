@@ -1,17 +1,19 @@
-using Automathon.Game.AbilitySystem;
-using System;
+using Automathon.Engine;
+using Automathon.Engine.Physics;
 
 namespace Automathon.Game.ShieldSystem
 {
-    public class Shield : Ability
+    public class Shield : Entity
     {
-        private const int SHIELD_COOLDOWN_MILLIS = 3000;
-        public Shield(Func<bool> shouldActivateParam) : base(cooldown: SHIELD_COOLDOWN_MILLIS, shouldActivate: shouldActivateParam)
-        { }
-
-        protected override void Activate()
+        public Rigidbody Rigidbody { get; private set; }
+        private const int SHIELD_HALF_LENGTH = 750;
+        private const int SHIELD_HALF_HEIGHT = 100;
+        public BoxCollider BoxCollider { get; private set; }
+        public Shield(Vector2Int position, int rotationMillirad) : base(position)
         {
-            Debug.Log("Shield activated!");
+            BoxCollider = new BoxCollider(Vector2Int.Zero, SHIELD_HALF_LENGTH, SHIELD_HALF_HEIGHT, rotationMillirad);
+            Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
+            Initialize(Rigidbody, BoxCollider);
         }
     }
 }

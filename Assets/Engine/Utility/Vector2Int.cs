@@ -50,6 +50,25 @@ namespace Automathon
         public int Length()
             => IntMath.Isqrt(X * X + Y * Y);
 
+        public int CalculateAngleMilliRad()
+        {
+            if (X >= 0)
+            {
+                return Atan2Int.Atan2(X, Y);
+            }
+            else
+            {
+                if (Y >= 0)
+                {
+                    return (Atan2Int.Atan2(X, Y) + IntMath.PI);
+                }
+                else
+                {
+                    return (Atan2Int.Atan2(X, Y) - IntMath.PI);
+                }
+            }
+        }
+
         public int LengthSquared()
             => X * X + Y * Y;
 

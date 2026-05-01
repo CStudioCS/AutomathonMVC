@@ -13,11 +13,11 @@ namespace Automathon.Game.World
         [SerializeField] private BulletView bulletViewPrefab;
         [SerializeField] private GrenadeView grenadeViewPrefab;
 
-        private GameplayManager gameplayManager;
+        private GameplayManager GameplayManager;
 
         private void Awake()
         {
-            gameplayManager = new();
+            GameplayManager = new();
             Bullet.Spawned += SpawnBulletView;
             Grenade.OnSpawned += SpawnGrenadeView; ;
 
@@ -25,13 +25,13 @@ namespace Automathon.Game.World
 
             //this is ugly and temporary, let me be
             TankView tankView = Instantiate(tankViewPrefab);
-            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
-            gameplayManager.Instantiate(tank);
+            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput), GameplayManager);
+            GameplayManager.Instantiate(tank);
             tankView.Initialize(tank);
 
             TankView tankView2 = Instantiate(tankViewPrefab);
-            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider());
-            gameplayManager.Instantiate(tank2);
+            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider(), GameplayManager);
+            GameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
 
             /*Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12);
@@ -55,7 +55,7 @@ namespace Automathon.Game.World
         // Update is called once per frame
         void Update()
         {
-            gameplayManager.Update();
+            GameplayManager.Update();
         }
 
         private void OnDisable()

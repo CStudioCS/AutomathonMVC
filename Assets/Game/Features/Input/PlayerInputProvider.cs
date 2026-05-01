@@ -6,7 +6,6 @@ namespace Automathon.Game.Input
     public class PlayerInputProvider : IInputProvider
     {
         private PlayerInput playerInput;
-
         private InputAction dashAction;
         private InputAction grenadeAction;
         private InputAction shieldAction;
@@ -37,5 +36,7 @@ namespace Automathon.Game.Input
         public bool ShouldShield() => shieldAction.IsPressed();
 
         public bool ShouldShoot() => shootAction.IsPressed();
+
+        public Vector2Int GetMilliAimingDir() => Vector2Int.Zero;
     }
 }
