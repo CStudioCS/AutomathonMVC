@@ -19,8 +19,6 @@ namespace Automathon.Engine.Physics
         public Vector2Int Forces;
         public int TorqueMilli;
 
-        //this will have a bunch of stuff in the future stay tuned, WIP !!!
-
         public Rigidbody(Collider collider, int invMassMilli, int invIMicro, int frictionMilli)
         {
             Collider = collider;
