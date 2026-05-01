@@ -19,13 +19,12 @@ namespace Automathon.Engine.Physics
         public Vector2Int Forces;
         public int TorqueMilli;
 
-        //this will have a bunch of stuff in the future stay tuned, WIP !!!
-
         public Rigidbody(Collider collider, int invMassMilli, int invIMicro, int frictionMilli)
         {
             Collider = collider;
             Added?.Invoke(this);
 
+            //For infinite mass (kinematic body), put an inverse mass and inverse inertia of 0
             InvMassMilli = invMassMilli;
             InvIMicro = invIMicro;
             FrictionMilli = frictionMilli;

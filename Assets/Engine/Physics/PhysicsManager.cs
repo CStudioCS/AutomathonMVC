@@ -65,6 +65,7 @@ namespace Automathon.Engine.Physics
                     Contact contact = new Contact(referenceBody, incidentBody, boxCollider1, boxCollider2, position, boxContact.Normal, boxContact.Penetration);
 
                     WarmStart(contact);
+
                     newContacts.Add(contact);
                 }
 
@@ -117,6 +118,41 @@ namespace Automathon.Engine.Physics
             }
         }
 
+        private static void DispatchCollisionEvents()
+        {
+            Dictionary<Collider, CollisionEvent> colliderEvents = new();
+
+            void AddToCollisionEvent(Collider self, Collider other, Vector2Int position, Vector2Int normalMilli, int penetration)
+            {
+                if (!colliderEvents.ContainsKey(self))
+                    colliderEvents[self] = new CollisionEvent(self, other);
+
+                colliderEvents[self].Contacts.Add(new CollisionEvent.ContactData(position, normalMilli, penetration));
+            }
+
+            foreach (Contact contact in contacts)
+            {
+                AddToCollisionEvent(contact.ReferenceCollider, contact.IncidentCollider, contact.Position, contact.NormalMilli, contact.Penetration);
+                AddToCollisionEvent(contact.IncidentCollider, contact.ReferenceCollider, contact.Position, -contact.NormalMilli, contact.Penetration);
+            }
+
+            foreach (CollisionEvent collisionEvent in colliderEvents.Values)
+            {
+                collisionEvent.AverageNormal = Vector2Int.Zero;
+
+                collisionEvent.MaxPenetration = 0;
+                foreach (CollisionEvent.ContactData contactData in collisionEvent.Contacts)
+                {
+                    collisionEvent.AverageNormal += contactData.Normal;
+                    collisionEvent.MaxPenetration = Math.Max(collisionEvent.MaxPenetration, contactData.Penetration);
+                }
+
+                collisionEvent.AverageNormal = collisionEvent.AverageNormal / collisionEvent.Contacts.Count;
+
+                collisionEvent.Self.OnCollision?.Invoke(collisionEvent);
+            }
+        }
+
         public static void Step()
         {
             foreach (Rigidbody rigidbody in rigidbodies)
@@ -152,11 +188,7 @@ namespace Automathon.Engine.Physics
                 rb.TorqueMilli = 0;
             }
 
-            foreach (Contact contact in contacts)
-            {
-                contact.ReferenceCollider.OnCollision?.Invoke(contact);
-                contact.IncidentCollider.OnCollision?.Invoke(contact);
-            }
+            DispatchCollisionEvents();
         }
     }
 }

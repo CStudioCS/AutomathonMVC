@@ -9,7 +9,7 @@ namespace Automathon.Engine.Physics
         public Action<Collider> OnTriggerStay;
         public Action<Collider> OnTriggerExit;
 
-        public Action<Contact> OnCollision;
+        public Action<CollisionEvent> OnCollision;
 
         public abstract bool Colliding(Collider collider);
         public abstract bool Contains(Vector2Int point);
