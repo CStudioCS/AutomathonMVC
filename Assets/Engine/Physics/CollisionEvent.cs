@@ -29,6 +29,5 @@ namespace Automathon.Engine.Physics
             Self = self;
             Other = other;
         }
-
     }
 }
