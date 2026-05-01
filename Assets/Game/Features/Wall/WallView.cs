@@ -1,7 +1,6 @@
-using Automathon.Game.BulletSystem;
-using Automathon.Game.TankSystem;
+using Automathon.Game.Utility;
 using Automathon.Game.World;
-using System;
+using Automathon.Utility;
 using UnityEngine;
 
 namespace Automathon.Game.WallSystem
@@ -14,8 +13,9 @@ namespace Automathon.Game.WallSystem
         {
             this.wall = wall;
 
-            transform.localScale = new Vector3(wall.BoxCollider.Width / 2.0f / (float)WorldConstants.SPACE_SCALE, wall.BoxCollider.Height / 2.0f / (float)WorldConstants.SPACE_SCALE, 1);
-            transform.rotation = Quaternion.Euler(0, 0, ((Automathon.Engine.Physics.BoxCollider)wall.Rigidbody.Collider).RotationMillirad / 1000f * Mathf.Rad2Deg);
+            transform.position = wall.Position.ToVector2Scaled();
+            transform.localScale = new Vector3(wall.BoxCollider.Width / (float)WorldConstants.SPACE_SCALE, wall.BoxCollider.Height / (float)WorldConstants.SPACE_SCALE, 1);
+            transform.rotation = ViewMath.MilliRadRotationToQuaternion(wall.BoxCollider.RotationMillirad);
         }
     }
 

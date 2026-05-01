@@ -41,7 +41,7 @@ namespace Automathon.Game.World
             gameplayManager.Instantiate(grenade);*/
 
             Wall wall = new Wall(new Vector2Int(3200, 2600), new Vector2Int(1500, 500), 200);
-            gameplayManager.Instantiate(wall);
+            GameplayManager.Instantiate(wall);
         }
 
         private void SpawnBulletView(Bullet bullet)
@@ -53,7 +53,7 @@ namespace Automathon.Game.World
         private void SpawnGrenadeView(Grenade grenade)
         {
             GrenadeView grenadeView = Instantiate(grenadeViewPrefab);
-            grenade.gameplayManager = gameplayManager;
+            grenade.gameplayManager = GameplayManager;
             grenadeView.Initialize(grenade);
         }
 
@@ -76,5 +76,4 @@ namespace Automathon.Game.World
             Wall.Spawned -= SpawnWallView;
         }
     }
-
 }

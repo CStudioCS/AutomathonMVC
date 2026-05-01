@@ -1,6 +1,5 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Game.BulletSystem;
 using System;
 
 namespace Automathon.Game.WallSystem
@@ -14,8 +13,8 @@ namespace Automathon.Game.WallSystem
 
         public Wall(Vector2Int position, Vector2Int halfSize, int rotation) : base(position)
         {
-            BoxCollider = new BoxCollider(position, halfSize.X, halfSize.Y, rotation);
-            Rigidbody = new Rigidbody(BoxCollider);
+            BoxCollider = new BoxCollider(Vector2Int.Zero, halfSize.X, halfSize.Y, rotation);
+            Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
 
             Initialize(BoxCollider, Rigidbody);
 

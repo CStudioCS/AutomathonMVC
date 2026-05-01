@@ -38,12 +38,10 @@ namespace Automathon.Game.TankSystem
 
             Vector2Int directionInput = inputProvider.GetMilliAimingDir();
 
-            base.RotationMilli = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
+            RotationMilli = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
 
             if ((movementInput.X, movementInput.Y) != (0, 0))
-            {
                 LastMilliDirection = movementInput;
-            }
         }
     }
 }
