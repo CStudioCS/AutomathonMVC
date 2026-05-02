@@ -1,11 +1,14 @@
 using Automathon.Engine.Physics;
 using Automathon.Utility;
+using System;
 
 namespace Automathon.Engine
 {
     public static class GameplayManager
     {
         private static DeferredList<Entity> entities = new();
+
+        public static event Action<Entity> EntitySpawned;
 
         public static void Initialize()
         {
@@ -16,10 +19,7 @@ namespace Automathon.Engine
         {
             EntityUpdateLoop();
 
-            entities.ProcessChanges((e) => e.Start(), (e) => e.Destroyed()); //Instanciate/Destroy every entity that needs to be
-
-            foreach (Entity entity in entities.Items) //Add/Remove new entity components
-                entity.ApplyComponentsChanges();
+            ProcessAllEntityChanges();
 
             PhysicsManager.Step();
         }
@@ -28,6 +28,18 @@ namespace Automathon.Engine
         {
             foreach (Entity entity in entities.Items)
                 entity.Update();
+        }
+
+        private static void ProcessAllEntityChanges()
+        {
+            entities.ProcessChanges((e) =>
+            {
+                EntitySpawned?.Invoke(e);
+                e.Start();
+            }, (e) => e.OnDestroyed()); //Instanciate/Destroy every entity that needs to be
+
+            foreach (Entity entity in entities.Items) //Add/Remove new entity components
+                entity.ApplyComponentsChanges();
         }
 
         public static T Instantiate<T>(T entity) where T : Entity
@@ -43,6 +55,10 @@ namespace Automathon.Engine
 
         public static void Dispose()
         {
+            foreach (Entity entity in entities.Items) Destroy(entity);
+
+            ProcessAllEntityChanges();
+
             PhysicsManager.Dispose();
         }
     }

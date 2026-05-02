@@ -22,6 +22,8 @@ namespace Automathon.Engine.Physics
         {
             Rigidbody.Added -= OnRigidbodyAdded;
             Rigidbody.Removed -= OnRigidbodyRemoved;
+            rigidbodies.Clear();
+            contacts.Clear();
         }
 
         private static void OnRigidbodyAdded(Rigidbody rigidbody)

@@ -21,10 +21,10 @@ namespace Automathon.Game.View
         public virtual void Initialize(T entity)
         {
             Entity = entity;
-            entity.OnDestroyed += OnControllerDestroyed;
+            entity.Destroyed += OnControllerDestroyed;
         }
 
-        protected virtual void Update()
+        protected virtual void LateUpdate()
         {
             transform.SetPositionAndRotation(Entity.Position.ToVector2Scaled(), ViewMath.MilliRadRotationToQuaternion(Entity.RotationMilli));
         }
@@ -36,7 +36,8 @@ namespace Automathon.Game.View
 
         protected virtual void OnDestroy()
         {
-            Entity.OnDestroyed -= OnControllerDestroyed;
+            if (Entity != null)
+                Entity.Destroyed -= OnControllerDestroyed;
         }
     }
 }

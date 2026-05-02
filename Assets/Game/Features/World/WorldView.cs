@@ -17,7 +17,7 @@ namespace Automathon.Game.World
 
         private void Awake()
         {
-            Entity.OnSpawned += SpawnEntityViewFromDict;
+            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
             GameplayManager.Initialize();
             subbedToSpawnEntityView = true;
 
@@ -68,7 +68,7 @@ namespace Automathon.Game.World
         {
             if (!subbedToSpawnEntityView)
             {
-                Entity.OnSpawned += SpawnEntityViewFromDict;
+                GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
                 subbedToSpawnEntityView = true;
             }
         }
@@ -77,9 +77,14 @@ namespace Automathon.Game.World
         {
             if (subbedToSpawnEntityView)
             {
-                Entity.OnSpawned -= SpawnEntityViewFromDict;
+                GameplayManager.EntitySpawned -= SpawnEntityViewFromDict;
                 subbedToSpawnEntityView = false;
             }
+        }
+
+        private void OnDestroy()
+        {
+            GameplayManager.Dispose();
         }
     }
 }
