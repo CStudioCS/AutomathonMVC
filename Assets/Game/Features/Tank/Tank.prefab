@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 4615492633683904130}
   - component: {fileID: 6264126385519454714}
   - component: {fileID: 5077115049453272025}
-  - component: {fileID: -4111597496587275402}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -48,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerInput: {fileID: 5077115049453272025}
-  shieldAbilityView: {fileID: -4111597496587275402}
 --- !u!212 &6264126385519454714
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -134,16 +132,3 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &-4111597496587275402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308921089331223049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7541eb4a81f67a4ba1a65af9288157d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shieldPrefab: {fileID: 2973962602180938420, guid: 4cda6c208b017a24a9d32a23eca304ba, type: 3}

@@ -8,6 +8,7 @@ namespace Automathon.Engine
         public Vector2Int Position;
         public int RotationMilli;
         public static event Action<Entity> OnSpawned;
+        public event Action OnDestroyed;
 
         private Component[] components;
         private DeferredList<Behavior> behaviors = new();
@@ -60,13 +61,15 @@ namespace Automathon.Engine
                 component.Update();
         }
 
-        public virtual void OnDestroyed()
+        public virtual void Destroyed()
         {
             foreach (Behavior component in behaviors.Items)
                 RemoveBehavior(component);
 
             foreach (Component component in components)
                 component.OnDestroyed();
+
+            OnDestroyed?.Invoke();
         }
 
         public T AddBehavior<T>(T behavior) where T : Behavior

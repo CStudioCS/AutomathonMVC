@@ -13,14 +13,12 @@ namespace Automathon.Game.World
         [SerializeField] private TankView tankViewPrefab;
         [SerializeField] private EntityViewRegistry entityViewRegistry;
 
-        private GameplayManager GameplayManager;
-
         private bool subbedToSpawnEntityView;
 
         private void Awake()
         {
             Entity.OnSpawned += SpawnEntityViewFromDict;
-            GameplayManager = new();
+            GameplayManager.Initialize();
             subbedToSpawnEntityView = true;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
@@ -28,12 +26,12 @@ namespace Automathon.Game.World
             //this is ugly and temporary, let me be
             //Tanks are spawned using Cédrics future system, not through auto instantiation (or maybe we should ?)
             TankView tankView = Instantiate(tankViewPrefab);
-            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput), GameplayManager);
+            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
             GameplayManager.Instantiate(tank);
             tankView.Initialize(tank);
 
             TankView tankView2 = Instantiate(tankViewPrefab);
-            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider(), GameplayManager);
+            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider());
             GameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
 

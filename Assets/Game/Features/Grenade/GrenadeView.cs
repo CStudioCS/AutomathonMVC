@@ -11,21 +11,8 @@ namespace Automathon.Game.GrenadeSystem
         public override void Initialize(Grenade grenade)
         {
             base.Initialize(grenade);
+            //Normalement la vue doit être directe adaptée à la grenade, on est pas censé le faire au runtime :/
             transform.localScale = Vector3.one * 2 * grenade.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
-            grenade.OnBlowedUp += OnBlowUp;
-        }
-
-        private void OnBlowUp()
-        {
-            Destroy(this.gameObject);
-        }
-
-        private void OnDestroy()
-        {
-            if (Entity != null)
-            {
-                Entity.OnBlowedUp -= OnBlowUp;
-            }
         }
     }
 

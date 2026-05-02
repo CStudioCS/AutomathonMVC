@@ -21,11 +21,22 @@ namespace Automathon.Game.View
         public virtual void Initialize(T entity)
         {
             Entity = entity;
+            entity.OnDestroyed += OnControllerDestroyed;
         }
 
         protected virtual void Update()
         {
             transform.SetPositionAndRotation(Entity.Position.ToVector2Scaled(), ViewMath.MilliRadRotationToQuaternion(Entity.RotationMilli));
+        }
+
+        protected virtual void OnControllerDestroyed()
+        {
+            Destroy(gameObject);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Entity.OnDestroyed -= OnControllerDestroyed;
         }
     }
 }
