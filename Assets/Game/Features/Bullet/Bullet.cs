@@ -1,12 +1,10 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using System;
 
 namespace Automathon.Game.BulletSystem
 {
     public class Bullet : Entity
     {
-        public static event Action<Bullet> Spawned;
         public Rigidbody Rigidbody { get; private set; }
         public CircleCollider CircleCollider { get; private set; }
 
@@ -17,8 +15,6 @@ namespace Automathon.Game.BulletSystem
             Rigidbody.Velocity = direction * speed / 1000;
 
             Initialize(CircleCollider, Rigidbody);
-
-            Spawned?.Invoke(this);
         }
     }
 }

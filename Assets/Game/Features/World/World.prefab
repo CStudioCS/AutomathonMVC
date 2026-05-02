@@ -48,3 +48,4 @@ MonoBehaviour:
   bulletViewPrefab: {fileID: 6579174837797381790, guid: 459ab5560539d394a83cbcce9bdca252, type: 3}
   grenadeViewPrefab: {fileID: 4990754825559724599, guid: e75d35c22d58139498b8cde1d46faa92, type: 3}
   wallViewPrefab: {fileID: 4839800170746784447, guid: facdb7799de20f8479d8254478000c8f, type: 3}
+  entityViewRegistry: {fileID: 11400000, guid: bc31740a363fc0249a4fd35267957ef7, type: 2}

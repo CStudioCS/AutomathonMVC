@@ -4,7 +4,6 @@ using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.BulletSystem;
 using Automathon.Utility;
-using System;
 
 namespace Automathon.Game.GrenadeSystem
 {
@@ -12,11 +11,6 @@ namespace Automathon.Game.GrenadeSystem
     {
         private const int BULLET_SPEED = 1500;
         private const int FRAGMENT_RADIUS = 1000 / 50;
-
-        public static event Action<Grenade> OnSpawned;
-        public event Action OnBlowedUp;
-
-        public GameplayManager gameplayManager;
 
         public CircleCollider CircleCollider { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
@@ -30,8 +24,6 @@ namespace Automathon.Game.GrenadeSystem
             Initialize(CircleCollider, Rigidbody);
 
             AddBehavior(new Timer(500, null, () => BlowUp(fragmentNumber)));
-
-            OnSpawned?.Invoke(this);
         }
 
         private void BlowUp(int numBullets)
@@ -47,9 +39,10 @@ namespace Automathon.Game.GrenadeSystem
                 int dist = 2 * FRAGMENT_RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
 
                 Bullet bullet = new Bullet(this.Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
-                gameplayManager.Instantiate(bullet);
+                GameplayManager.Instantiate(bullet);
             }
-            OnBlowedUp?.Invoke();
+
+            GameplayManager.Destroy(this);
         }
 
     }
