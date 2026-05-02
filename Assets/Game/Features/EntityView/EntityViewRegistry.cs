@@ -13,27 +13,6 @@ namespace Automathon.Game.View.Registry
 
         private Dictionary<Type, EntityView> cache;
 
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            var seen = new HashSet<Type>();
-            for (int i = prefabs.Count - 1; i >= 0; i--)
-            {
-                // Skip nulls (empty slots in the list)
-                if (prefabs[i] == null) continue;
-
-                var type = prefabs[i].EntityType;
-                if (!seen.Add(type))
-                {
-                    UnityEngine.Debug.LogWarning($"[EntityViewRegistry] Duplicate for {type.Name} was removed.");
-                    prefabs.RemoveAt(i);
-                }
-            }
-
-            cache = null; // Invalidate cache whenever the list changes
-        }
-#endif
-
         public Dictionary<Type, EntityView> GetDictionary()
         {
             if (cache != null) return cache;

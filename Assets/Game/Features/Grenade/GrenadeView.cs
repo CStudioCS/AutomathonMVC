@@ -1,5 +1,4 @@
-using Automathon.Game.BulletSystem;
-using Automathon.Game.Utility;
+using Automathon.Game.View;
 using Automathon.Game.World;
 using UnityEngine;
 
@@ -7,20 +6,13 @@ using UnityEngine;
 
 namespace Automathon.Game.GrenadeSystem
 {
-    public class GrenadeView : MonoBehaviour
+    public class GrenadeView : EntityView<Grenade>
     {
-        private Grenade grenade;
-
-        public void Initialize(Grenade grenade)
+        public override void Initialize(Grenade grenade)
         {
-            this.grenade = grenade;
+            base.Initialize(grenade);
             transform.localScale = Vector3.one * 2 * grenade.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
             grenade.OnBlowedUp += OnBlowUp;
-        }
-
-        private void LateUpdate()
-        {
-            transform.position = grenade.Position.ToVector2Scaled();
         }
 
         private void OnBlowUp()
@@ -30,9 +22,9 @@ namespace Automathon.Game.GrenadeSystem
 
         private void OnDestroy()
         {
-            if(grenade != null)
+            if (Entity != null)
             {
-                grenade.OnBlowedUp -= OnBlowUp;
+                Entity.OnBlowedUp -= OnBlowUp;
             }
         }
     }
