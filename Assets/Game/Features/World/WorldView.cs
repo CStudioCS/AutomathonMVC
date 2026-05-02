@@ -24,7 +24,8 @@ namespace Automathon.Game.World
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
             //this is ugly and temporary, let me be
-            //Tanks are spawned using Cédrics future system, not through auto instantiation (or maybe we should ?)
+            //Tanks are spawned using Cedric's future system, not through auto instantiation (or maybe we should ?)
+            //We can't spawn them automatically cuz we need the reference to player input
             TankView tankView = Instantiate(tankViewPrefab);
             Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
             GameplayManager.Instantiate(tank);
@@ -36,7 +37,7 @@ namespace Automathon.Game.World
             tankView2.Initialize(tank2);
 
             /*Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 3000, 12);
-            gameplayManager.Instantiate(grenade);*/
+            GameplayManager.Instantiate(grenade);*/
 
             Wall wall = new Wall(new Vector2Int(3200, 2600), new Vector2Int(1500, 500), 200);
             GameplayManager.Instantiate(wall);
@@ -48,7 +49,8 @@ namespace Automathon.Game.World
 
             if (entityViewPrefab == null)
             {
-                UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
+                //Commented this since some entities are not auto spawned
+                //UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
                 return;
             }
 
