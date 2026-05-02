@@ -1,6 +1,4 @@
 using Automathon.Game.ShieldSystem;
-using Automathon.Game.Utility;
-using Automathon.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,12 +15,6 @@ namespace Automathon.Game.TankSystem
             this.tank = tank;
             //initialization of tank view implies initialization of tank abilities' views
             shieldAbilityView.Initialize(tank.ShieldAbility);
-        }
-
-        private void LateUpdate()
-        {
-            transform.position = tank.Position.ToVector2Scaled();
-            transform.rotation = ViewMath.MilliRadRotationToQuaternion(tank.BoxCollider.RotationMillirad);
         }
     }
 

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0f71f70c58eff48998f3788ac45f78, type: 3}
   m_Name: EntityViewRegistry
   m_EditorClassIdentifier: 
-  prefabs: []
+  prefabs:
+  - {fileID: 4839800170746784447, guid: facdb7799de20f8479d8254478000c8f, type: 3}

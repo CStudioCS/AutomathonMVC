@@ -7,6 +7,7 @@ namespace Automathon.Engine
     {
         public Vector2Int Position;
         public int RotationMilli;
+        public static event Action<Entity> OnSpawned;
 
         private Component[] components;
         private DeferredList<Behavior> behaviors = new();
@@ -28,6 +29,8 @@ namespace Automathon.Engine
 
             foreach (Component component in components)
                 component.Initialize(this);
+
+            OnSpawned?.Invoke(this);
         }
 
         public virtual void Start()

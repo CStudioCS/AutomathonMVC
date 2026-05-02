@@ -1,13 +1,10 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using System;
 
 namespace Automathon.Game.WallSystem
 {
     public class Wall : Entity
     {
-        public static event Action<Wall> Spawned;
-
         public Rigidbody Rigidbody { get; private set; }
         public BoxCollider BoxCollider { get; private set; }
 
@@ -17,8 +14,6 @@ namespace Automathon.Game.WallSystem
             Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
 
             Initialize(BoxCollider, Rigidbody);
-
-            Spawned?.Invoke(this);
         }
     }
 }

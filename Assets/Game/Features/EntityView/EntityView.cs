@@ -9,6 +9,7 @@ namespace Automathon.Game.View
     public abstract class EntityView : MonoBehaviour
     {
         public abstract Type EntityType { get; }
+        public abstract void Initialize(Entity entity);
     }
 
     public class EntityView<T> : EntityView where T : Entity
@@ -16,6 +17,7 @@ namespace Automathon.Game.View
         public T Entity { get; private set; }
         public override Type EntityType => typeof(T);
 
+        public sealed override void Initialize(Entity entity) => Initialize((T)entity);
         public virtual void Initialize(T entity)
         {
             Entity = entity;
@@ -23,8 +25,7 @@ namespace Automathon.Game.View
 
         protected virtual void Update()
         {
-            transform.position = Entity.Position.ToVector2Scaled();
-            transform.rotation = ViewMath.MilliRadRotationToQuaternion(Entity.RotationMilli);
+            transform.SetPositionAndRotation(Entity.Position.ToVector2Scaled(), ViewMath.MilliRadRotationToQuaternion(Entity.RotationMilli));
         }
     }
 }

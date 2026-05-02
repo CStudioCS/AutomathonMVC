@@ -13,7 +13,6 @@ namespace Automathon.Game.GrenadeSystem
         private const int BULLET_SPEED = 1500;
         private const int FRAGMENT_RADIUS = 1000 / 50;
 
-        public static event Action<Grenade> OnSpawned;
         public event Action OnBlowedUp;
 
         public GameplayManager gameplayManager;
@@ -30,8 +29,6 @@ namespace Automathon.Game.GrenadeSystem
             Initialize(CircleCollider, Rigidbody);
 
             AddBehavior(new Timer(500, null, () => BlowUp(fragmentNumber)));
-
-            OnSpawned?.Invoke(this);
         }
 
         private void BlowUp(int numBullets)
