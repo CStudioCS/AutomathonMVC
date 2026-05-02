@@ -11,7 +11,7 @@ namespace Automathon.Engine.Physics
         public int LocalRotationMillirad { get; private set; }
         public int RotationMillirad => ParentEntity.RotationMilli + LocalRotationMillirad;
 
-        public Vector2Int[] Coords { get; private set; }
+        public Vector2Int[] WorldVertices { get; private set; }
 
         public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int localRotationMillirad) : base()
         {
@@ -33,10 +33,10 @@ namespace Automathon.Engine.Physics
 
         public override bool Contains(Vector2Int point)
         {
-            Vector2Int r = point - Coords[0];
-            long sc1 = r.Dot(Coords[1] - Coords[0]);
-            long sc2 = r.Dot(Coords[3] - Coords[0]);
-            if (sc1 < 0 || sc1 > (Coords[1] - Coords[0]).LengthSquared() || sc2 < 0 || sc2 > (Coords[3] - Coords[0]).LengthSquared())
+            Vector2Int r = point - WorldVertices[0];
+            long sc1 = r.Dot(WorldVertices[1] - WorldVertices[0]);
+            long sc2 = r.Dot(WorldVertices[3] - WorldVertices[0]);
+            if (sc1 < 0 || sc1 > (WorldVertices[1] - WorldVertices[0]).LengthSquared() || sc2 < 0 || sc2 > (WorldVertices[3] - WorldVertices[0]).LengthSquared())
                 return false;
             return true;
         }
@@ -48,7 +48,7 @@ namespace Automathon.Engine.Physics
             int halfWidth = Width / 2; //width and height are divisible by 2 by design
             int halfHeight = Height / 2;
 
-            Coords = new Vector2Int[4]
+            WorldVertices = new Vector2Int[4]
             {
                 WorldPosition + (-right * halfWidth + up * halfHeight) / 1000,
                 WorldPosition + (right * halfWidth + up * halfHeight) / 1000,

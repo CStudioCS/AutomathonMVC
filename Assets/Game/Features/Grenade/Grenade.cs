@@ -23,7 +23,7 @@ namespace Automathon.Game.GrenadeSystem
 
             Initialize(CircleCollider, Rigidbody);
 
-            AddBehavior(new Timer(500, null, () => BlowUp(fragmentNumber)));
+            AddBehavior(new Timer(delayMilisecond, null, () => BlowUp(fragmentNumber)));
         }
 
         private void BlowUp(int numBullets)
@@ -38,7 +38,7 @@ namespace Automathon.Game.GrenadeSystem
                 int alpha = 6283 / numBullets;
                 int dist = 2 * FRAGMENT_RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
 
-                Bullet bullet = new Bullet(this.Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
+                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
                 GameplayManager.Instantiate(bullet);
             }
 

@@ -107,5 +107,19 @@ namespace Automathon
                 return projOnNormal + bound2;
             return this;
         }
+
+        public Vector2Int GetClosestOnLine(Vector2Int linePoint1, Vector2Int linePoint2)
+        {
+            int lengthSquared = (linePoint2 - linePoint1).LengthSquared();
+            if (lengthSquared == 0) return linePoint1;
+
+            int scal = (linePoint2 - linePoint1).Dot(this - linePoint1);
+
+            if (scal <= 0)
+                return linePoint1;
+            else if (scal >= lengthSquared)
+                return linePoint2;
+            return linePoint1 + scal * (linePoint2 - linePoint1) / lengthSquared;
+        }
     }
 }

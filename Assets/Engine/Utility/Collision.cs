@@ -11,11 +11,11 @@ namespace Automathon.Engine.Physics
         {
             //Calculate the circle coordinates in the boxes relative coordinate system, then simply use AABB-Circle collision with the box at position (0, 0)
             //We basically rotate the circle instead of the rectangle
-            Vector2Int boxRight = box.Coords[1] - box.Coords[0];
-            Vector2Int boxDown = box.Coords[3] - box.Coords[0];
+            Vector2Int boxRight = box.WorldVertices[1] - box.WorldVertices[0];
+            Vector2Int boxDown = box.WorldVertices[3] - box.WorldVertices[0];
             Vector2Int circlePos = circle.LocalPosition + circle.ParentEntity.Position;
 
-            Vector2Int relativeCircPos = circlePos - box.Coords[0];
+            Vector2Int relativeCircPos = circlePos - box.WorldVertices[0];
             Vector2Int rectCoordCirclePos = new Vector2Int(boxRight.X * relativeCircPos.X + boxDown.X * relativeCircPos.Y, boxRight.Y * relativeCircPos.X + boxDown.Y * relativeCircPos.Y);
 
             return AABBCircle(Vector2Int.Zero, 1, 1, rectCoordCirclePos, circle.Radius);
@@ -135,13 +135,13 @@ namespace Automathon.Engine.Physics
             //Indexes: UL = 0, UR = 1, LR = 2, LL = 3
             Vector2Int[] axies = new Vector2Int[4]
             {
-                box.Coords[1] - box.Coords[0], //UR - UL
-                box.Coords[1] - box.Coords[2], //UR - LR
-                box2.Coords[1] - box2.Coords[0], //UL - UR
-                box2.Coords[1] - box2.Coords[2], //UL - LL
+                box.WorldVertices[1] - box.WorldVertices[0], //UR - UL
+                box.WorldVertices[1] - box.WorldVertices[2], //UR - LR
+                box2.WorldVertices[1] - box2.WorldVertices[0], //UL - UR
+                box2.WorldVertices[1] - box2.WorldVertices[2], //UL - LL
             };
 
-            return SAT(box.Coords, box2.Coords, axies);
+            return SAT(box.WorldVertices, box2.WorldVertices, axies);
         }
 
         public class CollisionContact
@@ -203,24 +203,24 @@ namespace Automathon.Engine.Physics
 
                     //Check between which of the faces corresponding to the axis is actually the one being collided with
                     //(is the one facing the other box)
-                    if (n.Dot(box.Coords[1] - box.Coords[0]) >= 0)
-                        return (box.Coords[1], box.Coords[2]);
+                    if (n.Dot(box.WorldVertices[1] - box.WorldVertices[0]) >= 0)
+                        return (box.WorldVertices[1], box.WorldVertices[2]);
 
-                    return (box.Coords[3], box.Coords[0]);
+                    return (box.WorldVertices[3], box.WorldVertices[0]);
                 }
                 else
                 {
-                    if (n.Dot(box.Coords[0] - box.Coords[3]) >= 0)
-                        return (box.Coords[0], box.Coords[1]);
+                    if (n.Dot(box.WorldVertices[0] - box.WorldVertices[3]) >= 0)
+                        return (box.WorldVertices[0], box.WorldVertices[1]);
 
-                    return (box.Coords[2], box.Coords[3]);
+                    return (box.WorldVertices[2], box.WorldVertices[3]);
                 }
             }
 
             (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetCollisionFace(reference, contact.Normal, sat.AxisIndex % 2 == 0);
 
             //ignore multiplication by height and width, just there for scaling
-            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.Coords[1] - incident.Coords[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.Coords[2] - incident.Coords[1]) * incident.Width));
+            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.WorldVertices[1] - incident.WorldVertices[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.WorldVertices[2] - incident.WorldVertices[1]) * incident.Width));
             (Vector2Int inc1, Vector2Int inc2) = GetCollisionFace(incident, -contact.Normal, incidentXAxis); //incident face
 
             //Clip the incident face to the reference face

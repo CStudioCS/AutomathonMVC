@@ -25,15 +25,15 @@ namespace Automathon.Engine.Physics
         private Vector2Int r1;
         private Vector2Int r2;
 
-        public Contact(Rigidbody reference, Rigidbody incident, Collider referenceCollider, Collider incidentCollider, Vector2Int position, Vector2Int normal, int penetration)
+        public Contact(Rigidbody reference, Rigidbody incident, Collider referenceCollider, Collider incidentCollider, Vector2Int position, Vector2Int normalMilli, int penetration)
         {
             Reference = reference;
             Incident = incident;
             ReferenceCollider = referenceCollider;
             IncidentCollider = incidentCollider;
-            this.Position = position;
-            this.NormalMilli = normal;
-            this.Penetration = penetration;
+            Position = position;
+            NormalMilli = normalMilli;
+            Penetration = penetration;
             frictionMilli = IntMath.Isqrt(reference.FrictionMilli * incident.FrictionMilli) / 1000;
         }
 
