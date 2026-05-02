@@ -39,12 +39,17 @@ namespace Automathon
         public int Dot(Vector2Int other)
             => X * other.X + Y * other.Y;
 
+        public long LongDot(Vector2Int other)
+            => (long)X * other.X + (long)Y * other.Y;
+
         public Vector2Int ProjectedOn(Vector2Int other)
         {
-            int otherLengthSquared = other.LengthSquared();
+            long otherLengthSquared = other.LengthSquared();
             if (otherLengthSquared == 0)
                 return Vector2Int.Zero;
-            return Dot(other) * other / other.LengthSquared();
+            long dot = LongDot(other);
+
+            return new Vector2Int((int)(dot * other.X / otherLengthSquared), (int)(dot * other.Y / otherLengthSquared));
         }
 
         public int Length()
@@ -78,6 +83,9 @@ namespace Automathon
         public void NormalizeAtScale(int scale)
         {
             int length = Length();
+
+            if (length == 0) return;
+
             X = X * scale / length;
             Y = Y * scale / length;
         }

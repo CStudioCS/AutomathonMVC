@@ -13,12 +13,11 @@ namespace Automathon.Engine.Physics
             //We basically rotate the circle instead of the rectangle
             Vector2Int boxRight = box.WorldVertices[1] - box.WorldVertices[0];
             Vector2Int boxDown = box.WorldVertices[3] - box.WorldVertices[0];
-            Vector2Int circlePos = circle.LocalPosition + circle.ParentEntity.Position;
 
-            Vector2Int relativeCircPos = circlePos - box.WorldVertices[0];
-            Vector2Int rectCoordCirclePos = new Vector2Int(boxRight.X * relativeCircPos.X + boxDown.X * relativeCircPos.Y, boxRight.Y * relativeCircPos.X + boxDown.Y * relativeCircPos.Y);
+            Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldVertices[0];
+            Vector2Int rectCoordCirclePos = relativeCirclePos.ProjectedOn(boxRight) + relativeCirclePos.ProjectedOn(boxDown);
 
-            return AABBCircle(Vector2Int.Zero, 1, 1, rectCoordCirclePos, circle.Radius);
+            return AABBCircle(Vector2Int.Zero, box.Width, box.Height, rectCoordCirclePos, circle.Radius);
         }
 
         public static bool AABBCircle(Vector2Int rectTopLeftPos, int width, int height, Vector2Int cPosition, int cRadius)

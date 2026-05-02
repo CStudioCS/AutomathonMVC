@@ -17,9 +17,9 @@ namespace Automathon.Game.GrenadeSystem
 
         public Grenade(Vector2Int position, Vector2Int direction, int speed, int delayMilisecond, int fragmentNumber) : base(position)
         {
-            CircleCollider = new CircleCollider(position, 1000 / 2);
+            CircleCollider = new CircleCollider(Vector2Int.Zero, 1000 / 2);
             Rigidbody = new Rigidbody(CircleCollider, 1000, 500, 200);
-            Rigidbody.Velocity = direction * speed / 1000;
+            //Rigidbody.Velocity = direction * speed / 1000;
 
             Initialize(CircleCollider, Rigidbody);
 

@@ -97,10 +97,13 @@ namespace Automathon.Engine.Physics
                     }
                 }
 
-                Vector2Int normal = contactPoint - circleCollider.WorldPosition;
+                if (minDistance > circleCollider.Radius * circleCollider.Radius)
+                    return; //no collision
+
+                Vector2Int normal = circleCollider.WorldPosition - contactPoint;
                 normal.NormalizeAtScale(1000);
 
-                Contact contact = new Contact(rigidbody1, rigidbody2, boxCollider, circleCollider, contactPoint, normal, IntMath.Isqrt(minDistance) - circleCollider.Radius);
+                Contact contact = new Contact(rigidbody1, rigidbody2, boxCollider, circleCollider, contactPoint, normal, -circleCollider.Radius - IntMath.Isqrt(minDistance));
 
                 WarmStart(contact);
                 newContacts.Add(contact);
