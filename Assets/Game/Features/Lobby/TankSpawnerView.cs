@@ -18,16 +18,26 @@ namespace Automathon.Game.Lobby
             if (GameplayManager.State != GameplayManager.GameState.Lobby)
                 return;
 
+            playerInputManager.onPlayerLeft += OnPlayerLeft;
+
             HandleGamepadJoinInput();
             HandleKeyboardJoinInput();
 
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
+                PlayerInput playerInputToRemove = null;
+
                 foreach (PlayerInput playerInput in inputProviders.Keys)
                 {
                     if (playerInput.currentControlScheme == "Keyboard&Mouse")
-                        PlayerManager.OnPlayerLeft(inputProviders[playerInput]);
+                    {
+                        playerInputToRemove = playerInput;
+                        break;
+                    }
                 }
+
+                if (playerInputToRemove != null)
+                    OnPlayerLeft(playerInputToRemove);
             }
         }
 
@@ -122,6 +132,15 @@ namespace Automathon.Game.Lobby
 
             Tank tank = PlayerManager.OnPlayerJoined(inputProviders[playerInput]);
             playerInput.GetComponent<TankView>().Initialize(tank);
+        }
+
+        public void OnPlayerLeft(PlayerInput playerInput)
+        {
+            if (inputProviders.ContainsKey(playerInput))
+            {
+                PlayerManager.OnPlayerLeft(inputProviders[playerInput]);
+                inputProviders.Remove(playerInput);
+            }
         }
     }
 }

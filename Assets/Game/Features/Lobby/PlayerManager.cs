@@ -20,23 +20,32 @@ namespace Automathon.Game.Lobby.MultiTankManagement
             GameplayManager.Instantiate(tank);
             tanks.Add(tank);
 
-            if (tanks.Count == 2)
-                GameplayManager.ChangeState(GameplayManager.GameState.Game);
+            /*if (tanks.Count == 2)
+                GameplayManager.ChangeState(GameplayManager.GameState.Game);*/
 
             return tank;
         }
 
         public static void OnPlayerLeft(IInputProvider inputProvider)
         {
+            Tank tankToDestroy = null;
             foreach (Tank tank in tanks)
             {
                 if (tank.InputProvider == inputProvider)
                 {
-                    GameplayManager.Destroy(tank);
-                    tanks.Remove(tank);
+                    tankToDestroy = tank;
                     break;
                 }
             }
+
+            if (tankToDestroy != null)
+            {
+                GameplayManager.Destroy(tankToDestroy);
+                tanks.Remove(tankToDestroy);
+            }
+
+            if (tanks.Count == 1)
+                GameplayManager.ChangeState(GameplayManager.GameState.Lobby);
         }
 
         public static void Dispose()
