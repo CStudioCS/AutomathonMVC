@@ -89,11 +89,11 @@ namespace Automathon
             {
                 if (Y >= 0)
                 {
-                    return (Atan2Int.Atan2(X, Y) + IntMath.PI);
+                    return (Atan2Int.Atan2(X, Y) + IntMath.PI_MILLI);
                 }
                 else
                 {
-                    return (Atan2Int.Atan2(X, Y) - IntMath.PI);
+                    return (Atan2Int.Atan2(X, Y) - IntMath.PI_MILLI);
                 }
             }
         }
