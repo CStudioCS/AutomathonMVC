@@ -45,7 +45,10 @@ namespace Automathon.Game.TankSystem
             directionInput.NormalizeAtScale(1000);
 
             if (movementInput != Vector2Int.Zero)
+            {
                 RotationMilli = movementInput.CalculateAngleMilliRad(); //change for directionInput instead of movementInput when controllers are mainly used
+                rigidbody.AngularVelocityMilli = 0;
+            }
 
             if ((movementInput.X, movementInput.Y) != (0, 0))
                 LastMilliDirection = movementInput;
