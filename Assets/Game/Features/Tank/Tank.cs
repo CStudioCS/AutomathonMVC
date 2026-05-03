@@ -13,14 +13,15 @@ namespace Automathon.Game.TankSystem
         private const int SPEED = 4000;
         public const int MAX_HEALTH = 1000;
 
-        private IInputProvider inputProvider;
+        public IInputProvider InputProvider { get; private set; }
         private Rigidbody rigidbody;
 
         public Vector2Int LastMilliDirection { get; private set; }
+        public bool IsReady { get; set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
-            this.inputProvider = inputProvider;
+            InputProvider = inputProvider;
 
             BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
             rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
@@ -39,25 +40,25 @@ namespace Automathon.Game.TankSystem
         {
             base.Update();
 
-            Vector2Int movementInput = inputProvider.GetMilliMovementDir();
+            Vector2Int movementInput = InputProvider.GetMilliMovementDir();
             rigidbody.Velocity = movementInput * SPEED / 1000;
 
-            Vector2Int directionInput = inputProvider.GetMilliAimingDir();
+            Vector2Int directionInput = InputProvider.GetMilliAimingDir();
             directionInput.NormalizeAtScale(1000);
 
-            if (movementInput != Vector2Int.Zero)
+            if (directionInput != Vector2Int.Zero)
             {
-                RotationMilli = movementInput.CalculateAngleMilliRad(); //change for directionInput instead of movementInput when controllers are mainly used
+                RotationMilli = directionInput.CalculateAngleMilliRad();
                 rigidbody.AngularVelocityMilli = 0;
-            }
 
-            if ((movementInput.X, movementInput.Y) != (0, 0))
-                LastMilliDirection = movementInput;
+                LastMilliDirection = directionInput;
+                LastMilliDirection.NormalizeAtScale(1000);
+            }
         }
 
         private void Death()
         {
-            //The actual details of this will be made by Cedric
+            //The actual details of this will be made by whoever handles Gameplay end
             GameplayManager.Destroy(this);
         }
     }
