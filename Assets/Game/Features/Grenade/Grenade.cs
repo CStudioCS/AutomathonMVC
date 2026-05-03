@@ -10,9 +10,6 @@ namespace Automathon.Game.GrenadeSystem
 {
     public class Grenade : Entity
     {
-        private const int BULLET_SPEED = 1500;
-        private const int FRAGMENT_RADIUS = 1000 / 50;
-
         public CircleCollider CircleCollider { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
 
@@ -37,9 +34,9 @@ namespace Automathon.Game.GrenadeSystem
 
                 //calcule la distance min du centre pour que les fragments ne se touchent pas
                 int alpha = IntMath.PI_MILLI * 2 / numBullets;
-                int dist = 2 * FRAGMENT_RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
+                int dist = 2 * Bullet.RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
 
-                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
+                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir);
                 GameplayManager.Instantiate(bullet);
             }
 

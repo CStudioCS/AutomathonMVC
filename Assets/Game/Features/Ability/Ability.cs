@@ -1,4 +1,5 @@
 using Automathon.Engine;
+using Automathon.Game.TankSystem;
 using System;
 
 
@@ -13,10 +14,20 @@ namespace Automathon.Game.AbilitySystem
         public event Action AbilityActivated;
         public event Action CooldownElapsed;
 
+        public Tank Tank => ParentEntity as Tank;
+
         public Ability(int cooldown, Func<bool> shouldActivate)
         {
             this.coolDownMillis = cooldown;
             this.shouldActivate = shouldActivate;
+        }
+
+        public override void Initialize(Entity parentEntity)
+        {
+            base.Initialize(parentEntity);
+
+            if (ParentEntity is not Tank tank)
+                throw new ArgumentException("Abilities can only be added to a Tank");
         }
 
         public override void Update()
