@@ -1,8 +1,4 @@
 using Automathon.Engine;
-using Automathon.Game.Lobby;
-using Automathon.Game.Lobby.MultiTankManagement;
-using Automathon.Game.GrenadeSystem;
-using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
 using Automathon.Game.View;
 using Automathon.Game.View.Registry;
@@ -18,31 +14,15 @@ namespace Automathon.Game.World
 
         private bool subbedToSpawnEntityView;
 
-        GameplayManager gameplayManager = new GameplayManager();
-        MultiTankManager multiTankManager = new MultiTankManager();
+
+
         private void Awake()
         {
-            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
             GameplayManager.Initialize();
+            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
             subbedToSpawnEntityView = true;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
-
-            //this is ugly and temporary, let me be
-            //Tanks are spawned using Cedric's future system, not through auto instantiation (or maybe we should ?)
-            //We can't spawn them automatically cuz we need the reference to player input
-            TankView tankView = Instantiate(tankViewPrefab);
-            Tank tank = new Tank(new Vector2Int(0, 0), new PlayerInputProvider(tankView.PlayerInput));
-            GameplayManager.Instantiate(tank);
-            tankView.Initialize(tank);
-
-            TankView tankView2 = Instantiate(tankViewPrefab);
-            Tank tank2 = new Tank(new Vector2Int(5000, 0), new EmptyInputProvider());
-            GameplayManager.Instantiate(tank2);
-            tankView2.Initialize(tank2);
-
-            GameplayManager.Instantiate(new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0)));
-            GameplayManager.Instantiate(new Grenade(new Vector2Int(2000, 2000), new Vector2Int(1000, 0)));
 
             Wall wall = new Wall(new Vector2Int(-1000, 3000), new Vector2Int(3000, 500), 200);
             GameplayManager.Instantiate(wall);
@@ -61,21 +41,10 @@ namespace Automathon.Game.World
 
             EntityView entityView = Instantiate(entityViewPrefab);
             entityView.Initialize(entity);
-            gameplayManager.Awake();
-        }
-        //On fait un Start pas un Awake car on a besoin qhe WorldTanSpawnerView soit Awake
-        private void Start()
-        {
-            multiTankManager.Start();
-        }
-        void Update()
-        {
-            gameplayManager.Update();
-            multiTankManager.IsGameReady();
-            TankSpawnerView.Instance.TrySetPlayersReady();
         }
 
-    }
+        void Update()
+        {
             GameplayManager.Update();
         }
 

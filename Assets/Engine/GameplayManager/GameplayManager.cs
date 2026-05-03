@@ -1,4 +1,5 @@
 using Automathon.Engine.Physics;
+using Automathon.Game.Lobby.MultiTankManagement;
 using Automathon.Utility;
 using System;
 
@@ -7,14 +8,17 @@ namespace Automathon.Engine
     public static class GameplayManager
     {
         private static DeferredList<Entity> entities = new();
-        public enum GameState { Lobby, Game }
-
+        public static GameState State { get; private set; }
         public static event Action<Entity> EntitySpawned;
+
+        public enum GameState { Lobby, Game }
 
         public static void Initialize()
         {
-            PhysicsManager.Initialize();
             State = GameState.Lobby;
+
+            PhysicsManager.Initialize();
+            PlayerManager.Initialize();
         }
 
         public static void Update()
@@ -55,8 +59,16 @@ namespace Automathon.Engine
             entities.Remove(entity);
         }
 
+        public static void ChangeState(GameState newState)
+        {
+            State = newState;
+            //maybe emit an event here in the future
+        }
+
         public static void Dispose()
         {
+            PlayerManager.Dispose();
+
             foreach (Entity entity in entities.Items) Destroy(entity);
 
             ProcessAllEntityChanges();

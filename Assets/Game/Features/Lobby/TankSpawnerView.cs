@@ -10,35 +10,23 @@ namespace Automathon.Game.Lobby
 {
     public class TankSpawnerView : MonoBehaviour
     {
-        [Header("Setup")]
         [SerializeField] private PlayerInputManager playerInputManager;
-        List<PlayerInput> playersInput = new();
-        public static TankSpawnerView Instance { get; private set; }
+        private Dictionary<PlayerInput, IInputProvider> inputProviders = new();
 
-        public void Awake()
-        {
-            Destroy(Instance);
-            Instance = this;
-        }
         private void Update()
         {
-            if (GameplayManager.Instance.State != GameplayManager.GameState.Lobby)
+            if (GameplayManager.State != GameplayManager.GameState.Lobby)
                 return;
 
             HandleGamepadJoinInput();
             HandleKeyboardJoinInput();
 
-            if (Keyboard.current != null)
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
-                if (Keyboard.current.escapeKey.wasPressedThisFrame)
+                foreach (PlayerInput playerInput in inputProviders.Keys)
                 {
-                    foreach (var player in PlayerInput.all)
-                    {
-                        if (player.currentControlScheme == "Keyboard&Mouse")
-                        {
-                            MultiTankManager.Instance.OnPlayerLeft(player.gameObject.GetComponent<TankView>().Tank);
-                        }
-                    }
+                    if (playerInput.currentControlScheme == "Keyboard&Mouse")
+                        PlayerManager.PlayerLeft?.Invoke(inputProviders[playerInput]);
                 }
             }
         }
@@ -79,44 +67,34 @@ namespace Automathon.Game.Lobby
         private void JoinGamepadPlayer(Gamepad gamepad)
         {
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
-            {
-                //This kept triggering on accident everytime I maximized Unity so I commented it (why ?)
-                //Debug.Log("An extra gamepad player tried to connect but player limit has been reached");
                 return;
-            }
 
             // Check if THIS specific controller is already assigned to a player
-            foreach (var player in PlayerInput.all)
+            foreach (PlayerInput player in inputProviders.Keys)
             {
-                foreach (var device in player.devices)
+                foreach (InputDevice device in player.devices)
                 {
                     if (device == gamepad)
                         return;
                 }
             }
 
+            //Spawns a player
             PlayerInput playerInput = playerInputManager.JoinPlayer(
-            playerIndex: -1,
-            splitScreenIndex: -1,
-            controlScheme: "Gamepad",
-            pairWithDevice: gamepad);
+                playerIndex: -1,
+                splitScreenIndex: -1,
+                controlScheme: "Gamepad",
+                pairWithDevice: gamepad
+                );
 
-            TankView tankView = playerInput.GetComponent<TankView>();
-            tankView.PlayerInput = playerInput;
-
-            tankView.Initialize(MultiTankManager.Instance.CreateTank(new PlayerInputProvider(playerInput)));
+            SpawnTank(playerInput);
         }
         private void JoinKeyboardPlayer()
         {
-            // 1. Check if we are already at the player limit
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
-            {
-                //This kept triggering on accident everytime I maximized Unity so I commented it (why ?)
-                //Debug.Log("An extra keyboard tried to connect but player limit has been reached");
                 return;
-            }
 
-            foreach (PlayerInput playerInputTemp in PlayerInput.all)
+            foreach (PlayerInput playerInputTemp in inputProviders.Keys)
             {
                 if (playerInputTemp.currentControlScheme == "Keyboard&Mouse")
                     return;
@@ -131,35 +109,15 @@ namespace Automathon.Game.Lobby
                 pairWithDevice: Keyboard.current
             );
 
-            TankView tankView = playerInput.GetComponent<TankView>();
-            tankView.PlayerInput = playerInput;
-
-            tankView.Initialize(MultiTankManager.Instance.CreateTank(new PlayerInputProvider(playerInput)));
+            SpawnTank(playerInput);
         }
 
-        public void OnPlayerJoined(PlayerInput playerInput)
+        private void SpawnTank(PlayerInput playerInput)
         {
-            playersInput.Add(playerInput);
-        }
+            inputProviders[playerInput] = new PlayerInputProvider(playerInput);
 
-        public void OnPlayerLeft(PlayerInput playerInput)
-        {
-            if (playerInput == null) return;
-
-            playerInput.gameObject.GetComponent<TankView>().PlayerInput = null;
-            MultiTankManager.Instance.OnPlayerLeft(playerInput.gameObject.GetComponent<TankView>().Tank);
-            playersInput.Remove(playerInput);
-        }
-
-        public void TrySetPlayersReady()
-        {
-            foreach (PlayerInput player in playersInput)
-            {
-                if (player.actions["Join"].IsPressed())
-                {
-                    player.GetComponent<TankView>().Tank.IsReady = !player.GetComponent<TankView>().Tank.IsReady;
-                }
-            }
+            Tank tank = PlayerManager.PlayerJoined?.Invoke(inputProviders[playerInput]);
+            playerInput.GetComponent<TankView>().Initialize(tank);
         }
     }
 }
