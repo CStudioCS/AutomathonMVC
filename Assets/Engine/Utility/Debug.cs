@@ -14,9 +14,14 @@ namespace Automathon
         public static void LogError(params object[] logs)
         {
             string message = string.Join(";; ", logs);
+
+            ConsoleColor previousForegroundColor = Console.ForegroundColor;
+
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(message.ToString());
-            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.ForegroundColor = previousForegroundColor;
+
             UnityEngine.Debug.LogError(message);
         }
     }

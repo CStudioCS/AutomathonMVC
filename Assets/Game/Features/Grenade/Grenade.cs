@@ -19,7 +19,7 @@ namespace Automathon.Game.GrenadeSystem
         {
             CircleCollider = new CircleCollider(Vector2Int.Zero, 1000 / 2);
             Rigidbody = new Rigidbody(CircleCollider, 1000, 500, 200);
-            //Rigidbody.Velocity = direction * speed / 1000;
+            Rigidbody.Velocity = direction * speed / 1000;
 
             Initialize(CircleCollider, Rigidbody);
 

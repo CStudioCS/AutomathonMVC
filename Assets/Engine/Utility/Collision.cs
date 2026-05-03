@@ -26,6 +26,8 @@ namespace Automathon.Engine.Physics
             rectTopLeftPos *= 2;
             cPosition *= 2;
             cRadius *= 2;
+
+            //Since everything is scaled by 2, original width and height are now half width and half height in the doubled coord space
             Vector2Int halfSize = new Vector2Int(width, height);
 
 
@@ -246,35 +248,35 @@ namespace Automathon.Engine.Physics
             // Transform circle center into box local space
             Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldPosition;
 
-            Vector2Int localCenter = new Vector2Int(
+            Vector2Int localCircleCenter = new Vector2Int(
                 relativeCirclePos.Dot(rightMilli) / 1000,
                 relativeCirclePos.Dot(upMilli) / 1000
             );
 
             // Find closest point on box by clamping to half-extents
             Vector2Int closest = new Vector2Int(
-                Math.Clamp(localCenter.X, -halfWidth, halfWidth),
-                Math.Clamp(localCenter.Y, -halfHeight, halfHeight)
+                Math.Clamp(localCircleCenter.X, -halfWidth, halfWidth),
+                Math.Clamp(localCircleCenter.Y, -halfHeight, halfHeight)
             );
 
             // If circle center is inside the box, snap closest to the nearest face
-            bool inside = localCenter == closest;
+            bool inside = localCircleCenter == closest;
             if (inside)
             {
                 // To compare x / hw and y / hh correctly with integers, cross multiply:
                 // |x| * hh > |y| * hw
-                long absX_hh = Math.Abs(localCenter.X) * halfHeight;
-                long absY_hw = Math.Abs(localCenter.Y) * halfWidth;
+                long absX_hh = Math.Abs(localCircleCenter.X) * halfHeight;
+                long absY_hw = Math.Abs(localCircleCenter.Y) * halfWidth;
 
                 bool nearerToX = absX_hh > absY_hw;
                 if (nearerToX)
-                    closest.X = localCenter.X > 0 ? halfWidth : -halfWidth;
+                    closest.X = localCircleCenter.X > 0 ? halfWidth : -halfWidth;
                 else
-                    closest.Y = localCenter.Y > 0 ? halfHeight : -halfHeight;
+                    closest.Y = localCircleCenter.Y > 0 ? halfHeight : -halfHeight;
             }
 
-            Vector2Int delta = localCenter - closest;
-            int dist = delta.Length(); //reduce truncation errors
+            Vector2Int delta = localCircleCenter - closest;
+            long dist = delta.LengthLong();
 
             // Early out: circle is outside and not touching
             if (!inside && dist > circle.Radius)
@@ -285,12 +287,10 @@ namespace Automathon.Engine.Physics
 
             // Normal in local space, pointing from box surface toward circle center
             // Scaled by 1000 to maintain milli format
-            Vector2Int localNormalMilli = dist > 0 ? (delta * 1000) / dist : new Vector2Int(0, 1000);
+            Vector2Int localNormalMilli = dist > 0 ? delta * 1000 / dist : new Vector2Int(0, 1000);
             if (inside) localNormalMilli = -localNormalMilli;
 
-            // Rotate normal back to world space. 
-            // Invert the local to world logic from standard matrix rotation.
-            // upMilli here replaces the conventional .Column2 whereas right replaces .Column1
+            // Rotate normal back to world space.
             Vector2Int normalMilli = new Vector2Int(
                 (int)(((long)rightMilli.X * localNormalMilli.X + (long)upMilli.X * localNormalMilli.Y) / 1000),
                 (int)(((long)rightMilli.Y * localNormalMilli.X + (long)upMilli.Y * localNormalMilli.Y) / 1000)
@@ -298,11 +298,12 @@ namespace Automathon.Engine.Physics
 
             normalMilli.NormalizeAtScale(1000);
 
-            int separation = inside ? -(circle.Radius + dist) : dist - circle.Radius;
+            int separation = (int)(inside ? -(circle.Radius + dist) : dist - circle.Radius);
 
+            int contactOffsetSign = inside ? 1 : -1;
             Vector2Int contactPosition = new Vector2Int(
-                circle.WorldPosition.X - (int)(((long)normalMilli.X * circle.Radius) / 1000),
-                circle.WorldPosition.Y - (int)(((long)normalMilli.Y * circle.Radius) / 1000)
+                circle.WorldPosition.X + contactOffsetSign * (int)((long)normalMilli.X * circle.Radius / 1000),
+                circle.WorldPosition.Y + contactOffsetSign * (int)((long)normalMilli.Y * circle.Radius / 1000)
             );
 
 

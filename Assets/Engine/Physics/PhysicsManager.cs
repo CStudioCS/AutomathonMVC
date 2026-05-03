@@ -95,12 +95,16 @@ namespace Automathon.Engine.Physics
                 if (!Collision.CircleCircle(circleCollider1, circleCollider2))
                     return;
 
-                Vector2Int gap = circleCollider2.WorldPosition - circleCollider1.WorldPosition;
-                int penetration = circleCollider1.Radius + circleCollider2.Radius - gap.Length();
-                Vector2Int normal = gap;
-                normal.NormalizeAtScale(1000);
+                Vector2Int delta = circleCollider2.WorldPosition - circleCollider1.WorldPosition;
+                int penetration = circleCollider1.Radius + circleCollider2.Radius - delta.Length();
 
-                Contact contact = new Contact(rigidbody1, rigidbody2, circleCollider1, circleCollider2, circleCollider1.WorldPosition + gap / 2, normal, penetration);
+                Vector2Int normalMilli = delta;
+                if (delta != Vector2Int.Zero)
+                    normalMilli.NormalizeAtScale(1000);
+                else
+                    normalMilli = Vector2Int.Right * 1000;
+
+                Contact contact = new Contact(rigidbody1, rigidbody2, circleCollider1, circleCollider2, circleCollider1.WorldPosition + delta / 2, normalMilli, penetration);
 
                 WarmStart(contact);
 

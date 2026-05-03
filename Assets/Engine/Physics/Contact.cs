@@ -35,9 +35,6 @@ namespace Automathon.Engine.Physics
             NormalMilli = normalMilli;
             Penetration = penetration;
             frictionMilli = IntMath.Isqrt(reference.FrictionMilli * incident.FrictionMilli) / 1000;
-
-            if (penetration < 0)
-                Debug.LogError("Contact penetration is negative !");
         }
 
         public Vector2Int ComputeR(Collider collider)

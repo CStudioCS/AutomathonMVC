@@ -26,11 +26,17 @@ namespace Automathon
         public static Vector2Int operator *(Vector2Int a, int b)
             => new Vector2Int(a.X * b, a.Y * b);
 
-        public static Vector2Int operator *(int a, Vector2Int b)
-            => new Vector2Int(a * b.X, a * b.Y);
+        public static Vector2Int operator *(Vector2Int a, long b)
+            => new Vector2Int((int)(a.X * b), (int)(a.Y * b));
+
+        public static Vector2Int operator *(long a, Vector2Int b)
+            => new Vector2Int((int)(a * b.X), (int)(a * b.Y));
 
         public static Vector2Int operator /(Vector2Int a, int b)
             => new Vector2Int(a.X / b, a.Y / b);
+
+        public static Vector2Int operator /(Vector2Int a, long b)
+            => new Vector2Int((int)(a.X / b), (int)(a.Y / b));
 
         public static bool operator ==(Vector2Int a, Vector2Int b)
             => a.X == b.X && a.Y == b.Y;
@@ -69,6 +75,9 @@ namespace Automathon
 
         public int Length()
             => IntMath.Isqrt(X * X + Y * Y);
+
+        public long LengthLong()
+            => IntMath.Isqrt((long)X * X + (long)Y * Y);
 
         public int CalculateAngleMilliRad()
         {
