@@ -1,11 +1,13 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
+using Automathon.Game.ShieldSystem;
 using Automathon.Game.TankSystem;
 
 namespace Automathon.Game.BulletSystem
 {
     public class Bullet : Entity
     {
+        private const int DAMAGE = 100;
         public const int RADIUS = 100;
         public const int SPEED = 7000;
         private const int LIFESPAN_MILLI = 10000;
@@ -28,7 +30,9 @@ namespace Automathon.Game.BulletSystem
         private void OnCollision(CollisionEvent collisionContact)
         {
             if (collisionContact.Other.ParentEntity is Tank tank)
-                tank.Damage(100);
+                tank.Damage(DAMAGE);
+            else if (collisionContact.Other.ParentEntity is Shield shield)
+                shield.Damage(DAMAGE);
 
             GameplayManager.Destroy(this);
         }

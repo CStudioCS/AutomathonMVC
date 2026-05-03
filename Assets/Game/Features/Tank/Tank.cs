@@ -12,10 +12,10 @@ namespace Automathon.Game.TankSystem
         private const int SPEED = 4000;
         public const int MAX_HEALTH = 1000;
 
-        public int Health = MAX_HEALTH;
-
         private IInputProvider inputProvider;
         private Rigidbody rigidbody;
+
+        public int Health { get; private set; } = MAX_HEALTH;
         public Vector2Int LastMilliDirection { get; private set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
