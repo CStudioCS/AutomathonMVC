@@ -3,7 +3,7 @@ using Automathon.Utility;
 
 namespace Automathon
 {
-    public struct Vector2Int
+    public struct Vector2Int : System.IEquatable<Vector2Int>
     {
         public int X;
         public int Y;
@@ -26,11 +26,32 @@ namespace Automathon
         public static Vector2Int operator *(Vector2Int a, int b)
             => new Vector2Int(a.X * b, a.Y * b);
 
-        public static Vector2Int operator *(int a, Vector2Int b)
-            => new Vector2Int(a * b.X, a * b.Y);
+        public static Vector2Int operator *(Vector2Int a, long b)
+            => new Vector2Int((int)(a.X * b), (int)(a.Y * b));
+
+        public static Vector2Int operator *(long a, Vector2Int b)
+            => new Vector2Int((int)(a * b.X), (int)(a * b.Y));
 
         public static Vector2Int operator /(Vector2Int a, int b)
             => new Vector2Int(a.X / b, a.Y / b);
+
+        public static Vector2Int operator /(Vector2Int a, long b)
+            => new Vector2Int((int)(a.X / b), (int)(a.Y / b));
+
+        public static bool operator ==(Vector2Int a, Vector2Int b)
+            => a.X == b.X && a.Y == b.Y;
+
+        public static bool operator !=(Vector2Int a, Vector2Int b)
+            => !(a == b);
+
+        public bool Equals(Vector2Int other)
+            => this == other;
+
+        public override bool Equals(object obj)
+            => obj is Vector2Int other && Equals(other);
+
+        public override int GetHashCode()
+            => System.HashCode.Combine(X, Y);
 
         public static Vector2Int Zero => new Vector2Int(0, 0);
         public static Vector2Int Up => new Vector2Int(0, 1);
@@ -39,16 +60,24 @@ namespace Automathon
         public int Dot(Vector2Int other)
             => X * other.X + Y * other.Y;
 
+        public long LongDot(Vector2Int other)
+            => (long)X * other.X + (long)Y * other.Y;
+
         public Vector2Int ProjectedOn(Vector2Int other)
         {
-            int otherLengthSquared = other.LengthSquared();
+            long otherLengthSquared = other.LengthSquared();
             if (otherLengthSquared == 0)
                 return Vector2Int.Zero;
-            return Dot(other) * other / other.LengthSquared();
+            long dot = LongDot(other);
+
+            return new Vector2Int((int)(dot * other.X / otherLengthSquared), (int)(dot * other.Y / otherLengthSquared));
         }
 
         public int Length()
             => IntMath.Isqrt(X * X + Y * Y);
+
+        public long LengthLong()
+            => IntMath.Isqrt((long)X * X + (long)Y * Y);
 
         public int CalculateAngleMilliRad()
         {
@@ -78,6 +107,9 @@ namespace Automathon
         public void NormalizeAtScale(int scale)
         {
             int length = Length();
+
+            if (length == 0) return;
+
             X = X * scale / length;
             Y = Y * scale / length;
         }
@@ -106,6 +138,20 @@ namespace Automathon
             else if (scal >= lengthSquared)
                 return projOnNormal + bound2;
             return this;
+        }
+
+        public Vector2Int GetClosestOnLine(Vector2Int linePoint1, Vector2Int linePoint2)
+        {
+            int lengthSquared = (linePoint2 - linePoint1).LengthSquared();
+            if (lengthSquared == 0) return linePoint1;
+
+            int scal = (linePoint2 - linePoint1).Dot(this - linePoint1);
+
+            if (scal <= 0)
+                return linePoint1;
+            else if (scal >= lengthSquared)
+                return linePoint2;
+            return linePoint1 + scal * (linePoint2 - linePoint1) / lengthSquared;
         }
     }
 }

@@ -11,14 +11,13 @@ namespace Automathon.Engine.Physics
         {
             //Calculate the circle coordinates in the boxes relative coordinate system, then simply use AABB-Circle collision with the box at position (0, 0)
             //We basically rotate the circle instead of the rectangle
-            Vector2Int boxRight = box.Coords[1] - box.Coords[0];
-            Vector2Int boxDown = box.Coords[3] - box.Coords[0];
-            Vector2Int circlePos = circle.LocalPosition + circle.ParentEntity.Position;
+            Vector2Int boxRight = box.WorldVertices[1] - box.WorldVertices[0];
+            Vector2Int boxDown = box.WorldVertices[3] - box.WorldVertices[0];
 
-            Vector2Int relativeCircPos = circlePos - box.Coords[0];
-            Vector2Int rectCoordCirclePos = new Vector2Int(boxRight.X * relativeCircPos.X + boxDown.X * relativeCircPos.Y, boxRight.Y * relativeCircPos.X + boxDown.Y * relativeCircPos.Y);
+            Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldVertices[0];
+            Vector2Int rectCoordCirclePos = new Vector2Int(relativeCirclePos.Dot(boxRight) / box.Width, relativeCirclePos.Dot(boxDown) / box.Height);
 
-            return AABBCircle(Vector2Int.Zero, 1, 1, rectCoordCirclePos, circle.Radius);
+            return AABBCircle(Vector2Int.Zero, box.Width, box.Height, rectCoordCirclePos, circle.Radius);
         }
 
         public static bool AABBCircle(Vector2Int rectTopLeftPos, int width, int height, Vector2Int cPosition, int cRadius)
@@ -27,6 +26,8 @@ namespace Automathon.Engine.Physics
             rectTopLeftPos *= 2;
             cPosition *= 2;
             cRadius *= 2;
+
+            //Since everything is scaled by 2, original width and height are now half width and half height in the doubled coord space
             Vector2Int halfSize = new Vector2Int(width, height);
 
 
@@ -135,13 +136,13 @@ namespace Automathon.Engine.Physics
             //Indexes: UL = 0, UR = 1, LR = 2, LL = 3
             Vector2Int[] axies = new Vector2Int[4]
             {
-                box.Coords[1] - box.Coords[0], //UR - UL
-                box.Coords[1] - box.Coords[2], //UR - LR
-                box2.Coords[1] - box2.Coords[0], //UL - UR
-                box2.Coords[1] - box2.Coords[2], //UL - LL
+                box.WorldVertices[1] - box.WorldVertices[0], //UR - UL
+                box.WorldVertices[1] - box.WorldVertices[2], //UR - LR
+                box2.WorldVertices[1] - box2.WorldVertices[0], //UL - UR
+                box2.WorldVertices[1] - box2.WorldVertices[2], //UL - LL
             };
 
-            return SAT(box.Coords, box2.Coords, axies);
+            return SAT(box.WorldVertices, box2.WorldVertices, axies);
         }
 
         public class CollisionContact
@@ -150,6 +151,7 @@ namespace Automathon.Engine.Physics
 
             public Collider Reference;
             public Collider Incident;
+            public Vector2Int Position;
             public Vector2Int Normal;
             public int Penetration;
         }
@@ -203,24 +205,24 @@ namespace Automathon.Engine.Physics
 
                     //Check between which of the faces corresponding to the axis is actually the one being collided with
                     //(is the one facing the other box)
-                    if (n.Dot(box.Coords[1] - box.Coords[0]) >= 0)
-                        return (box.Coords[1], box.Coords[2]);
+                    if (n.Dot(box.WorldVertices[1] - box.WorldVertices[0]) >= 0)
+                        return (box.WorldVertices[1], box.WorldVertices[2]);
 
-                    return (box.Coords[3], box.Coords[0]);
+                    return (box.WorldVertices[3], box.WorldVertices[0]);
                 }
                 else
                 {
-                    if (n.Dot(box.Coords[0] - box.Coords[3]) >= 0)
-                        return (box.Coords[0], box.Coords[1]);
+                    if (n.Dot(box.WorldVertices[0] - box.WorldVertices[3]) >= 0)
+                        return (box.WorldVertices[0], box.WorldVertices[1]);
 
-                    return (box.Coords[2], box.Coords[3]);
+                    return (box.WorldVertices[2], box.WorldVertices[3]);
                 }
             }
 
             (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetCollisionFace(reference, contact.Normal, sat.AxisIndex % 2 == 0);
 
             //ignore multiplication by height and width, just there for scaling
-            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.Coords[1] - incident.Coords[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.Coords[2] - incident.Coords[1]) * incident.Width));
+            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.WorldVertices[1] - incident.WorldVertices[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.WorldVertices[2] - incident.WorldVertices[1]) * incident.Width));
             (Vector2Int inc1, Vector2Int inc2) = GetCollisionFace(incident, -contact.Normal, incidentXAxis); //incident face
 
             //Clip the incident face to the reference face
@@ -230,18 +232,89 @@ namespace Automathon.Engine.Physics
             return contact;
         }
 
-        /*public static CollisionContact CircleCircleContact(CircleCollider c1, CircleCollider c2)
+        public static CollisionContact BoxCircleContact(BoxCollider box, CircleCollider circle)
         {
-            CollisionContact contact = new();
+            CollisionContact collisionContact = new CollisionContact();
 
-            if (!c1.Colliding(c2))
+            // Calculate Box right and up direction vectors manually using RotationMillirad at milli scale (1000)
+            Vector2Int rightMilli = box.WorldVertices[1] - box.WorldVertices[0];
+            Vector2Int upMilli = box.WorldVertices[1] - box.WorldVertices[2];
+            rightMilli.NormalizeAtScale(1000);
+            upMilli.NormalizeAtScale(1000);
+
+            int halfWidth = box.Width / 2;
+            int halfHeight = box.Height / 2;
+
+            // Transform circle center into box local space
+            Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldPosition;
+
+            Vector2Int localCircleCenter = new Vector2Int(
+                relativeCirclePos.Dot(rightMilli) / 1000,
+                relativeCirclePos.Dot(upMilli) / 1000
+            );
+
+            // Find closest point on box by clamping to half-extents
+            Vector2Int closest = new Vector2Int(
+                Math.Clamp(localCircleCenter.X, -halfWidth, halfWidth),
+                Math.Clamp(localCircleCenter.Y, -halfHeight, halfHeight)
+            );
+
+            // If circle center is inside the box, snap closest to the nearest face
+            bool inside = localCircleCenter == closest;
+            if (inside)
             {
-                contact.Colliding = false;
-                return contact;
+                // To compare x / hw and y / hh correctly with integers, cross multiply:
+                // |x| * hh > |y| * hw
+                long absX_hh = Math.Abs(localCircleCenter.X) * halfHeight;
+                long absY_hw = Math.Abs(localCircleCenter.Y) * halfWidth;
+
+                bool nearerToX = absX_hh > absY_hw;
+                if (nearerToX)
+                    closest.X = localCircleCenter.X > 0 ? halfWidth : -halfWidth;
+                else
+                    closest.Y = localCircleCenter.Y > 0 ? halfHeight : -halfHeight;
             }
 
-            contact.Colliding = true;
-            contact.Normal = (c2.WorldPosition - c1.WorldPosition).NormalizeAtScale(1000);
-        }*/
+            Vector2Int delta = localCircleCenter - closest;
+            long dist = delta.LengthLong();
+
+            // Early out: circle is outside and not touching
+            if (!inside && dist > circle.Radius)
+            {
+                collisionContact.Colliding = false;
+                return collisionContact;
+            }
+
+            // Normal in local space, pointing from box surface toward circle center
+            // Scaled by 1000 to maintain milli format
+            Vector2Int localNormalMilli = dist > 0 ? delta * 1000 / dist : new Vector2Int(0, 1000);
+            if (inside) localNormalMilli = -localNormalMilli;
+
+            // Rotate normal back to world space.
+            Vector2Int normalMilli = new Vector2Int(
+                (int)(((long)rightMilli.X * localNormalMilli.X + (long)upMilli.X * localNormalMilli.Y) / 1000),
+                (int)(((long)rightMilli.Y * localNormalMilli.X + (long)upMilli.Y * localNormalMilli.Y) / 1000)
+            );
+
+            normalMilli.NormalizeAtScale(1000);
+
+            int separation = (int)(inside ? -(circle.Radius + dist) : dist - circle.Radius);
+
+            int contactOffsetSign = inside ? 1 : -1;
+            Vector2Int contactPosition = new Vector2Int(
+                circle.WorldPosition.X + contactOffsetSign * (int)((long)normalMilli.X * circle.Radius / 1000),
+                circle.WorldPosition.Y + contactOffsetSign * (int)((long)normalMilli.Y * circle.Radius / 1000)
+            );
+
+
+            collisionContact.Colliding = true;
+            collisionContact.Normal = normalMilli;
+            collisionContact.Reference = box;
+            collisionContact.Incident = circle;
+            collisionContact.Penetration = -separation;
+            collisionContact.Position = contactPosition;
+
+            return collisionContact;
+        }
     }
 }

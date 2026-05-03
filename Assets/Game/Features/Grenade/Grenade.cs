@@ -17,13 +17,13 @@ namespace Automathon.Game.GrenadeSystem
 
         public Grenade(Vector2Int position, Vector2Int direction, int speed, int delayMilisecond, int fragmentNumber) : base(position)
         {
-            CircleCollider = new CircleCollider(position, 1000 / 2);
+            CircleCollider = new CircleCollider(Vector2Int.Zero, 1000 / 2);
             Rigidbody = new Rigidbody(CircleCollider, 1000, 500, 200);
             Rigidbody.Velocity = direction * speed / 1000;
 
             Initialize(CircleCollider, Rigidbody);
 
-            AddBehavior(new Timer(500, null, () => BlowUp(fragmentNumber)));
+            AddBehavior(new Timer(delayMilisecond, null, () => BlowUp(fragmentNumber)));
         }
 
         private void BlowUp(int numBullets)
@@ -38,7 +38,7 @@ namespace Automathon.Game.GrenadeSystem
                 int alpha = 6283 / numBullets;
                 int dist = 2 * FRAGMENT_RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
 
-                Bullet bullet = new Bullet(this.Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
+                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
                 GameplayManager.Instantiate(bullet);
             }
 
