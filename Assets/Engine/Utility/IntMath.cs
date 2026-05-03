@@ -2,7 +2,7 @@
 {
     public static class IntMath
     {
-        public const int PI = 3142;
+        public const int PI_MILLI = 3142;
         // Fast Log2 via unrolled right-shifts (no BitOperations needed)
         private static int Log2(uint n)
         {

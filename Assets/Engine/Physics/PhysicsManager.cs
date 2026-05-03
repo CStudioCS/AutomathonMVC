@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Automathon.Engine.Utility;
+using System;
 using System.Collections.Generic;
 using static Automathon.Engine.Physics.Collision;
 
@@ -213,7 +214,7 @@ namespace Automathon.Engine.Physics
                 rb.ParentEntity.RotationMilli += rb.AngularVelocityMilli / GameplayConstants.FRAMERATE;
 
                 //Putting it between -pi and +pi
-                int twoPiApprox = 6282; // 2 * 3.1415 * 1000;
+                int twoPiApprox = IntMath.PI_MILLI * 2;
                 rb.ParentEntity.RotationMilli = rb.ParentEntity.RotationMilli % twoPiApprox;
                 if (rb.ParentEntity.RotationMilli > twoPiApprox / 2)
                     rb.ParentEntity.RotationMilli -= twoPiApprox;

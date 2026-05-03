@@ -2,6 +2,7 @@
 
 using Automathon.Engine;
 using Automathon.Engine.Physics;
+using Automathon.Engine.Utility;
 using Automathon.Game.BulletSystem;
 using Automathon.Utility;
 
@@ -30,12 +31,12 @@ namespace Automathon.Game.GrenadeSystem
         {
             for (int i = 0; i < numBullets; i++)
             {
-                int theta = i * 6283 / numBullets;
+                int theta = i * IntMath.PI_MILLI * 2 / numBullets;
 
                 Vector2Int dir = new Vector2Int(TrigTable.Cos(theta), TrigTable.Sin(theta));
 
                 //calcule la distance min du centre pour que les fragments ne se touchent pas
-                int alpha = 6283 / numBullets;
+                int alpha = IntMath.PI_MILLI * 2 / numBullets;
                 int dist = 2 * FRAGMENT_RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1100 / 1000;
 
                 Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, BULLET_SPEED, FRAGMENT_RADIUS);
