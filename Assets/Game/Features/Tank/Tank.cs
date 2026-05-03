@@ -46,19 +46,19 @@ namespace Automathon.Game.TankSystem
             Vector2Int directionInput = InputProvider.GetMilliAimingDir();
             directionInput.NormalizeAtScale(1000);
 
-            if (movementInput != Vector2Int.Zero)
+            if (directionInput != Vector2Int.Zero)
             {
-                RotationMilli = movementInput.CalculateAngleMilliRad(); //change for directionInput instead of movementInput when controllers are mainly used
+                RotationMilli = directionInput.CalculateAngleMilliRad();
                 rigidbody.AngularVelocityMilli = 0;
-            }
 
-            if ((movementInput.X, movementInput.Y) != (0, 0))
-                LastMilliDirection = movementInput;
+                LastMilliDirection = directionInput;
+                LastMilliDirection.NormalizeAtScale(1000);
+            }
         }
 
         private void Death()
         {
-            //The actual details of this will be made by Cedric
+            //The actual details of this will be made by whoever handles Gameplay end
             GameplayManager.Destroy(this);
         }
     }

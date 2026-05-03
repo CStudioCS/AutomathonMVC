@@ -47,8 +47,8 @@ namespace Automathon.Game.Lobby.MultiTankManagement
 
         public static void Dispose()
         {
-            foreach (Tank tank in tanks)
-                OnPlayerLeft(tank.InputProvider);
+            /*for (int i = tanks.Count - 1; i >= 0; i--)
+                OnPlayerLeft(tanks[i].InputProvider);*/
 
             PlayerJoined -= OnPlayerJoin;
             PlayerLeft -= OnPlayerLeft;

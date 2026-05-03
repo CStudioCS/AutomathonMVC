@@ -5,22 +5,20 @@ namespace Automathon.Game.Input
 {
     public class PlayerInputProvider : IInputProvider
     {
-        private PlayerInput playerInput;
         private InputAction dashAction;
         private InputAction grenadeAction;
         private InputAction shieldAction;
         private InputAction shootAction;
         private InputAction moveAction;
-
+        private InputAction aimAction;
         public PlayerInputProvider(PlayerInput playerInput)
         {
-            this.playerInput = playerInput;
-
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
             shieldAction = playerInput.actions["Shield"];
             shootAction = playerInput.actions["Shoot"];
             moveAction = playerInput.actions["Move"];
+            aimAction = playerInput.actions["Aim"];
         }
 
         public bool ShouldDash() => dashAction.IsPressed();
@@ -37,6 +35,10 @@ namespace Automathon.Game.Input
 
         public bool ShouldShoot() => shootAction.IsPressed();
 
-        public Vector2Int GetMilliAimingDir() => Vector2Int.Zero;
+        public Vector2Int GetMilliAimingDir()
+        {
+            Vector2 aimingDir = aimAction.ReadValue<Vector2>();
+            return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
+        }
     }
 }
