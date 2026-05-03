@@ -1,6 +1,7 @@
 ﻿using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.BulletSystem;
+using Automathon.Game.GrenadeSystem;
 using Automathon.Game.Input;
 using Automathon.Game.ShieldSystem;
 
@@ -19,6 +20,7 @@ namespace Automathon.Game.TankSystem
 
         private BulletAbility bulletAbility;
         private ShieldAbility shieldAbility;
+        private GrenadeAbility grenadeAbility;
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
@@ -29,8 +31,9 @@ namespace Automathon.Game.TankSystem
 
             bulletAbility = new BulletAbility(inputProvider.ShouldShoot);
             shieldAbility = new ShieldAbility(inputProvider.ShouldShield);
+            grenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade);
 
-            Initialize(boxCollider, rigidbody, bulletAbility, shieldAbility);
+            Initialize(boxCollider, rigidbody, bulletAbility, shieldAbility, grenadeAbility);
         }
 
         public override void Update()

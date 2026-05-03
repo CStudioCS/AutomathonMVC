@@ -37,8 +37,8 @@ namespace Automathon.Game.World
             GameplayManager.Instantiate(tank2);
             tankView2.Initialize(tank2);
 
-            GameplayManager.Instantiate(new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 20000, 12));
-            GameplayManager.Instantiate(new Grenade(new Vector2Int(2000, 2000), new Vector2Int(1000, 0), 1800, 20000, 12));
+            GameplayManager.Instantiate(new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0)));
+            GameplayManager.Instantiate(new Grenade(new Vector2Int(2000, 2000), new Vector2Int(1000, 0)));
 
             Wall wall = new Wall(new Vector2Int(-1000, 3000), new Vector2Int(3000, 500), 200);
             GameplayManager.Instantiate(wall);

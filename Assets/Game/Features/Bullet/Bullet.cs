@@ -6,7 +6,7 @@ namespace Automathon.Game.BulletSystem
 {
     public class Bullet : Entity
     {
-        public const int RADIUS = 200;
+        public const int RADIUS = 100;
         public const int SPEED = 7000;
         private const int LIFESPAN_MILLI = 10000;
 
@@ -15,12 +15,11 @@ namespace Automathon.Game.BulletSystem
         public Bullet(Vector2Int position, Vector2Int direction) : base(position)
         {
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
-
             Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
-            rigidbody.Velocity = direction * SPEED / 1000;
 
             Initialize(circleCollider, rigidbody);
 
+            rigidbody.Velocity = direction * SPEED / 1000;
             circleCollider.OnCollision += OnCollision;
 
             AddBehavior(new Timer(LIFESPAN_MILLI, null, () => GameplayManager.Destroy(this)));
