@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Automathon.Engine.Utility;
+using System;
 using System.Collections.Generic;
+using static Automathon.Engine.Physics.Collision;
 
 namespace Automathon.Engine.Physics
 {
@@ -10,7 +12,7 @@ namespace Automathon.Engine.Physics
 
         public static int Substeps = 6;
         public static int KBiasMilli = 200;
-        public static int SlopPenetration = 10;
+        public static int SlopPenetration = 30;
 
         public static void Initialize()
         {
@@ -22,6 +24,8 @@ namespace Automathon.Engine.Physics
         {
             Rigidbody.Added -= OnRigidbodyAdded;
             Rigidbody.Removed -= OnRigidbodyRemoved;
+            rigidbodies.Clear();
+            contacts.Clear();
         }
 
         private static void OnRigidbodyAdded(Rigidbody rigidbody)
@@ -60,9 +64,10 @@ namespace Automathon.Engine.Physics
                     if (!boxContact.Reference.Contains(position))
                         return;
 
-                    Contact contact = new Contact(referenceBody, incidentBody, position, boxContact.Normal, boxContact.Penetration);
+                    Contact contact = new Contact(referenceBody, incidentBody, boxContact.Reference, boxContact.Incident, position, boxContact.Normal, boxContact.Penetration);
 
                     WarmStart(contact);
+
                     newContacts.Add(contact);
                 }
 
@@ -70,14 +75,41 @@ namespace Automathon.Engine.Physics
                 AddContact(boxContact.ClippedIncidentFaceCoord2);
             }
 
-            void HandleBoxCircleContact(BoxCollider boxCollider, CircleCollider circleCollider)
+            void HandleBoxCircleContact(Rigidbody boxRigidbody, BoxCollider boxCollider, Rigidbody circleRigidbody, CircleCollider circleCollider)
             {
-                throw new NotImplementedException();
+                CollisionContact collisionContact = Collision.BoxCircleContact(boxCollider, circleCollider);
+
+                if (!collisionContact.Colliding)
+                    return;
+
+                Rigidbody referenceBody = collisionContact.Reference == boxCollider ? boxRigidbody : circleRigidbody;
+                Rigidbody incidentBody = collisionContact.Reference == boxCollider ? circleRigidbody : boxRigidbody;
+
+                Contact contact = new Contact(referenceBody, incidentBody, collisionContact.Reference, collisionContact.Incident, collisionContact.Position, collisionContact.Normal, collisionContact.Penetration);
+
+                WarmStart(contact);
+                newContacts.Add(contact);
             }
 
-            void HandleCircleCircleContact(CircleCollider circleCollider1, CircleCollider circleCollider2)
+            void HandleCircleCircleContact(Rigidbody rigidbody1, CircleCollider circleCollider1, Rigidbody rigidbody2, CircleCollider circleCollider2)
             {
-                throw new NotImplementedException();
+                if (!Collision.CircleCircle(circleCollider1, circleCollider2))
+                    return;
+
+                Vector2Int delta = circleCollider2.WorldPosition - circleCollider1.WorldPosition;
+                int penetration = circleCollider1.Radius + circleCollider2.Radius - delta.Length();
+
+                Vector2Int normalMilli = delta;
+                if (delta != Vector2Int.Zero)
+                    normalMilli.NormalizeAtScale(1000);
+                else
+                    normalMilli = Vector2Int.Right * 1000;
+
+                Contact contact = new Contact(rigidbody1, rigidbody2, circleCollider1, circleCollider2, circleCollider1.WorldPosition + delta / 2, normalMilli, penetration);
+
+                WarmStart(contact);
+
+                newContacts.Add(contact);
             }
 
 
@@ -95,11 +127,11 @@ namespace Automathon.Engine.Physics
                     if (rigidbody.Collider is BoxCollider b1 && otherRigidbody.Collider is BoxCollider b2)
                         HandleBoxBoxContact(rigidbody, b1, otherRigidbody, b2);
                     else if ((rigidbody.Collider is BoxCollider b3 && otherRigidbody.Collider is CircleCollider c1))
-                        HandleBoxCircleContact(b3, c1);
+                        HandleBoxCircleContact(rigidbody, b3, otherRigidbody, c1);
                     else if (rigidbody.Collider is CircleCollider c2 && otherRigidbody.Collider is BoxCollider b4)
-                        HandleBoxCircleContact(b4, c2);
+                        HandleBoxCircleContact(otherRigidbody, b4, rigidbody, c2);
                     else if (rigidbody.Collider is CircleCollider c3 && otherRigidbody.Collider is CircleCollider c4)
-                        HandleCircleCircleContact(c3, c4);
+                        HandleCircleCircleContact(rigidbody, c3, otherRigidbody, c4);
                 }
             }
 
@@ -112,6 +144,47 @@ namespace Automathon.Engine.Physics
             {
                 rb.Velocity += rb.InvMassMilli * rb.Forces / (GameplayConstants.FRAMERATE * 1000);
                 rb.AngularVelocityMilli += rb.InvIMicro * rb.TorqueMilli / (GameplayConstants.FRAMERATE * 1000 * 1000) / 1000000;
+            }
+        }
+
+        private static void DispatchCollisionEvents()
+        {
+            Dictionary<Collider, Dictionary<Collider, CollisionEvent>> colliderEvents = new();
+
+            void AddToCollisionEvent(Collider self, Collider other, Vector2Int position, Vector2Int normalMilli, int penetration)
+            {
+                if (!colliderEvents.ContainsKey(self))
+                    colliderEvents[self] = new Dictionary<Collider, CollisionEvent>();
+
+                if (!colliderEvents[self].ContainsKey(other))
+                    colliderEvents[self][other] = new CollisionEvent(self, other);
+
+                colliderEvents[self][other].Contacts.Add(new CollisionEvent.ContactData(position, normalMilli, penetration));
+            }
+
+            foreach (Contact contact in contacts)
+            {
+                AddToCollisionEvent(contact.ReferenceCollider, contact.IncidentCollider, contact.Position, contact.NormalMilli, contact.Penetration);
+                AddToCollisionEvent(contact.IncidentCollider, contact.ReferenceCollider, contact.Position, -contact.NormalMilli, contact.Penetration);
+            }
+
+            foreach (Dictionary<Collider, CollisionEvent> collisionEvents in colliderEvents.Values)
+            {
+                foreach (CollisionEvent collisionEvent in collisionEvents.Values)
+                {
+                    collisionEvent.AverageNormal = Vector2Int.Zero;
+
+                    collisionEvent.MaxPenetration = 0;
+                    foreach (CollisionEvent.ContactData contactData in collisionEvent.Contacts)
+                    {
+                        collisionEvent.AverageNormal += contactData.Normal;
+                        collisionEvent.MaxPenetration = Math.Max(collisionEvent.MaxPenetration, contactData.Penetration);
+                    }
+
+                    collisionEvent.AverageNormal = collisionEvent.AverageNormal / collisionEvent.Contacts.Count;
+
+                    collisionEvent.Self.OnCollision?.Invoke(collisionEvent);
+                }
             }
         }
 
@@ -141,7 +214,7 @@ namespace Automathon.Engine.Physics
                 rb.ParentEntity.RotationMilli += rb.AngularVelocityMilli / GameplayConstants.FRAMERATE;
 
                 //Putting it between -pi and +pi
-                int twoPiApprox = 6282; // 2 * 3.1415 * 1000;
+                int twoPiApprox = IntMath.PI_MILLI * 2;
                 rb.ParentEntity.RotationMilli = rb.ParentEntity.RotationMilli % twoPiApprox;
                 if (rb.ParentEntity.RotationMilli > twoPiApprox / 2)
                     rb.ParentEntity.RotationMilli -= twoPiApprox;
@@ -149,6 +222,8 @@ namespace Automathon.Engine.Physics
                 rb.Forces = Vector2Int.Zero;
                 rb.TorqueMilli = 0;
             }
+
+            DispatchCollisionEvents();
         }
     }
 }

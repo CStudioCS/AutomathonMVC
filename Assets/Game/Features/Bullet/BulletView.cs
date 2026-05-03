@@ -1,23 +1,17 @@
-using Automathon.Game.Utility;
+using Automathon.Game.View;
 using Automathon.Game.World;
 using UnityEngine;
 
 
 namespace Automathon.Game.BulletSystem
 {
-    public class BulletView : MonoBehaviour
+    public class BulletView : EntityView<Bullet>
     {
-        private Bullet bullet;
-
-        public void Initialize(Bullet bullet)
+        public override void Initialize(Bullet bullet)
         {
-            this.bullet = bullet;
-            transform.localScale = Vector3.one * bullet.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
-        }
-
-        private void LateUpdate()
-        {
-            transform.position = bullet.Position.ToVector2Scaled();
+            base.Initialize(bullet);
+            //Normalement la vue doit être directe adaptée à la grenade, on est pas censé le faire au runtime :/
+            transform.localScale = Vector3.one * 2 * bullet.CircleCollider.Radius / (float)WorldConstants.SPACE_SCALE;
         }
     }
 }

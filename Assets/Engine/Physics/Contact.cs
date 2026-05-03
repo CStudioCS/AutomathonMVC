@@ -5,12 +5,15 @@ namespace Automathon.Engine.Physics
 {
     public class Contact
     {
-        public Rigidbody Reference;
-        public Rigidbody Incident;
+        public Rigidbody Reference { get; private set; }
+        public Rigidbody Incident { get; private set; }
 
-        private Vector2Int position;
-        private Vector2Int normalMilli;
-        private int penetration;
+        public Collider ReferenceCollider { get; private set; }
+        public Collider IncidentCollider { get; private set; }
+
+        public Vector2Int Position { get; private set; }
+        public Vector2Int NormalMilli { get; private set; } //normal vector scaled by 1000
+        public int Penetration { get; private set; }
 
         public int Pn; //accumulated impulses
         public int Pt;
@@ -22,25 +25,24 @@ namespace Automathon.Engine.Physics
         private Vector2Int r1;
         private Vector2Int r2;
 
-        public Contact(Rigidbody reference, Rigidbody incident, Vector2Int position, Vector2Int normal, int penetration)
+        public Contact(Rigidbody reference, Rigidbody incident, Collider referenceCollider, Collider incidentCollider, Vector2Int position, Vector2Int normalMilli, int penetration)
         {
             Reference = reference;
             Incident = incident;
-            this.position = position;
-            this.normalMilli = normal;
-            this.penetration = penetration;
+            ReferenceCollider = referenceCollider;
+            IncidentCollider = incidentCollider;
+            Position = position;
+            NormalMilli = normalMilli;
+            Penetration = penetration;
             frictionMilli = IntMath.Isqrt(reference.FrictionMilli * incident.FrictionMilli) / 1000;
-
-            r1 = ComputeR(reference.Collider);
-            r2 = ComputeR(incident.Collider);
         }
 
         public Vector2Int ComputeR(Collider collider)
         {
             if (collider is BoxCollider boxCollider)
-                return position - boxCollider.WorldPosition;
+                return Position - boxCollider.WorldPosition;
             else if (collider is CircleCollider circleCollider)
-                return position - circleCollider.WorldPosition;
+                return Position - circleCollider.WorldPosition;
             else
                 throw new Exception("Unsupported collider type");
         }
@@ -50,14 +52,17 @@ namespace Automathon.Engine.Physics
         /// </summary>
         public void PreStep()
         {
+            r1 = ComputeR(Reference.Collider);
+            r2 = ComputeR(Incident.Collider);
+
             Vector2Int DoubleVectProd(Vector2Int r, Vector2Int n)
                 => new Vector2Int(-r.Y * (r.X * n.Y - r.Y * n.X), r.X * (r.X * n.Y - r.Y * n.X));
 
             //one division by 1000 because the normal is mult by 1000, and another one because of InvIMilli
-            Vector2Int v = (Reference.InvIMicro * DoubleVectProd(r1, normalMilli) + Incident.InvIMicro * DoubleVectProd(r2, normalMilli)) / 1000000000 / 1000000;
-            normalMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(normalMilli));
+            Vector2Int v = (Reference.InvIMicro * DoubleVectProd(r1, NormalMilli) + Incident.InvIMicro * DoubleVectProd(r2, NormalMilli)) / 1000000000 / 1000000;
+            normalMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(NormalMilli));
 
-            Vector2Int tangent = normalMilli.OrthogonalCounterClockwise();
+            Vector2Int tangent = NormalMilli.OrthogonalCounterClockwise();
             tangentialMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(tangent));
         }
 
@@ -72,8 +77,8 @@ namespace Automathon.Engine.Physics
 
             Vector2Int dV = Incident.Velocity + Incident.AngularVelocityMilli * new Vector2Int(-r2.Y, r2.X) / 1000 - (Reference.Velocity + Reference.AngularVelocityMilli * new Vector2Int(-r1.Y, r1.X) / 1000); //Vector Product translated in coords because not 3D lol
 
-            int vn = dV.Dot(normalMilli) / 1000;
-            int vbias = PhysicsManager.KBiasMilli * Math.Max(0, penetration - PhysicsManager.SlopPenetration) * GameplayConstants.FRAMERATE / 1000;
+            int vn = dV.Dot(NormalMilli) / 1000;
+            int vbias = PhysicsManager.KBiasMilli * Math.Max(0, Penetration - PhysicsManager.SlopPenetration) * GameplayConstants.FRAMERATE / 1000;
             int pnt = Math.Max((-vn + vbias) * normalMassMilli / 1000, 0);
             int tpp = pnt;
 
@@ -84,7 +89,7 @@ namespace Automathon.Engine.Physics
             /*if (Math.Abs(tpp - pnt) >= 0.01f)   
                 Debug.Log(pnt - tpp);*/
 
-            Vector2Int tangent = normalMilli.OrthogonalCounterClockwise();
+            Vector2Int tangent = NormalMilli.OrthogonalCounterClockwise();
             int vt = dV.Dot(tangent) / 1000;
 
             int ptt = (int)Math.Clamp(-vt * tangentialMassMilli / 1000, -frictionMilli * Pn / 1000, frictionMilli * Pn / 1000);
@@ -92,7 +97,7 @@ namespace Automathon.Engine.Physics
             Pt = Math.Clamp(Pt + ptt, -frictionMilli * Pn, frictionMilli * Pn);
             ptt = Pt - temp;
 
-            Vector2Int P = pnt * normalMilli / 1000 + ptt * tangent / 1000;
+            Vector2Int P = pnt * NormalMilli / 1000 + ptt * tangent / 1000;
 
             Reference.Velocity -= P * Reference.InvMassMilli / 1000;
             Reference.AngularVelocityMilli -= Reference.InvIMicro * (r1.X * P.Y - r1.Y * P.X) / 1000000;

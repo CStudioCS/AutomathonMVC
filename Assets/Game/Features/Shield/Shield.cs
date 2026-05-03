@@ -11,7 +11,8 @@ namespace Automathon.Game.ShieldSystem
         public BoxCollider BoxCollider { get; private set; }
         public Shield(Vector2Int position, int rotationMillirad) : base(position)
         {
-            BoxCollider = new BoxCollider(Vector2Int.Zero, SHIELD_HALF_LENGTH, SHIELD_HALF_HEIGHT, rotationMillirad);
+            RotationMilli = rotationMillirad;
+            BoxCollider = new BoxCollider(Vector2Int.Zero, SHIELD_HALF_LENGTH, SHIELD_HALF_HEIGHT, 0);
             Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
             Initialize(Rigidbody, BoxCollider);
         }

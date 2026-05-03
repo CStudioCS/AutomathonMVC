@@ -1,23 +1,10 @@
-using Automathon.Game.Utility;
-using Automathon.Utility;
-using UnityEngine;
+using Automathon.Game.View;
 
 namespace Automathon.Game.ShieldSystem
 {
-    public class ShieldView : MonoBehaviour
+    public class ShieldView : EntityView<Shield>
     {
-        private Shield shield;
 
-        internal void Initialize(Shield shield)
-        {
-            this.shield = shield;
-        }
-
-        private void LateUpdate()
-        {
-            transform.position = shield.Position.ToVector2Scaled();
-            transform.rotation = ViewMath.MilliRadRotationToQuaternion(shield.BoxCollider.RotationMillirad);
-        }
     }
 }
 
