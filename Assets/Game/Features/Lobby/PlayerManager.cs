@@ -1,26 +1,20 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
 using Automathon.Game.TankSystem;
-using System;
 using System.Collections.Generic;
 
 namespace Automathon.Game.Lobby.MultiTankManagement
 {
     public static class PlayerManager
     {
-        public static Func<IInputProvider, Tank> PlayerJoined; //this is called by the view
-        public static Action<IInputProvider> PlayerLeft;
         private static List<Tank> tanks;
 
         public static void Initialize()
         {
             tanks = new();
-
-            PlayerJoined += OnPlayerJoin;
-            PlayerLeft += OnPlayerLeft;
         }
 
-        private static Tank OnPlayerJoin(IInputProvider inputProvider)
+        public static Tank OnPlayerJoined(IInputProvider inputProvider)
         {
             Tank tank = new Tank(Vector2Int.Zero, inputProvider);
             GameplayManager.Instantiate(tank);
@@ -32,7 +26,7 @@ namespace Automathon.Game.Lobby.MultiTankManagement
             return tank;
         }
 
-        private static void OnPlayerLeft(IInputProvider inputProvider)
+        public static void OnPlayerLeft(IInputProvider inputProvider)
         {
             foreach (Tank tank in tanks)
             {
@@ -49,9 +43,6 @@ namespace Automathon.Game.Lobby.MultiTankManagement
         {
             /*for (int i = tanks.Count - 1; i >= 0; i--)
                 OnPlayerLeft(tanks[i].InputProvider);*/
-
-            PlayerJoined -= OnPlayerJoin;
-            PlayerLeft -= OnPlayerLeft;
 
             tanks.Clear();
         }

@@ -26,10 +26,11 @@ namespace Automathon.Game.Lobby
                 foreach (PlayerInput playerInput in inputProviders.Keys)
                 {
                     if (playerInput.currentControlScheme == "Keyboard&Mouse")
-                        PlayerManager.PlayerLeft?.Invoke(inputProviders[playerInput]);
+                        PlayerManager.OnPlayerLeft(inputProviders[playerInput]);
                 }
             }
         }
+
         private void HandleKeyboardJoinInput()
         {
             Keyboard keyboard = Keyboard.current;
@@ -41,6 +42,7 @@ namespace Automathon.Game.Lobby
                 JoinKeyboardPlayer();
             }
         }
+
         private void HandleGamepadJoinInput()
         {
             foreach (var gamepad in Gamepad.all)
@@ -64,6 +66,7 @@ namespace Automathon.Game.Lobby
                 }
             }
         }
+
         private void JoinGamepadPlayer(Gamepad gamepad)
         {
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
@@ -89,6 +92,7 @@ namespace Automathon.Game.Lobby
 
             SpawnTank(playerInput);
         }
+
         private void JoinKeyboardPlayer()
         {
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
@@ -116,7 +120,7 @@ namespace Automathon.Game.Lobby
         {
             inputProviders[playerInput] = new PlayerInputProvider(playerInput);
 
-            Tank tank = PlayerManager.PlayerJoined?.Invoke(inputProviders[playerInput]);
+            Tank tank = PlayerManager.OnPlayerJoined(inputProviders[playerInput]);
             playerInput.GetComponent<TankView>().Initialize(tank);
         }
     }
