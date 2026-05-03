@@ -6,7 +6,7 @@ namespace Automathon.Utility
     public static class TrigTable
     {
         private const int FULL_CIRCLE = IntMath.PI_MILLI * 2;
-        private const int QUARTER_CIRCLE = IntMath.PI_MILLI * 1000 / 2;
+        private const int QUARTER_CIRCLE = FULL_CIRCLE / 4;
 
         //Déso Thomas mais c bien hardcodé bien méchant, sur VS c'est collapsed après
         private static readonly int[] CosTable = new int[FULL_CIRCLE] {
@@ -418,7 +418,7 @@ namespace Automathon.Utility
     /*
     
     const int Scale = 1000;
-    const int TableSize = IntMath.PI * 2; // ceil(2π * Scale)
+    const int TableSize = FULL_CIRCLE; // ceil(2π * Scale)
 
     var sb = new System.Text.StringBuilder();
     sb.AppendLine($"private static readonly int[] CosTable = new int[{TableSize}] {{");
