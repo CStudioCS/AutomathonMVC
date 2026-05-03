@@ -32,6 +32,12 @@ namespace Automathon
         public static Vector2Int operator /(Vector2Int a, int b)
             => new Vector2Int(a.X / b, a.Y / b);
 
+        public static bool operator ==(Vector2Int a, Vector2Int b)
+            => a.X == b.X && a.Y == b.Y;
+
+        public static bool operator !=(Vector2Int a, Vector2Int b)
+            => a.X != b.X || a.Y != b.Y;
+
         public static Vector2Int Zero => new Vector2Int(0, 0);
         public static Vector2Int Up => new Vector2Int(0, 1);
         public static Vector2Int Right => new Vector2Int(1, 0);

@@ -15,7 +15,7 @@ namespace Automathon.Engine.Physics
             Vector2Int boxDown = box.WorldVertices[3] - box.WorldVertices[0];
 
             Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldVertices[0];
-            Vector2Int rectCoordCirclePos = relativeCirclePos.ProjectedOn(boxRight) + relativeCirclePos.ProjectedOn(boxDown);
+            Vector2Int rectCoordCirclePos = new Vector2Int(relativeCirclePos.Dot(boxRight) / box.Width, relativeCirclePos.Dot(boxDown) / box.Height);
 
             return AABBCircle(Vector2Int.Zero, box.Width, box.Height, rectCoordCirclePos, circle.Radius);
         }

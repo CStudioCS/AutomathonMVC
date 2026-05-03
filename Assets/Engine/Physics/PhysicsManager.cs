@@ -74,13 +74,14 @@ namespace Automathon.Engine.Physics
                 AddContact(boxContact.ClippedIncidentFaceCoord2);
             }
 
-            void HandleBoxCircleContact(Rigidbody rigidbody1, BoxCollider boxCollider, Rigidbody rigidbody2, CircleCollider circleCollider)
+            void HandleBoxCircleContact(Rigidbody boxRigidbody, BoxCollider boxCollider, Rigidbody circleRigidbody, CircleCollider circleCollider)
             {
-                if (!Collision.BoxCircle(boxCollider, circleCollider))
-                    return;
+                /*if (!Collision.BoxCircle(boxCollider, circleCollider))
+                    return;*/
 
                 Vector2Int contactPoint = Vector2Int.Zero;
-                int minDistance = int.MaxValue;
+                int minDistanceSquared = int.MaxValue;
+                bool isCorner = false;
 
                 for (int i = 0; i < boxCollider.WorldVertices.Length; i++)
                 {
@@ -88,22 +89,30 @@ namespace Automathon.Engine.Physics
                     Vector2Int edgeEnd = boxCollider.WorldVertices[(i + 1) % boxCollider.WorldVertices.Length];
 
                     Vector2Int closestPoint = circleCollider.WorldPosition.GetClosestOnLine(edgeStart, edgeEnd);
-                    int distance = (closestPoint - circleCollider.WorldPosition).LengthSquared();
+                    int distanceSquared = (closestPoint - circleCollider.WorldPosition).LengthSquared();
 
-                    if (distance < minDistance)
+                    if (distanceSquared < minDistanceSquared)
                     {
-                        minDistance = distance;
+                        minDistanceSquared = distanceSquared;
                         contactPoint = closestPoint;
+                        isCorner = contactPoint == edgeStart || contactPoint == edgeEnd;
                     }
                 }
 
-                if (minDistance > circleCollider.Radius * circleCollider.Radius)
+                if (minDistanceSquared > circleCollider.Radius * circleCollider.Radius)
                     return; //no collision
 
-                Vector2Int normal = circleCollider.WorldPosition - contactPoint;
+                Vector2Int normal = contactPoint - circleCollider.WorldPosition; //normal if circle is the reference
                 normal.NormalizeAtScale(1000);
 
-                Contact contact = new Contact(rigidbody1, rigidbody2, boxCollider, circleCollider, contactPoint, normal, -circleCollider.Radius - IntMath.Isqrt(minDistance));
+                int penetration = circleCollider.Radius - IntMath.Isqrt(minDistanceSquared);
+
+                Contact contact;
+                Debug.Log(penetration);
+                if (isCorner) //reference is circle, incident is box
+                    contact = new Contact(circleRigidbody, boxRigidbody, circleCollider, boxCollider, contactPoint, normal, penetration);
+                else
+                    contact = new Contact(boxRigidbody, circleRigidbody, boxCollider, circleCollider, contactPoint, -normal, penetration);
 
                 WarmStart(contact);
                 newContacts.Add(contact);

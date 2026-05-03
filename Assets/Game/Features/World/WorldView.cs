@@ -40,7 +40,7 @@ namespace Automathon.Game.World
             Grenade grenade = new Grenade(new Vector2Int(1000, 1000), new Vector2Int(1000, 0), 1800, 20000, 12);
             GameplayManager.Instantiate(grenade);
 
-            Wall wall = new Wall(new Vector2Int(3200, 2600), new Vector2Int(1500, 500), 200);
+            Wall wall = new Wall(new Vector2Int(-1000, 3000), new Vector2Int(3000, 500), 200);
             GameplayManager.Instantiate(wall);
         }
 
