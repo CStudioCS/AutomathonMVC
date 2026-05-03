@@ -14,7 +14,7 @@ namespace Automathon.Game.AbilitySystem
         public event Action AbilityActivated;
         public event Action CooldownElapsed;
 
-        public Tank Tank => ParentEntity as Tank;
+        public Tank Tank { get; private set; }
 
         public Ability(int cooldown, Func<bool> shouldActivate)
         {
@@ -26,7 +26,9 @@ namespace Automathon.Game.AbilitySystem
         {
             base.Initialize(parentEntity);
 
-            if (ParentEntity is not Tank tank)
+            if (ParentEntity is Tank tank)
+                Tank = tank;
+            else
                 throw new ArgumentException("Abilities can only be added to a Tank");
         }
 

@@ -40,6 +40,8 @@ namespace Automathon.Game.GrenadeSystem
 
                 //calcule la distance min du centre pour que les fragments ne se touchent pas
                 int alpha = IntMath.PI_MILLI * 2 / FRAGMENT_NUMBER;
+
+                // * 1200 / 1000 in order to space them out enough, it's kinda arbitrary but it works
                 int dist = 2 * Bullet.RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1200 / 1000;
 
                 Bullet bullet = new Bullet(Position + dir * dist / 1000, dir);
