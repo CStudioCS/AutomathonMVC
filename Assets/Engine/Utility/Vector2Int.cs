@@ -3,7 +3,7 @@ using Automathon.Utility;
 
 namespace Automathon
 {
-    public struct Vector2Int
+    public struct Vector2Int : System.IEquatable<Vector2Int>
     {
         public int X;
         public int Y;
@@ -36,7 +36,16 @@ namespace Automathon
             => a.X == b.X && a.Y == b.Y;
 
         public static bool operator !=(Vector2Int a, Vector2Int b)
-            => a.X != b.X || a.Y != b.Y;
+            => !(a == b);
+
+        public bool Equals(Vector2Int other)
+            => this == other;
+
+        public override bool Equals(object obj)
+            => obj is Vector2Int other && Equals(other);
+
+        public override int GetHashCode()
+            => System.HashCode.Combine(X, Y);
 
         public static Vector2Int Zero => new Vector2Int(0, 0);
         public static Vector2Int Up => new Vector2Int(0, 1);
