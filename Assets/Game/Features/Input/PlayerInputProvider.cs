@@ -5,6 +5,7 @@ namespace Automathon.Game.Input
 {
     public class PlayerInputProvider : IInputProvider
     {
+        private bool isGamepad;
         private InputAction dashAction;
         private InputAction grenadeAction;
         private InputAction shieldAction;
@@ -13,6 +14,7 @@ namespace Automathon.Game.Input
         private InputAction aimAction;
         public PlayerInputProvider(PlayerInput playerInput)
         {
+            isGamepad = playerInput.currentControlScheme == "Gamepad";
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
             shieldAction = playerInput.actions["Shield"];
@@ -37,8 +39,13 @@ namespace Automathon.Game.Input
 
         public Vector2Int GetMilliAimingDir()
         {
-            Vector2 aimingDir = aimAction.ReadValue<Vector2>();
-            return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
+            if (isGamepad)
+            {
+                Vector2 aimingDir = aimAction.ReadValue<Vector2>();
+                return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
+            }
+
+            return GetMilliMovementDir();
         }
     }
 }
