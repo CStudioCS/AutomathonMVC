@@ -10,7 +10,6 @@ namespace Automathon.Game.ShieldSystem
     {
         private const int SHIELD_COOLDOWN_MILLIS = 3000;
         private const int SPAWN_DISTANCE_FROM_TANK = 2000;
-        public event Action<Shield> ShieldActivated;
         public Tank Tank { get; private set; }
 
         public ShieldAbility(Tank tank, Func<bool> shouldActivateParam) : base(cooldown: SHIELD_COOLDOWN_MILLIS, shouldActivate: shouldActivateParam)
@@ -23,10 +22,7 @@ namespace Automathon.Game.ShieldSystem
             Vector2Int position = Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000;
             int rotationMilliRad = Tank.BoxCollider.RotationMillirad + IntMath.PI_MILLI / 2;
 
-            Shield shieldEntity = new Shield(position, rotationMilliRad);
-
-            GameplayManager.Instantiate(shieldEntity);
-            ShieldActivated?.Invoke(shieldEntity);
+            GameplayManager.Instantiate(new Shield(position, rotationMilliRad));
         }
     }
 }
