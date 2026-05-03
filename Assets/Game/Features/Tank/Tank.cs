@@ -18,10 +18,6 @@ namespace Automathon.Game.TankSystem
         private Rigidbody rigidbody;
         public Vector2Int LastMilliDirection { get; private set; }
 
-        private BulletAbility bulletAbility;
-        private ShieldAbility shieldAbility;
-        private GrenadeAbility grenadeAbility;
-
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
             this.inputProvider = inputProvider;
@@ -29,11 +25,13 @@ namespace Automathon.Game.TankSystem
             BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
             rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
 
-            bulletAbility = new BulletAbility(inputProvider.ShouldShoot);
-            shieldAbility = new ShieldAbility(inputProvider.ShouldShield);
-            grenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade);
-
-            Initialize(boxCollider, rigidbody, bulletAbility, shieldAbility, grenadeAbility);
+            Initialize(
+                boxCollider,
+                rigidbody,
+                new BulletAbility(inputProvider.ShouldShoot),
+                new ShieldAbility(inputProvider.ShouldShield),
+                new GrenadeAbility(inputProvider.ShouldGrenade)
+                );
         }
 
         public override void Update()
@@ -41,12 +39,13 @@ namespace Automathon.Game.TankSystem
             base.Update();
 
             Vector2Int movementInput = inputProvider.GetMilliMovementDir();
-
             rigidbody.Velocity = movementInput * SPEED / 1000;
 
             Vector2Int directionInput = inputProvider.GetMilliAimingDir();
+            directionInput.NormalizeAtScale(1000);
 
-            RotationMilli = movementInput.CalculateAngleMilliRad();//change for directionInput instead of movementInput
+            if (movementInput != Vector2Int.Zero)
+                RotationMilli = movementInput.CalculateAngleMilliRad(); //change for directionInput instead of movementInput when controllers are mainly used
 
             if ((movementInput.X, movementInput.Y) != (0, 0))
                 LastMilliDirection = movementInput;
@@ -56,7 +55,7 @@ namespace Automathon.Game.TankSystem
         {
             Health -= damage;
 
-            if (Health < 0)
+            if (Health <= 0)
             {
                 Health = 0;
                 Death();

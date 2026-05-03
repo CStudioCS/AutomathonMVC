@@ -1,5 +1,4 @@
 using Automathon.Engine;
-using Automathon.Engine.Utility;
 using Automathon.Game.AbilitySystem;
 using Automathon.Game.TankSystem;
 using System;
