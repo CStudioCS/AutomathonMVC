@@ -79,5 +79,20 @@ namespace Automathon.Engine
         {
             behaviors.Remove(behavior);
         }
+
+        public bool TryGetComponent<T>(out T component) where T : Component
+        {
+            foreach (Component currentComponent in components)
+            {
+                if (currentComponent is T tComponent)
+                {
+                    component = tComponent;
+                    return true;
+                }
+            }
+
+            component = null;
+            return false;
+        }
     }
 }

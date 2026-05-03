@@ -1,5 +1,6 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
+using Automathon.Game.HealthSystem;
 
 namespace Automathon.Game.ShieldSystem
 {
@@ -18,19 +19,14 @@ namespace Automathon.Game.ShieldSystem
             RotationMilli = rotationMillirad;
             BoxCollider = new BoxCollider(Vector2Int.Zero, HALF_LENGTH, HALF_HEIGHT, 0);
             Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
-            Initialize(Rigidbody, BoxCollider);
+
+            Initialize(
+                Rigidbody,
+                BoxCollider,
+                new Health(MAX_HEALTH, true)
+                );
 
             AddBehavior(new Timer(LIFESPAN_MILLIS, null, () => GameplayManager.Destroy(this)));
-        }
-
-        public void Damage(int damage)
-        {
-            Health -= damage;
-            if (Health <= 0)
-            {
-                Health = 0;
-                GameplayManager.Destroy(this);
-            }
         }
     }
 }

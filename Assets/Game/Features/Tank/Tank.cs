@@ -2,6 +2,7 @@
 using Automathon.Engine.Physics;
 using Automathon.Game.BulletSystem;
 using Automathon.Game.GrenadeSystem;
+using Automathon.Game.HealthSystem;
 using Automathon.Game.Input;
 using Automathon.Game.ShieldSystem;
 
@@ -15,7 +16,6 @@ namespace Automathon.Game.TankSystem
         private IInputProvider inputProvider;
         private Rigidbody rigidbody;
 
-        public int Health { get; private set; } = MAX_HEALTH;
         public Vector2Int LastMilliDirection { get; private set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
@@ -30,7 +30,8 @@ namespace Automathon.Game.TankSystem
                 rigidbody,
                 new BulletAbility(inputProvider.ShouldShoot),
                 new ShieldAbility(inputProvider.ShouldShield),
-                new GrenadeAbility(inputProvider.ShouldGrenade)
+                new GrenadeAbility(inputProvider.ShouldGrenade),
+                new Health(MAX_HEALTH, false, Death)
                 );
         }
 
@@ -52,17 +53,6 @@ namespace Automathon.Game.TankSystem
 
             if ((movementInput.X, movementInput.Y) != (0, 0))
                 LastMilliDirection = movementInput;
-        }
-
-        public void Damage(int damage)
-        {
-            Health -= damage;
-
-            if (Health <= 0)
-            {
-                Health = 0;
-                Death();
-            }
         }
 
         private void Death()

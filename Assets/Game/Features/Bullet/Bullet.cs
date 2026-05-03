@@ -1,7 +1,6 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Game.ShieldSystem;
-using Automathon.Game.TankSystem;
+using Automathon.Game.HealthSystem;
 
 namespace Automathon.Game.BulletSystem
 {
@@ -29,10 +28,8 @@ namespace Automathon.Game.BulletSystem
 
         private void OnCollision(CollisionEvent collisionContact)
         {
-            if (collisionContact.Other.ParentEntity is Tank tank)
-                tank.Damage(DAMAGE);
-            else if (collisionContact.Other.ParentEntity is Shield shield)
-                shield.Damage(DAMAGE);
+            if (collisionContact.Other.ParentEntity.TryGetComponent(out Health health))
+                health.Damage(DAMAGE);
 
             GameplayManager.Destroy(this);
         }
