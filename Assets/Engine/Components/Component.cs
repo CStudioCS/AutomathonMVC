@@ -5,7 +5,7 @@
         //this has a lot of overlap with Behavior, will maybe add a base class that encapsulates both, will see later
         public Entity ParentEntity { get; private set; }
 
-        public void Initialize(Entity parentEntity)
+        public virtual void Initialize(Entity parentEntity)
         {
             ParentEntity = parentEntity;
         }

@@ -6,6 +6,9 @@ namespace Automathon.Engine
     public abstract class Entity
     {
         public Vector2Int Position;
+        public int RotationMilli;
+        public event Action Destroyed;
+
         private Component[] components;
         private DeferredList<Behavior> behaviors = new();
 
@@ -62,6 +65,8 @@ namespace Automathon.Engine
 
             foreach (Component component in components)
                 component.OnDestroyed();
+
+            Destroyed?.Invoke();
         }
 
         public T AddBehavior<T>(T behavior) where T : Behavior
@@ -73,6 +78,21 @@ namespace Automathon.Engine
         public void RemoveBehavior<T>(T behavior) where T : Behavior
         {
             behaviors.Remove(behavior);
+        }
+
+        public bool TryGetComponent<T>(out T component) where T : Component
+        {
+            foreach (Component currentComponent in components)
+            {
+                if (currentComponent is T tComponent)
+                {
+                    component = tComponent;
+                    return true;
+                }
+            }
+
+            component = null;
+            return false;
         }
     }
 }

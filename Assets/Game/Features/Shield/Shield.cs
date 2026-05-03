@@ -1,17 +1,32 @@
-using Automathon.Game.AbilitySystem;
-using System;
+using Automathon.Engine;
+using Automathon.Engine.Physics;
+using Automathon.Game.HealthSystem;
 
 namespace Automathon.Game.ShieldSystem
 {
-    public class Shield : Ability
+    public class Shield : Entity
     {
-        private const int SHIELD_COOLDOWN_MILLIS = 3000;
-        public Shield(Func<bool> shouldActivateParam) : base(cooldown: SHIELD_COOLDOWN_MILLIS, shouldActivate: shouldActivateParam)
-        { }
+        public Rigidbody Rigidbody { get; private set; }
+        private const int MAX_HEALTH = 400;
+        private const int HALF_LENGTH = 750;
+        private const int HALF_HEIGHT = 100;
+        private const int LIFESPAN_MILLIS = 10000;
 
-        protected override void Activate()
+        public int Health { get; private set; } = MAX_HEALTH;
+        public BoxCollider BoxCollider { get; private set; }
+        public Shield(Vector2Int position, int rotationMillirad) : base(position)
         {
-            Debug.Log("Shield activated!");
+            RotationMilli = rotationMillirad;
+            BoxCollider = new BoxCollider(Vector2Int.Zero, HALF_LENGTH, HALF_HEIGHT, 0);
+            Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
+
+            Initialize(
+                Rigidbody,
+                BoxCollider,
+                new Health(MAX_HEALTH, true)
+                );
+
+            AddBehavior(new Timer(LIFESPAN_MILLIS, null, () => GameplayManager.Destroy(this)));
         }
     }
 }

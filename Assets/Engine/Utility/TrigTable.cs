@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Automathon.Engine.Utility;
 
 namespace Automathon.Utility
 {
     //This was written by Claude, the cos table can be generated with the code down below
     public static class TrigTable
     {
-        private const int FullCircle = 6284; // 2π * 1000, rounded
-        private const int QuarterCircle = 1571; // π/2 * 1000, rounded
+        private const int FULL_CIRCLE = IntMath.PI_MILLI * 2;
+        private const int QUARTER_CIRCLE = FULL_CIRCLE / 4;
 
         //Déso Thomas mais c bien hardcodé bien méchant, sur VS c'est collapsed après
-        private static readonly int[] CosTable = new int[6284] {
+        private static readonly int[] CosTable = new int[FULL_CIRCLE] {
   1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,
   1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,  1000,
    999,   999,   999,   999,   999,   999,   999,   999,   999,   999,   999,   999,   999,   999,   999,   999,
@@ -409,18 +407,18 @@ namespace Automathon.Utility
 
         public static int Cos(int milliradians)
         {
-            milliradians = ((milliradians % FullCircle) + FullCircle) % FullCircle;
+            milliradians = ((milliradians % FULL_CIRCLE) + FULL_CIRCLE) % FULL_CIRCLE;
             return CosTable[milliradians];
         }
 
-        public static int Sin(int milliradians) => Cos(milliradians - QuarterCircle);
+        public static int Sin(int milliradians) => Cos(milliradians - QUARTER_CIRCLE);
     }
 
     //Code to generate the cos table:
     /*
     
     const int Scale = 1000;
-    const int TableSize = 6284; // ceil(2π * Scale)
+    const int TableSize = FULL_CIRCLE; // ceil(2π * Scale)
 
     var sb = new System.Text.StringBuilder();
     sb.AppendLine($"private static readonly int[] CosTable = new int[{TableSize}] {{");

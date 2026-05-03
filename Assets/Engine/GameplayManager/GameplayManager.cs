@@ -4,53 +4,64 @@ using System;
 
 namespace Automathon.Engine
 {
-    public class GameplayManager : IDisposable
+    public static class GameplayManager
     {
-        private DeferredList<Entity> entities = new();
+        private static DeferredList<Entity> entities = new();
         public enum GameState { Lobby, Game }
-        private PhysicsManager physicsManager = new();
-        public GameState State { get; set; }
-        public static GameplayManager Instance { get; private set; }
 
-        public void Awake()
+        public static event Action<Entity> EntitySpawned;
+
+        public static void Initialize()
         {
+            PhysicsManager.Initialize();
             State = GameState.Lobby;
-            if (Instance != null)
-                return;
-            Instance = this;
         }
-        public void Update()
+
+        public static void Update()
         {
             EntityUpdateLoop();
 
-            entities.ProcessChanges((e) => e.Start(), (e) => e.OnDestroyed()); //Instanciate/Destroy every entity that needs to be
+            ProcessAllEntityChanges();
 
-            foreach (Entity entity in entities.Items) //Add/Remove new entity components
-                entity.ApplyComponentsChanges();
-
-            physicsManager.Step();
+            PhysicsManager.Step();
         }
 
-        public void EntityUpdateLoop()
+        public static void EntityUpdateLoop()
         {
             foreach (Entity entity in entities.Items)
                 entity.Update();
         }
 
-        public T Instantiate<T>(T entity) where T : Entity
+        private static void ProcessAllEntityChanges()
+        {
+            entities.ProcessChanges((e) =>
+            {
+                EntitySpawned?.Invoke(e);
+                e.Start();
+            }, (e) => e.OnDestroyed()); //Instanciate/Destroy every entity that needs to be
+
+            foreach (Entity entity in entities.Items) //Add/Remove new entity components
+                entity.ApplyComponentsChanges();
+        }
+
+        public static T Instantiate<T>(T entity) where T : Entity
         {
             entities.Add(entity);
             return entity;
         }
 
-        public void Destroy(Entity entity)
+        public static void Destroy(Entity entity)
         {
             entities.Remove(entity);
         }
 
-        public void Dispose()
+        public static void Dispose()
         {
-            physicsManager.Dispose();
+            foreach (Entity entity in entities.Items) Destroy(entity);
+
+            ProcessAllEntityChanges();
+
+            PhysicsManager.Dispose();
         }
     }
 }
