@@ -1,0 +1,29 @@
+{
+  "name": "map1",
+  "elementsData": [
+    {
+      "$type": "WallData, Assembly-CSharp",
+      "HalfSize": {
+        "X": 3000,
+        "Y": 500
+      },
+      "Position": {
+        "X": -1000,
+        "Y": 3000
+      },
+      "RotationMilli": 200
+    },
+    {
+      "$type": "WallData, Assembly-CSharp",
+      "HalfSize": {
+        "X": 3000,
+        "Y": 500
+      },
+      "Position": {
+        "X": 1000,
+        "Y": -3000
+      },
+      "RotationMilli": 200
+    }
+  ]
+}

@@ -1,8 +1,10 @@
 using Automathon.Engine;
+using Automathon.Game.MapSystem;
 using Automathon.Game.TankSystem;
 using Automathon.Game.View;
 using Automathon.Game.View.Registry;
 using Automathon.Game.WallSystem;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Automathon.Game.World
@@ -24,8 +26,7 @@ namespace Automathon.Game.World
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
-            Wall wall = new Wall(new Vector2Int(-1000, 3000), new Vector2Int(3000, 500), 200);
-            GameplayManager.Instantiate(wall);
+            MapGenerator.InstantiateMap(MapSaver.LoadMap("map1"));
         }
 
         private void SpawnEntityViewFromDict(Entity entity)
