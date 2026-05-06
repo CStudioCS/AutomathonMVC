@@ -36,8 +36,6 @@ namespace Automathon.Game.Input
             aimAction = playerInput.actions["Aim"];
         }
 
-        public bool IsTruePlayer() => true;
-
         public bool ShouldDash() => dashAction.IsPressed();
 
         public bool ShouldGrenade() => grenadeAction.IsPressed();

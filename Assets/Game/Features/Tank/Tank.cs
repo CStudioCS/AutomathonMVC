@@ -44,7 +44,7 @@ namespace Automathon.Game.TankSystem
             rigidbody.Velocity = movementInput * SPEED / 1000;
 
             Vector2Int directionInput = InputProvider.GetMilliAimingDir();
-            if (InputProvider.IsTruePlayer() && ((PlayerInputProvider)InputProvider).PlayerControls == PlayerInputProvider.playerControlsType.Right)
+            if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.playerControlsType.Right)
             {
                 directionInput = new Vector2Int(directionInput.X - Position.X, directionInput.Y - Position.Y);
             }
