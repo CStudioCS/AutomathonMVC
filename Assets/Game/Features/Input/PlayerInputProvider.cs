@@ -1,3 +1,4 @@
+using Automathon.Game.World;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,7 +6,8 @@ namespace Automathon.Game.Input
 {
     public class PlayerInputProvider : IInputProvider
     {
-        private bool isGamepad;
+        public enum playerControlsType { Left, Right, Gamepad }
+        public playerControlsType PlayerControls { get; private set; }
         private InputAction dashAction;
         private InputAction grenadeAction;
         private InputAction shieldAction;
@@ -14,7 +16,18 @@ namespace Automathon.Game.Input
         private InputAction aimAction;
         public PlayerInputProvider(PlayerInput playerInput)
         {
-            isGamepad = playerInput.currentControlScheme == "Gamepad";
+            if (playerInput.currentControlScheme == "Gamepad")
+            {
+                PlayerControls = playerControlsType.Gamepad;
+            }
+            else if (playerInput.currentControlScheme == "Keyboard_left")
+            {
+                PlayerControls = playerControlsType.Left;
+            }
+            else if (playerInput.currentControlScheme == "Keyboard_right")
+            {
+                PlayerControls = playerControlsType.Right;
+            }
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
             shieldAction = playerInput.actions["Shield"];
@@ -22,6 +35,8 @@ namespace Automathon.Game.Input
             moveAction = playerInput.actions["Move"];
             aimAction = playerInput.actions["Aim"];
         }
+
+        public bool IsTruePlayer() => true;
 
         public bool ShouldDash() => dashAction.IsPressed();
 
@@ -39,13 +54,13 @@ namespace Automathon.Game.Input
 
         public Vector2Int GetMilliAimingDir()
         {
-            if (isGamepad)
+            Vector2 aimingDir = aimAction.ReadValue<Vector2>();
+            if (PlayerControls == playerControlsType.Right)
             {
-                Vector2 aimingDir = aimAction.ReadValue<Vector2>();
-                return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(aimingDir.x, aimingDir.y, WorldConstants.CAMERA_DISTANCE / 1000));
+                return new Vector2Int((int)(worldPos.x * WorldConstants.SPACE_SCALE), (int)(worldPos.y * WorldConstants.SPACE_SCALE));
             }
-
-            return GetMilliMovementDir();
+            return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
         }
     }
 }

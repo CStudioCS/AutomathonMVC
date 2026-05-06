@@ -13,31 +13,38 @@ namespace Automathon.Game.Lobby
         [SerializeField] private PlayerInputManager playerInputManager;
         private Dictionary<PlayerInput, IInputProvider> inputProviders = new();
 
+        private void Awake()
+        {
+            playerInputManager.onPlayerLeft += OnPlayerLeft;
+        }
+
         private void Update()
         {
             if (GameplayManager.State != GameplayManager.GameState.Lobby)
                 return;
 
-            playerInputManager.onPlayerLeft += OnPlayerLeft;
-
             HandleGamepadJoinInput();
             HandleKeyboardJoinInput();
 
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (Keyboard.current != null)
             {
-                PlayerInput playerInputToRemove = null;
-
-                foreach (PlayerInput playerInput in inputProviders.Keys)
+                if (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.deleteKey.wasPressedThisFrame)
                 {
-                    if (playerInput.currentControlScheme == "Keyboard&Mouse")
-                    {
-                        playerInputToRemove = playerInput;
-                        break;
-                    }
-                }
+                    bool left = Keyboard.current.escapeKey.wasPressedThisFrame;
+                    PlayerInput playerInputToRemove = null;
 
-                if (playerInputToRemove != null)
-                    OnPlayerLeft(playerInputToRemove);
+                    foreach (PlayerInput playerInput in inputProviders.Keys)
+                    {
+                        if ((left && playerInput.currentControlScheme == "Keyboard_left") || (!left && playerInput.currentControlScheme == "Keyboard_right"))
+                        {
+                            playerInputToRemove = playerInput;
+                            break;
+                        }
+                    }
+
+                    if (playerInputToRemove != null)
+                        OnPlayerLeft(playerInputToRemove);
+                }
             }
         }
 
@@ -49,7 +56,12 @@ namespace Automathon.Game.Lobby
             if (keyboard.eKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
                 keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame)
             {
-                JoinKeyboardPlayer();
+                JoinKeyboardPlayer(true);
+            }
+            else if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame ||
+                     keyboard.rightArrowKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame || keyboard.slashKey.wasPressedThisFrame)
+            {
+                JoinKeyboardPlayer(false);
             }
         }
 
@@ -103,23 +115,24 @@ namespace Automathon.Game.Lobby
             SpawnTank(playerInput);
         }
 
-        private void JoinKeyboardPlayer()
+        private void JoinKeyboardPlayer(bool isLeft)
         {
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
                 return;
 
             foreach (PlayerInput playerInputTemp in inputProviders.Keys)
             {
-                if (playerInputTemp.currentControlScheme == "Keyboard&Mouse")
+                if ((isLeft && playerInputTemp.currentControlScheme == "Keyboard_left") || (!isLeft && playerInputTemp.currentControlScheme == "Keyboard_right"))
                     return;
             }
 
             // 2. Manually trigger the join
             // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
+            string controlScheme = isLeft ? "Keyboard_left" : "Keyboard_right";
             PlayerInput playerInput = playerInputManager.JoinPlayer(
                 playerIndex: -1,
                 splitScreenIndex: -1,
-                controlScheme: "Keyboard&Mouse",
+                controlScheme: controlScheme,
                 pairWithDevice: Keyboard.current
             );
 

@@ -44,15 +44,21 @@ namespace Automathon.Game.TankSystem
             rigidbody.Velocity = movementInput * SPEED / 1000;
 
             Vector2Int directionInput = InputProvider.GetMilliAimingDir();
+            if (InputProvider.IsTruePlayer() && ((PlayerInputProvider)InputProvider).PlayerControls == PlayerInputProvider.playerControlsType.Right)
+            {
+                directionInput = new Vector2Int(directionInput.X - Position.X, directionInput.Y - Position.Y);
+            }
             directionInput.NormalizeAtScale(1000);
 
             if (directionInput != Vector2Int.Zero)
             {
-                RotationMilli = directionInput.CalculateAngleMilliRad();
-                rigidbody.AngularVelocityMilli = 0;
-
                 LastMilliDirection = directionInput;
                 LastMilliDirection.NormalizeAtScale(1000);
+            }
+            if (movementInput != Vector2Int.Zero)
+            {
+                RotationMilli = movementInput.CalculateAngleMilliRad();
+                rigidbody.AngularVelocityMilli = 0;
             }
         }
 

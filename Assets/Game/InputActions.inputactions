@@ -90,7 +90,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": ";Keyboard_left",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -101,7 +101,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -112,7 +112,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_left",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -123,7 +123,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -134,7 +134,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_left",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -145,7 +145,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -156,7 +156,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_left",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -167,7 +167,7 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -207,22 +207,77 @@
                 },
                 {
                     "name": "",
-                    "id": "8c8e490b-c610-4785-884f-f04217b23ca4",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse;Touch",
-                    "action": "Aim",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "3e5f5442-8668-4b27-a940-df99bad7e831",
                     "path": "<Joystick>/{Hatswitch}",
                     "interactions": "",
                     "processors": "",
                     "groups": "Joystick",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "6462fc8f-9047-4240-a471-508c3252359a",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "1195dda2-a658-4f83-b574-5938f0cba4c7",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_left",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "253a1b00-b404-400d-a9e1-fd0374c6433b",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_left",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "4e1e488c-2107-4847-afcb-9e3c270056f4",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_left",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "61433514-0ac9-46d8-a395-37d757bc763e",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_left",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "240dd67c-96e6-4ce3-998e-2b70964276e3",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_right",
                     "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -244,7 +299,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -285,10 +340,10 @@
                 {
                     "name": "",
                     "id": "b3c1c7f0-bd20-4ee7-a0f1-899b24bca6d7",
-                    "path": "<Keyboard>/enter",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_left",
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -299,7 +354,7 @@
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Gamepad",
                     "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -328,11 +383,33 @@
                 },
                 {
                     "name": "",
+                    "id": "b967a280-4a3e-4f28-82a7-b4298ddd5ed7",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_left",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1eee1e79-9688-4dfc-a740-94fe72d31c1e",
+                    "path": "<Keyboard>/slash",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_right",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1c04ea5f-b012-41d1-a6f7-02e963b52893",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_left",
                     "action": "Shield",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -344,6 +421,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "Shield",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1b3aa23-4a1b-4825-ae5e-15907f8a3e9c",
+                    "path": "<Keyboard>/rightShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_right",
                     "action": "Shield",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -365,7 +453,18 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
+                    "action": "Grenade",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d5d90a0-dded-4b6e-82fe-ba1431e2ada5",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard_left",
                     "action": "Grenade",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -650,7 +749,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -661,7 +760,7 @@
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -672,7 +771,7 @@
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -683,7 +782,7 @@
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -694,7 +793,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -705,7 +804,7 @@
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -716,7 +815,7 @@
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -727,7 +826,7 @@
                     "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Navigate",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -738,7 +837,7 @@
                     "path": "*/{Submit}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "groups": "Gamepad;Touch;Joystick;XR;Keyboard_right",
                     "action": "Submit",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -749,7 +848,7 @@
                     "path": "*/{Cancel}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "groups": "Gamepad;Touch;Joystick;XR;Keyboard_right",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -760,7 +859,7 @@
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -771,7 +870,7 @@
                     "path": "<Pen>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Point",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -793,7 +892,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -804,7 +903,7 @@
                     "path": "<Pen>/tip",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "Click",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -837,7 +936,7 @@
                     "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "ScrollWheel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -848,7 +947,7 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "RightClick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -859,7 +958,7 @@
                     "path": "<Mouse>/middleButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
+                    "groups": "Keyboard_right",
                     "action": "MiddleClick",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -891,8 +990,8 @@
     ],
     "controlSchemes": [
         {
-            "name": "Keyboard&Mouse",
-            "bindingGroup": "Keyboard&Mouse",
+            "name": "Keyboard_right",
+            "bindingGroup": "Keyboard_right",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
@@ -956,6 +1055,17 @@
             "devices": [
                 {
                     "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Keyboard_left",
+            "bindingGroup": "Keyboard_left",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
                     "isOptional": false,
                     "isOR": false
                 }

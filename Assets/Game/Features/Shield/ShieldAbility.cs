@@ -17,7 +17,7 @@ namespace Automathon.Game.ShieldSystem
         protected override void Activate()
         {
             Vector2Int position = Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000;
-            int rotationMilliRad = Tank.RotationMilli + IntMath.PI_MILLI / 2;
+            int rotationMilliRad = Tank.LastMilliDirection.CalculateAngleMilliRad() + IntMath.PI_MILLI / 2;
 
             GameplayManager.Instantiate(new Shield(position, rotationMilliRad));
         }

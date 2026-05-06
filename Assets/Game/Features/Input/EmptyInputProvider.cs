@@ -2,6 +2,7 @@
 {
     public class EmptyInputProvider : IInputProvider
     {
+        public bool IsTruePlayer() => false;
         public Vector2Int GetMilliAimingDir() => Vector2Int.Zero;
         public bool ShouldDash() => false;
 

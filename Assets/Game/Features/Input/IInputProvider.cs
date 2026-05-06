@@ -2,6 +2,7 @@
 {
     public interface IInputProvider
     {
+        public bool IsTruePlayer();
         public Vector2Int GetMilliMovementDir();
         public Vector2Int GetMilliAimingDir();
         public bool ShouldShoot();
