@@ -30,12 +30,12 @@ namespace Automathon.Game.Lobby
             {
                 if (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.deleteKey.wasPressedThisFrame)
                 {
-                    bool left = Keyboard.current.escapeKey.wasPressedThisFrame;
+                    bool isLeftPlayer = Keyboard.current.escapeKey.wasPressedThisFrame;
                     PlayerInput playerInputToRemove = null;
 
                     foreach (PlayerInput playerInput in inputProviders.Keys)
                     {
-                        if ((left && playerInput.currentControlScheme == "Keyboard_left") || (!left && playerInput.currentControlScheme == "Keyboard_right"))
+                        if ((isLeftPlayer && playerInput.currentControlScheme == "Keyboard_left") || (!isLeftPlayer && playerInput.currentControlScheme == "Keyboard_right"))
                         {
                             playerInputToRemove = playerInput;
                             break;
