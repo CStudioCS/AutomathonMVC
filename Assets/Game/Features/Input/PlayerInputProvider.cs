@@ -53,7 +53,7 @@ namespace Automathon.Game.Input
         public Vector2Int GetMilliAimingDir()
         {
             Vector2 aimingDir = aimAction.ReadValue<Vector2>();
-            if (PlayerControls == playerControlsType.Right)
+            if (PlayerControls == PlayerControlsType.Right)
             {
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(aimingDir.x, aimingDir.y, WorldConstants.CAMERA_DISTANCE / 1000));
                 return new Vector2Int((int)(worldPos.x * WorldConstants.SPACE_SCALE), (int)(worldPos.y * WorldConstants.SPACE_SCALE));
