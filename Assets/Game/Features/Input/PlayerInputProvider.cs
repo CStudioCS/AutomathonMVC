@@ -6,8 +6,8 @@ namespace Automathon.Game.Input
 {
     public class PlayerInputProvider : IInputProvider
     {
-        public enum playerControlsType { Left, Right, Gamepad }
-        public playerControlsType PlayerControls { get; private set; }
+        public enum PlayerControlsType { Left, Right, Gamepad }
+        public PlayerControlsType PlayerControls { get; private set; }
         private InputAction dashAction;
         private InputAction grenadeAction;
         private InputAction shieldAction;
@@ -18,15 +18,15 @@ namespace Automathon.Game.Input
         {
             if (playerInput.currentControlScheme == "Gamepad")
             {
-                PlayerControls = playerControlsType.Gamepad;
+                PlayerControls = PlayerControlsType.Gamepad;
             }
             else if (playerInput.currentControlScheme == "Keyboard_left")
             {
-                PlayerControls = playerControlsType.Left;
+                PlayerControls = PlayerControlsType.Left;
             }
             else if (playerInput.currentControlScheme == "Keyboard_right")
             {
-                PlayerControls = playerControlsType.Right;
+                PlayerControls = PlayerControlsType.Right;
             }
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
