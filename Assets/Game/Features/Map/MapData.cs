@@ -9,7 +9,7 @@ public class MapData
     public string Name;
     public List<EntityData> ElementsData;
 
-#if DEBUG
+#if UNITY_EDITOR
 
     public static MapData DataFromMap(Map map)
     {

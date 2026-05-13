@@ -1,7 +1,6 @@
 using Automathon.Engine;
 using Automathon.Game.MapSystem;
 using System.Collections.Generic;
-using UnityEditorInternal.Profiling.Memory.Experimental.FileFormat;
 
 namespace Automathon.Game.MapSystem
 {

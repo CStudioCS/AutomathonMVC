@@ -8,7 +8,7 @@ namespace Automathon.Game.MapSystem
     {
         public static void RegisterMap(Map map)
         {
-            string mapDirectory = Application.dataPath + "/Maps";
+            string mapDirectory = Path.Combine(Application.persistentDataPath, "Maps");
 
             Directory.CreateDirectory(mapDirectory);
 
@@ -27,6 +27,7 @@ namespace Automathon.Game.MapSystem
                 json
             );
         }
+
         public static Map LoadMap(string mapName)
         {
             string path = Application.dataPath + "/Maps/" + mapName + ".json";

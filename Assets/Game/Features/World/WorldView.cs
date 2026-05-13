@@ -26,7 +26,15 @@ namespace Automathon.Game.World
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
 
-            MapGenerator.InstantiateMap(MapSaver.LoadMap("map1"));
+            Map map = MapSaver.LoadMap("map1");
+            if (map != null)
+            {
+                MapGenerator.InstantiateMap(map);
+            }
+            else
+            {
+                Debug.Log("Failed to load map 'map1'. Skipping map instantiation.");
+            }
         }
 
         private void SpawnEntityViewFromDict(Entity entity)

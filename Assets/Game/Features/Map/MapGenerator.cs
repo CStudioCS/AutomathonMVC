@@ -1,6 +1,4 @@
 using Automathon.Engine;
-using System.IO;
-using Newtonsoft.Json;
 
 namespace Automathon.Game.MapSystem
 {
@@ -12,16 +10,6 @@ namespace Automathon.Game.MapSystem
             {
                 GameplayManager.Instantiate(e);
             }
-        }
-
-        public static void RegisterMap(Map map)
-        {
-            string json = JsonConvert.SerializeObject(
-                map,
-                Formatting.Indented
-            );
-
-            File.WriteAllText(map.Name + ".json", json);
         }
     } 
 }
