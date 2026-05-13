@@ -6,15 +6,17 @@ namespace Automathon.Game.MapSystem
 {
     public static class MapSaver
     {
+
         public static void RegisterMap(Map map)
         {
-            string mapDirectory = Path.Combine(Application.persistentDataPath, "Maps");
+            string mapDirectory = Application.dataPath + "/Maps";
 
             Directory.CreateDirectory(mapDirectory);
 
             MapData data = MapData.DataFromMap(map);
 
-            string json = JsonConvert.SerializeObject(data,
+            string json = JsonConvert.SerializeObject(
+                data,
                 Formatting.Indented,
                 new JsonSerializerSettings
                 {

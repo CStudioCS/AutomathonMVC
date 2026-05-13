@@ -1,6 +1,4 @@
-using Automathon;
 using Automathon.Engine;
-using Automathon.Game.MapSystem;
 using Automathon.Game.WallSystem;
 using System.Collections.Generic;
 

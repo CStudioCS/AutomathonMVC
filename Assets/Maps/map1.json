@@ -1,29 +1,29 @@
 {
-  "name": "map1",
-  "elementsData": [
+  "Name": "map1",
+  "ElementsData": [
     {
-      "$type": "WallData, Assembly-CSharp",
+      "$type": "Automathon.Game.MapSystem.WallData, Assembly-CSharp",
       "HalfSize": {
         "X": 3000,
-        "Y": 500
+        "Y": 1000
       },
       "Position": {
-        "X": -1000,
-        "Y": 3000
+        "X": 3000,
+        "Y": 2000
       },
-      "RotationMilli": 200
+      "RotationMilli": 1000
     },
     {
-      "$type": "WallData, Assembly-CSharp",
+      "$type": "Automathon.Game.MapSystem.WallData, Assembly-CSharp",
       "HalfSize": {
         "X": 3000,
-        "Y": 500
+        "Y": 1000
       },
       "Position": {
-        "X": 1000,
-        "Y": -3000
+        "X": -3000,
+        "Y": -2000
       },
-      "RotationMilli": 200
+      "RotationMilli": 1000
     }
   ]
 }

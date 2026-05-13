@@ -1,5 +1,4 @@
 using Automathon.Engine;
-using Automathon.Game.MapSystem;
 using System.Collections.Generic;
 
 namespace Automathon.Game.MapSystem
