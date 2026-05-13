@@ -11,7 +11,6 @@ namespace Automathon.Game.Lobby
     public class TankSpawnerView : MonoBehaviour
     {
         [SerializeField] private PlayerInputManager playerInputManager;
-        [SerializeField] private PlayerInputProvider playerInputProvider;
         private Dictionary<PlayerInput, IInputProvider> inputProviders = new();
 
         private void Awake()
@@ -51,7 +50,7 @@ namespace Automathon.Game.Lobby
                     PlayerInput playerInputToRemove = null;
                     foreach (PlayerInput playerInput in inputProviders.Keys)
                     {
-                        if (playerInputProvider.schemeToControlsType[playerInput.currentControlScheme] == whichControlsQuit)
+                        if (PlayerInputProvider.SchemeToControlsType[playerInput.currentControlScheme] == whichControlsQuit)
                         {
                             playerInputToRemove = playerInput;
                             break;
@@ -72,12 +71,12 @@ namespace Automathon.Game.Lobby
             if (keyboard.eKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
                 keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame)
             {
-                JoinKeyboardPlayer(true);
+                JoinKeyboardPlayer(PlayerInputProvider.PlayerControlsType.LeftKeyboard);
             }
             else if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame ||
                      keyboard.rightArrowKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame || keyboard.slashKey.wasPressedThisFrame)
             {
-                JoinKeyboardPlayer(false);
+                JoinKeyboardPlayer(PlayerInputProvider.PlayerControlsType.RightKeyboard);
             }
         }
 
@@ -131,20 +130,20 @@ namespace Automathon.Game.Lobby
             SpawnTank(playerInput);
         }
 
-        private void JoinKeyboardPlayer(bool isLeft)
+        private void JoinKeyboardPlayer(PlayerInputProvider.PlayerControlsType controlsType)
         {
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
                 return;
 
             foreach (PlayerInput playerInputTemp in inputProviders.Keys)
             {
-                if ((isLeft && playerInputTemp.currentControlScheme == "Keyboard_left") || (!isLeft && playerInputTemp.currentControlScheme == "Keyboard_right"))
+                if (PlayerInputProvider.SchemeToControlsType[playerInputTemp.currentControlScheme] == controlsType)
                     return;
             }
 
             // 2. Manually trigger the join
             // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
-            string controlScheme = isLeft ? "Keyboard_left" : "Keyboard_right";
+            string controlScheme = PlayerInputProvider.ControlsTypeToScheme[controlsType];
             PlayerInput playerInput = playerInputManager.JoinPlayer(
                 playerIndex: -1,
                 splitScreenIndex: -1,

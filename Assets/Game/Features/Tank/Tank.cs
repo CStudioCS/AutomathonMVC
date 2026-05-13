@@ -43,16 +43,16 @@ namespace Automathon.Game.TankSystem
             Vector2Int movementInput = InputProvider.GetMilliMovementDir();
             rigidbody.Velocity = movementInput * SPEED / 1000;
 
-            Vector2Int directionInput = InputProvider.GetMilliAimingDir();
-            if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.playerControlsType.Right)
+            Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
+            if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.PlayerControlsType.RightKeyboard)
             {
-                directionInput = new Vector2Int(directionInput.X - Position.X, directionInput.Y - Position.Y);
+                aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
             }
-            directionInput.NormalizeAtScale(1000);
+            aimingInput.NormalizeAtScale(1000);
 
-            if (directionInput != Vector2Int.Zero)
+            if (aimingInput != Vector2Int.Zero)
             {
-                LastMilliDirection = directionInput;
+                LastMilliDirection = aimingInput;
                 LastMilliDirection.NormalizeAtScale(1000);
             }
             if (movementInput != Vector2Int.Zero)
