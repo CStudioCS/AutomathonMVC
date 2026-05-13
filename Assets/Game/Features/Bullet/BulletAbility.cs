@@ -16,7 +16,7 @@ namespace Automathon.Game.BulletSystem
         protected override void Activate()
         {
             Vector2Int position = Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000;
-            GameplayManager.Instantiate(new Bullet(position, Tank.LastMilliDirection));
+            GameplayManager.Instantiate(new Bullet(position, Tank.LastMilliDirection, Tank));
         }
     }
 }
