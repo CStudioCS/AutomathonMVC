@@ -13,7 +13,7 @@ namespace Automathon.Game.MapSystem
 
             Directory.CreateDirectory(mapDirectory);
 
-            MapData data = MapData.DataFromMap(map);
+            MapData data = MapData.FromMap(map);
 
             string json = JsonConvert.SerializeObject(
                 data,
@@ -50,7 +50,7 @@ namespace Automathon.Game.MapSystem
                 }
             );
 
-            return MapData.MapFromData(data);
+            return data.ToMap();
         }
     }
 }

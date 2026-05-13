@@ -1,9 +1,10 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
+using Automathon.Game.MapSystem;
 
 namespace Automathon.Game.WallSystem
 {
-    public class Wall : Entity
+    public class Wall : Entity, IPersistable
     {
         public Rigidbody Rigidbody { get; private set; }
         public BoxCollider BoxCollider { get; private set; }
@@ -16,5 +17,11 @@ namespace Automathon.Game.WallSystem
 
             Initialize(BoxCollider, Rigidbody);
         }
+
+        public EntityData ToData() => new WallData(
+            Position,
+            new Vector2Int(BoxCollider.Width / 2, BoxCollider.Height / 2),
+            RotationMilli
+        );
     }
 }

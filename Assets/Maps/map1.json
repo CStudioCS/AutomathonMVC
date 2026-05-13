@@ -2,7 +2,7 @@
   "Name": "map1",
   "ElementsData": [
     {
-      "$type": "Automathon.Game.MapSystem.WallData, Assembly-CSharp",
+      "$type": "Automathon.Game.WallSystem.WallData, Assembly-CSharp",
       "HalfSize": {
         "X": 3000,
         "Y": 1000
@@ -14,7 +14,7 @@
       "RotationMilli": 1000
     },
     {
-      "$type": "Automathon.Game.MapSystem.WallData, Assembly-CSharp",
+      "$type": "Automathon.Game.WallSystem.WallData, Assembly-CSharp",
       "HalfSize": {
         "X": 3000,
         "Y": 1000
