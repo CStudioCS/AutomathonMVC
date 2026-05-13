@@ -1,4 +1,5 @@
-using Automathon.Game.World;
+using Automathon.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,7 +7,7 @@ namespace Automathon.Game.Input
 {
     public class PlayerInputProvider : IInputProvider
     {
-        public enum PlayerControlsType { Left, Right, Gamepad }
+        public enum PlayerControlsType { LeftKeyboard, RightKeyboard, Gamepad }
         public PlayerControlsType PlayerControls { get; private set; }
         private InputAction dashAction;
         private InputAction grenadeAction;
@@ -14,20 +15,17 @@ namespace Automathon.Game.Input
         private InputAction shootAction;
         private InputAction moveAction;
         private InputAction aimAction;
+
+        private Dictionary<string, PlayerControlsType> schemeToControlsType = new Dictionary<string, PlayerControlsType>
+        {
+            { "Gamepad", PlayerControlsType.Gamepad },
+            { "Keyboard_left", PlayerControlsType.LeftKeyboard },
+            { "Keyboard_right", PlayerControlsType.RightKeyboard }
+        };
+
         public PlayerInputProvider(PlayerInput playerInput)
         {
-            if (playerInput.currentControlScheme == "Gamepad")
-            {
-                PlayerControls = PlayerControlsType.Gamepad;
-            }
-            else if (playerInput.currentControlScheme == "Keyboard_left")
-            {
-                PlayerControls = PlayerControlsType.Left;
-            }
-            else if (playerInput.currentControlScheme == "Keyboard_right")
-            {
-                PlayerControls = PlayerControlsType.Right;
-            }
+            PlayerControls = schemeToControlsType[playerInput.currentControlScheme];
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
             shieldAction = playerInput.actions["Shield"];
@@ -53,10 +51,10 @@ namespace Automathon.Game.Input
         public Vector2Int GetMilliAimingDir()
         {
             Vector2 aimingDir = aimAction.ReadValue<Vector2>();
-            if (PlayerControls == PlayerControlsType.Right)
+            if (PlayerControls == PlayerControlsType.RightKeyboard)
             {
-                Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(aimingDir.x, aimingDir.y, WorldConstants.CAMERA_DISTANCE / 1000));
-                return new Vector2Int((int)(worldPos.x * WorldConstants.SPACE_SCALE), (int)(worldPos.y * WorldConstants.SPACE_SCALE));
+                Vector3 worldPos = aimingDir.ScreenToWorldSpace();
+                return ((Vector2)worldPos).ToVector2IntScaled();
             }
             return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
         }

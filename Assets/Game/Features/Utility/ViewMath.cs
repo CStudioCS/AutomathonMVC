@@ -1,3 +1,4 @@
+using Automathon.Game.World;
 using UnityEngine;
 
 namespace Automathon.Utility
@@ -8,5 +9,8 @@ namespace Automathon.Utility
         {
             return Quaternion.Euler(0, 0, rotationMillirad * Mathf.Rad2Deg / 1000f);
         }
+
+        public static Vector2Int ToVector2IntScaled(this Vector2 vector)
+            => new Vector2Int((int)(vector.x * WorldConstants.SPACE_SCALE), (int)(vector.y * WorldConstants.SPACE_SCALE));
     }
 }
