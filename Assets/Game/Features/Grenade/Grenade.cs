@@ -4,6 +4,7 @@ using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
 using Automathon.Game.BulletSystem;
+using Automathon.Game.TankSystem;
 using Automathon.Utility;
 
 namespace Automathon.Game.GrenadeSystem
@@ -14,12 +15,14 @@ namespace Automathon.Game.GrenadeSystem
         private const int SPEED = 1800;
         private const int EXPLOSION_DELAY = 2000;
         private const int FRAGMENT_NUMBER = 12;
+        private Tank parentShooter;
 
         public CircleCollider CircleCollider { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
 
-        public Grenade(Vector2Int position, Vector2Int direction) : base(position)
+        public Grenade(Vector2Int position, Vector2Int direction, Tank shooter) : base(position)
         {
+            parentShooter = shooter;
             CircleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
             Rigidbody = new Rigidbody(CircleCollider, 1000, 500, 200);
 
@@ -44,7 +47,7 @@ namespace Automathon.Game.GrenadeSystem
                 // * 1200 / 1000 in order to space them out enough, it's kinda arbitrary but it works
                 int dist = 2 * Bullet.RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1200 / 1000;
 
-                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir);
+                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, parentShooter);
                 GameplayManager.Instantiate(bullet);
             }
 

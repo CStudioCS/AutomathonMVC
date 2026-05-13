@@ -16,7 +16,7 @@ namespace Automathon.Game.GrenadeSystem
         protected override void Activate()
         {
             Vector2Int position = Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000;
-            GameplayManager.Instantiate(new Grenade(position, Tank.LastMilliDirection));
+            GameplayManager.Instantiate(new Grenade(position, Tank.LastMilliDirection, Tank));
         }
     }
 }

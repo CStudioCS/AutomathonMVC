@@ -1,6 +1,7 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.HealthSystem;
+using Automathon.Game.TankSystem;
 
 namespace Automathon.Game.BulletSystem
 {
@@ -10,11 +11,13 @@ namespace Automathon.Game.BulletSystem
         public const int RADIUS = 100;
         public const int SPEED = 7000;
         private const int LIFESPAN_MILLI = 10000;
+        private Tank parentShooter;
 
         private CircleCollider circleCollider;
 
-        public Bullet(Vector2Int position, Vector2Int direction) : base(position)
+        public Bullet(Vector2Int position, Vector2Int direction, Tank shooter) : base(position)
         {
+            parentShooter = shooter;
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
             Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
 
@@ -28,6 +31,9 @@ namespace Automathon.Game.BulletSystem
 
         private void OnCollision(CollisionEvent collisionContact)
         {
+            if (collisionContact.Other.ParentEntity == parentShooter || (collisionContact.Other.ParentEntity is Bullet bullet && bullet.parentShooter == this.parentShooter))
+                return;
+
             if (collisionContact.Other.ParentEntity.TryGetComponent(out Health health))
                 health.Damage(DAMAGE);
 
