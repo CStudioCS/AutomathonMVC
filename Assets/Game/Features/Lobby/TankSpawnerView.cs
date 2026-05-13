@@ -13,31 +13,53 @@ namespace Automathon.Game.Lobby
         [SerializeField] private PlayerInputManager playerInputManager;
         private Dictionary<PlayerInput, IInputProvider> inputProviders = new();
 
+        private void Awake()
+        {
+            playerInputManager.onPlayerLeft += OnPlayerLeft;
+        }
+
+        private void OnDestroy()
+        {
+            playerInputManager.onPlayerLeft -= OnPlayerLeft;
+        }
+
         private void Update()
         {
             if (GameplayManager.State != GameplayManager.GameState.Lobby)
                 return;
 
-            playerInputManager.onPlayerLeft += OnPlayerLeft;
-
             HandleGamepadJoinInput();
             HandleKeyboardJoinInput();
 
-            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (Keyboard.current != null)
             {
-                PlayerInput playerInputToRemove = null;
-
-                foreach (PlayerInput playerInput in inputProviders.Keys)
+                bool somebodyQuit = false;
+                PlayerInputProvider.PlayerControlsType whichControlsQuit = default;
+                if (Keyboard.current.escapeKey.wasPressedThisFrame)
                 {
-                    if (playerInput.currentControlScheme == "Keyboard&Mouse")
-                    {
-                        playerInputToRemove = playerInput;
-                        break;
-                    }
+                    somebodyQuit = true;
+                    whichControlsQuit = PlayerInputProvider.PlayerControlsType.LeftKeyboard;
                 }
+                else if (Keyboard.current.deleteKey.wasPressedThisFrame)
+                {
+                    somebodyQuit = true;
+                    whichControlsQuit = PlayerInputProvider.PlayerControlsType.RightKeyboard;
+                }
+                if (somebodyQuit)
+                {
+                    PlayerInput playerInputToRemove = null;
+                    foreach (PlayerInput playerInput in inputProviders.Keys)
+                    {
+                        if (PlayerInputProvider.SchemeToControlsType[playerInput.currentControlScheme] == whichControlsQuit)
+                        {
+                            playerInputToRemove = playerInput;
+                            break;
+                        }
+                    }
 
-                if (playerInputToRemove != null)
-                    OnPlayerLeft(playerInputToRemove);
+                    if (playerInputToRemove != null)
+                        RemovePlayerLeftInput(playerInputToRemove);
+                }
             }
         }
 
@@ -49,7 +71,12 @@ namespace Automathon.Game.Lobby
             if (keyboard.eKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
                 keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame)
             {
-                JoinKeyboardPlayer();
+                JoinKeyboardPlayer(PlayerInputProvider.PlayerControlsType.LeftKeyboard);
+            }
+            else if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame ||
+                     keyboard.rightArrowKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame || keyboard.slashKey.wasPressedThisFrame)
+            {
+                JoinKeyboardPlayer(PlayerInputProvider.PlayerControlsType.RightKeyboard);
             }
         }
 
@@ -103,23 +130,24 @@ namespace Automathon.Game.Lobby
             SpawnTank(playerInput);
         }
 
-        private void JoinKeyboardPlayer()
+        private void JoinKeyboardPlayer(PlayerInputProvider.PlayerControlsType controlsType)
         {
             if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
                 return;
 
             foreach (PlayerInput playerInputTemp in inputProviders.Keys)
             {
-                if (playerInputTemp.currentControlScheme == "Keyboard&Mouse")
+                if (PlayerInputProvider.SchemeToControlsType[playerInputTemp.currentControlScheme] == controlsType)
                     return;
             }
 
             // 2. Manually trigger the join
             // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
+            string controlScheme = PlayerInputProvider.ControlsTypeToScheme[controlsType];
             PlayerInput playerInput = playerInputManager.JoinPlayer(
                 playerIndex: -1,
                 splitScreenIndex: -1,
-                controlScheme: "Keyboard&Mouse",
+                controlScheme: controlScheme,
                 pairWithDevice: Keyboard.current
             );
 
@@ -135,6 +163,11 @@ namespace Automathon.Game.Lobby
         }
 
         public void OnPlayerLeft(PlayerInput playerInput)
+        {
+            RemovePlayerLeftInput(playerInput);
+        }
+
+        public void RemovePlayerLeftInput(PlayerInput playerInput)
         {
             if (inputProviders.ContainsKey(playerInput))
             {
