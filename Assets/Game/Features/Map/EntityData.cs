@@ -1,18 +1,6 @@
-using Automathon.Engine;
-
+// EntityData has moved to Assets/Engine/Entity/EntityData.cs (namespace Automathon.Engine).
+// This file is now empty and can be safely deleted from Unity's Project window
+// (along with its .meta file).
 namespace Automathon.Game.MapSystem
 {
-    public abstract class EntityData
-    {
-        public Vector2Int Position;
-        public int RotationMilli;
-
-        protected EntityData(Vector2Int position, int rotationMilli)
-        {
-            Position = position;
-            RotationMilli = rotationMilli;
-        }
-
-        public abstract Entity ToEntity();
-    }
 }

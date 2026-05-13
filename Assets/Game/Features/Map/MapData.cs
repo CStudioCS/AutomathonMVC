@@ -30,7 +30,10 @@ namespace Automathon.Game.MapSystem
             List<Entity> elements = new List<Entity>();
 
             foreach (EntityData d in ElementsData)
-                elements.Add(d.ToEntity());
+            {
+                if (d is IEntityFactory factory)
+                    elements.Add(factory.ToEntity());
+            }
 
             return new Map(Name, elements);
         }

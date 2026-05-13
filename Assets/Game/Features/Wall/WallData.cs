@@ -3,7 +3,7 @@ using Automathon.Game.MapSystem;
 
 namespace Automathon.Game.WallSystem
 {
-    public class WallData : EntityData
+    public class WallData : EntityData, IEntityFactory
     {
         public Vector2Int HalfSize;
 
@@ -13,6 +13,6 @@ namespace Automathon.Game.WallSystem
             HalfSize = halfSize;
         }
 
-        public override Entity ToEntity() => new Wall(Position, HalfSize, RotationMilli);
+        public Entity ToEntity() => new Wall(this);
     }
 }
