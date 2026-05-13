@@ -4,71 +4,72 @@ using Automathon.Game.MapSystem;
 using Automathon.Game.WallSystem;
 using System.Collections.Generic;
 
-public class MapData
+namespace Automathon.Game.MapSystem
 {
-    public string Name;
-    public List<EntityData> ElementsData;
-
-#if UNITY_EDITOR
-
-    public static MapData DataFromMap(Map map)
+    public class MapData
     {
-        MapData data = new MapData
-        {
-            Name = map.Name,
-            ElementsData = new List<EntityData>()
-        };
+        public string Name;
+        public List<EntityData> ElementsData;
 
-        foreach (Entity e in map.Elements)
+
+        public static MapData DataFromMap(Map map)
         {
-            switch (e)
+            MapData data = new MapData
             {
-                case Wall wall:
-                    data.ElementsData.Add(new WallData(wall.Position, new Vector2Int(wall.BoxCollider.Width / 2, wall.BoxCollider.Height / 2), wall.RotationMilli));
-                    break;
+                Name = map.Name,
+                ElementsData = new List<EntityData>()
+            };
+
+            foreach (Entity e in map.Elements)
+            {
+                switch (e)
+                {
+                    case Wall wall:
+                        data.ElementsData.Add(new WallData(wall.Position, new Vector2Int(wall.BoxCollider.Width / 2, wall.BoxCollider.Height / 2), wall.RotationMilli));
+                        break;
+                }
             }
+
+            return data;
         }
 
-        return data;
-    }
-#endif
-
-    public static Map MapFromData(MapData data)
-    {
-        List<Entity> elements = new List<Entity>();
-
-        foreach (EntityData e in data.ElementsData)
+        public static Map MapFromData(MapData data)
         {
-            switch (e)
+            List<Entity> elements = new List<Entity>();
+
+            foreach (EntityData e in data.ElementsData)
             {
-                case WallData wallData:
-                    elements.Add(new Wall(wallData.Position, wallData.HalfSize , wallData.RotationMilli));
-                    break;
+                switch (e)
+                {
+                    case WallData wallData:
+                        elements.Add(new Wall(wallData.Position, wallData.HalfSize, wallData.RotationMilli));
+                        break;
+                }
             }
+
+            Map map = new Map(data.Name, elements);
+
+            return map;
         }
-
-        Map map = new Map(data.Name, elements);
-
-        return map;
     }
-}
 
-public abstract class EntityData
-{
-    public Vector2Int Position;
-    public int RotationMilli;
-    public EntityData(Vector2Int position, int rotationMilli)
+    public abstract class EntityData
     {
-        Position = position;
-        RotationMilli = rotationMilli;
+        public Vector2Int Position;
+        public int RotationMilli;
+        public EntityData(Vector2Int position, int rotationMilli)
+        {
+            Position = position;
+            RotationMilli = rotationMilli;
+        }
     }
-}
 
-public class WallData : EntityData
-{
-    public Vector2Int HalfSize;
-    public WallData(Vector2Int position, Vector2Int halfSize, int rotationMilli) : base(position, rotationMilli)
+    public class WallData : EntityData
     {
-        HalfSize = halfSize;
+        public Vector2Int HalfSize;
+        public WallData(Vector2Int position, Vector2Int halfSize, int rotationMilli) : base(position, rotationMilli)
+        {
+            HalfSize = halfSize;
+        }
     }
 }

@@ -3,8 +3,6 @@ using Automathon.Game.MapSystem;
 using Automathon.Game.TankSystem;
 using Automathon.Game.View;
 using Automathon.Game.View.Registry;
-using Automathon.Game.WallSystem;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Automathon.Game.World
