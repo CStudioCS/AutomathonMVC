@@ -16,7 +16,7 @@ namespace Automathon.Game.Input
         private InputAction moveAction;
         private InputAction aimAction;
 
-        private Dictionary<string, PlayerControlsType> schemeToControlsType = new Dictionary<string, PlayerControlsType>
+        public Dictionary<string, PlayerControlsType> schemeToControlsType = new Dictionary<string, PlayerControlsType>
         {
             { "Gamepad", PlayerControlsType.Gamepad },
             { "Keyboard_left", PlayerControlsType.LeftKeyboard },
@@ -41,7 +41,7 @@ namespace Automathon.Game.Input
         public Vector2Int GetMilliMovementDir()
         {
             Vector2 movementDir = moveAction.ReadValue<Vector2>();
-            return new Vector2Int((int)(movementDir.x * 1000), (int)(movementDir.y * 1000));
+            return movementDir.ToVector2IntScaled();
         }
 
         public bool ShouldShield() => shieldAction.IsPressed();

@@ -11,11 +11,17 @@ namespace Automathon.Game.Lobby
     public class TankSpawnerView : MonoBehaviour
     {
         [SerializeField] private PlayerInputManager playerInputManager;
+        [SerializeField] private PlayerInputProvider playerInputProvider;
         private Dictionary<PlayerInput, IInputProvider> inputProviders = new();
 
         private void Awake()
         {
             playerInputManager.onPlayerLeft += OnPlayerLeft;
+        }
+
+        private void OnDestroy()
+        {
+            playerInputManager.onPlayerLeft -= OnPlayerLeft;
         }
 
         private void Update()
@@ -28,14 +34,24 @@ namespace Automathon.Game.Lobby
 
             if (Keyboard.current != null)
             {
-                if (Keyboard.current.escapeKey.wasPressedThisFrame || Keyboard.current.deleteKey.wasPressedThisFrame)
+                bool somebodyQuit = false;
+                PlayerInputProvider.PlayerControlsType whichControlsQuit = default;
+                if (Keyboard.current.escapeKey.wasPressedThisFrame)
                 {
-                    bool isLeftPlayer = Keyboard.current.escapeKey.wasPressedThisFrame;
+                    somebodyQuit = true;
+                    whichControlsQuit = PlayerInputProvider.PlayerControlsType.LeftKeyboard;
+                }
+                else if (Keyboard.current.deleteKey.wasPressedThisFrame)
+                {
+                    somebodyQuit = true;
+                    whichControlsQuit = PlayerInputProvider.PlayerControlsType.RightKeyboard;
+                }
+                if (somebodyQuit)
+                {
                     PlayerInput playerInputToRemove = null;
-
                     foreach (PlayerInput playerInput in inputProviders.Keys)
                     {
-                        if ((isLeftPlayer && playerInput.currentControlScheme == "Keyboard_left") || (!isLeftPlayer && playerInput.currentControlScheme == "Keyboard_right"))
+                        if (playerInputProvider.schemeToControlsType[playerInput.currentControlScheme] == whichControlsQuit)
                         {
                             playerInputToRemove = playerInput;
                             break;
@@ -43,7 +59,7 @@ namespace Automathon.Game.Lobby
                     }
 
                     if (playerInputToRemove != null)
-                        OnPlayerLeft(playerInputToRemove);
+                        RemovePlayerLeftInput(playerInputToRemove);
                 }
             }
         }
@@ -148,6 +164,11 @@ namespace Automathon.Game.Lobby
         }
 
         public void OnPlayerLeft(PlayerInput playerInput)
+        {
+            RemovePlayerLeftInput(playerInput);
+        }
+
+        public void RemovePlayerLeftInput(PlayerInput playerInput)
         {
             if (inputProviders.ContainsKey(playerInput))
             {

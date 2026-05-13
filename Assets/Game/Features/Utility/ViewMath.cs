@@ -12,5 +12,10 @@ namespace Automathon.Utility
 
         public static Vector2Int ToVector2IntScaled(this Vector2 vector)
             => new Vector2Int((int)(vector.x * WorldConstants.SPACE_SCALE), (int)(vector.y * WorldConstants.SPACE_SCALE));
+
+        public static Vector3 ScreenToWorldSpace(this Vector2 screenPos)
+        {
+            return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, WorldConstants.CAMERA_DISTANCE / 1000));
+        }
     }
 }
