@@ -3,9 +3,10 @@ using Automathon.Game.TankSystem;
 using Automathon.Game.View;
 using Automathon.Game.View.Registry;
 using Automathon.Game.WallSystem;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace Automathon.Game.World
+namespace Automathon.Game.MapSystem
 {
     public class WorldView : MonoBehaviour
     {
@@ -23,9 +24,17 @@ namespace Automathon.Game.World
             subbedToSpawnEntityView = true;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
-
-            Wall wall = new Wall(new Vector2Int(-1000, 3000), new Vector2Int(3000, 500), 200);
-            GameplayManager.Instantiate(wall);
+            Map map1 = new Map("map1", new List<Entity> { new Wall(new Vector2Int(3000, 2000), new Vector2Int(3000, 1000), 1000), new Wall(new Vector2Int(-3000, -2000), new Vector2Int(3000, 1000), 1000) });
+            MapSaver.RegisterMap(map1);
+            Map map = MapSaver.LoadMap("map1");
+            if (map != null)
+            {
+                MapGenerator.InstantiateMap(map);
+            }
+            else
+            {
+                Debug.Log("Failed to load map 'map1'. Skipping map instantiation.");
+            }
         }
 
         private void SpawnEntityViewFromDict(Entity entity)

@@ -1,12 +1,24 @@
-﻿using Automathon.Utility;
+using Automathon.Utility;
 using System;
 
 namespace Automathon.Engine
 {
     public abstract class Entity
     {
-        public Vector2Int Position;
-        public int RotationMilli;
+        public EntityData Data { get; }
+
+        public Vector2Int Position
+        {
+            get => Data.Position;
+            set => Data.Position = value;
+        }
+
+        public int RotationMilli
+        {
+            get => Data.RotationMilli;
+            set => Data.RotationMilli = value;
+        }
+
         public event Action Destroyed;
 
         private Component[] components;
@@ -14,10 +26,12 @@ namespace Automathon.Engine
 
         private bool initialized;
 
-        public Entity(Vector2Int position)
+        protected Entity(EntityData data)
         {
-            Position = position;
+            Data = data;
         }
+
+        protected Entity(Vector2Int position) : this(new EntityData(position)) { }
 
         protected void Initialize(params Component[] components)
         {
