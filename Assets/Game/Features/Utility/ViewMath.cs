@@ -15,7 +15,7 @@ namespace Automathon.Utility
 
         public static Vector3 ScreenToWorldSpace(this Vector2 screenPos)
         {
-            return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, WorldConstants.CAMERA_DISTANCE / 1000));
+            return Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -1));
         }
     }
 }
