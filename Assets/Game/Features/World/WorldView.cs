@@ -1,10 +1,8 @@
 using Automathon.Engine;
-using Automathon.Game.TankSystem;
 using Automathon.Game.View;
-using Automathon.Game.View.Registry;
 using UnityEngine;
 
-namespace Automathon.Game.MapSystem
+namespace Automathon.Game
 {
     public class WorldView : MonoBehaviour
     {

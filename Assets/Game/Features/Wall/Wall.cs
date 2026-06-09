@@ -2,7 +2,7 @@ using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.MapSystem;
 
-namespace Automathon.Game.WallSystem
+namespace Automathon.Game
 {
     public class Wall : Entity, IPersistable
     {

@@ -1,7 +1,7 @@
 using Automathon.Engine;
 using Automathon.Game.MapSystem;
 
-namespace Automathon.Game.WallSystem
+namespace Automathon.Game
 {
     public class WallData : EntityData, IEntityFactory
     {

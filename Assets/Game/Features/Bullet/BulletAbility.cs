@@ -1,9 +1,8 @@
 using Automathon.Engine;
-using Automathon.Game.AbilitySystem;
 using Automathon.Game.TankSystem;
 using System;
 
-namespace Automathon.Game.BulletSystem
+namespace Automathon.Game
 {
     public class BulletAbility : Ability
     {

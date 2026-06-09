@@ -1,7 +1,6 @@
-using Automathon.Game.View;
 using UnityEngine;
 
-namespace Automathon.Game.TankSystem
+namespace Automathon.Game
 {
     public class TankView : EntityView<Tank>
     {

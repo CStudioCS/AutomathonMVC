@@ -1,7 +1,6 @@
-﻿using Automathon.Game.World;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Automathon.Game.Utility
+namespace Automathon.Game
 {
     public static class VectorIntExtensions
     {

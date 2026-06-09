@@ -3,7 +3,7 @@ using Automathon.Game.TankSystem;
 using System;
 
 
-namespace Automathon.Game.AbilitySystem
+namespace Automathon.Game
 {
     public abstract class Ability : Component
     {

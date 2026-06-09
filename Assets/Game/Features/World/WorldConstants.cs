@@ -1,4 +1,4 @@
-﻿namespace Automathon.Game.World
+﻿namespace Automathon.Game
 {
     public static class WorldConstants
     {

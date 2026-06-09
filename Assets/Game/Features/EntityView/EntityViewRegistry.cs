@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Automathon.Game.View.Registry
+namespace Automathon.Game.View
 {
     //Written by Claude
     [CreateAssetMenu(menuName = "Game/Entity View Registry")]

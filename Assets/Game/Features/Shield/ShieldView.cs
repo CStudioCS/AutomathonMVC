@@ -1,6 +1,4 @@
-using Automathon.Game.View;
-
-namespace Automathon.Game.ShieldSystem
+namespace Automathon.Game
 {
     public class ShieldView : EntityView<Shield>
     {

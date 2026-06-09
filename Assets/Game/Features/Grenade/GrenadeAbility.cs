@@ -1,9 +1,7 @@
 ﻿using Automathon.Engine;
-using Automathon.Game.AbilitySystem;
-using Automathon.Game.TankSystem;
 using System;
 
-namespace Automathon.Game.GrenadeSystem
+namespace Automathon.Game
 {
     public class GrenadeAbility : Ability
     {

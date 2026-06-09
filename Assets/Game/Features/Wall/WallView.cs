@@ -1,8 +1,6 @@
-using Automathon.Game.View;
-using Automathon.Game.World;
 using UnityEngine;
 
-namespace Automathon.Game.WallSystem
+namespace Automathon.Game
 {
     public class WallView : EntityView<Wall>
     {

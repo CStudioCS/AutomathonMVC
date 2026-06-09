@@ -1,7 +1,7 @@
 using Automathon.Game.World;
 using UnityEngine;
 
-namespace Automathon.Utility
+namespace Automathon.Game.View
 {
     public static class ViewMath
     {

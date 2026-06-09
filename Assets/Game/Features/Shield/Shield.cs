@@ -1,8 +1,7 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Game.HealthSystem;
 
-namespace Automathon.Game.ShieldSystem
+namespace Automathon.Game
 {
     public class Shield : Entity
     {

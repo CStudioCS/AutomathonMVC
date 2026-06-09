@@ -1,12 +1,8 @@
 ﻿using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Game.BulletSystem;
-using Automathon.Game.GrenadeSystem;
-using Automathon.Game.HealthSystem;
 using Automathon.Game.Input;
-using Automathon.Game.ShieldSystem;
 
-namespace Automathon.Game.TankSystem
+namespace Automathon.Game
 {
     public class Tank : Entity
     {

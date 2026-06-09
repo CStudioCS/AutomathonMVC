@@ -1,7 +1,7 @@
 ﻿using Automathon.Engine;
 using System;
 
-namespace Automathon.Game.HealthSystem
+namespace Automathon.Game
 {
     public class Health : Component
     {
