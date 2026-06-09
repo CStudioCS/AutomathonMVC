@@ -52,6 +52,7 @@ namespace Automathon.Game
                 isOnCooldown = false;
                 CooldownElapsed?.Invoke();
             }));
+
             Activate();
             AbilityActivated?.Invoke();
         }

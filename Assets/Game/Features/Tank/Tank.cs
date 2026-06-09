@@ -10,6 +10,11 @@ namespace Automathon.Game
         private const int SPEED = 6000;
         public const int MAX_HEALTH = 1000;
 
+        public BulletAbility BulletAbility;
+        public ShieldAbility ShieldAbility;
+        public GrenadeAbility GrenadeAbility;
+        public Health Health;
+
         public IInputProvider InputProvider { get; private set; }
         private Rigidbody rigidbody;
 
@@ -26,10 +31,10 @@ namespace Automathon.Game
             Initialize(
                 boxCollider,
                 rigidbody,
-                new BulletAbility(inputProvider.ShouldShoot),
-                new ShieldAbility(inputProvider.ShouldShield),
-                new GrenadeAbility(inputProvider.ShouldGrenade),
-                new Health(MAX_HEALTH, false, Death)
+                BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
+                ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
+                GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
+                Health = new Health(MAX_HEALTH, false, Death)
                 );
         }
 
