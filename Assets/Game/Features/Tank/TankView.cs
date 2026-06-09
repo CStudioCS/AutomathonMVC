@@ -9,7 +9,7 @@ namespace Automathon.Game
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
-            Entity.BulletAbility.AbilityActivated += OnShootBlabla;
+            Entity.BulletAbility.AbilityActivated += OnShooting;
         }
 
         [SerializeField] private Transform turret;
@@ -21,15 +21,14 @@ namespace Automathon.Game
             turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X));
         }
 
-        private void OnShootBlabla()
+        private void OnShooting() //OnShoot is a unity message so don't rename this
         {
-            Debug.Log("here !");
             StartCoroutine(Shaker.Shake(turret, 0.1f, 0.05f));
         }
 
         protected override void OnDestroy()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShootBlabla;
+            Entity.BulletAbility.AbilityActivated -= OnShooting;
 
             base.OnDestroy();
         }

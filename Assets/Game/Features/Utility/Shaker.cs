@@ -5,10 +5,11 @@ namespace Assets.Game.View
 {
     public static class Shaker
     {
+        /// <summary>
+        /// OBJECT MUST REMAIN FIXED THROUGHOUT THE SHAKE
+        /// </summary>
         public static IEnumerator Shake(Transform entityView, float time, float intensity)
         {
-            Debug.Log(entityView.localPosition);
-            //OBJECT MUST REMAIN FIXED THROUGHOUT THE SHAKE
             Vector2 initPos = new Vector2(entityView.localPosition.x, entityView.localPosition.y);
 
             float t = time;
