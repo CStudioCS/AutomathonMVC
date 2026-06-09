@@ -10,7 +10,6 @@ namespace Automathon.Game
         {
             base.LateUpdate();
 
-            Debug.Log(Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X)));
             turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X));
         }
     }

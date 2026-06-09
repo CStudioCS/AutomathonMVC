@@ -1,4 +1,4 @@
-using Automathon.Utility;
+using Automathon.Game.View;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;

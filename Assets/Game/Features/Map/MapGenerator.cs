@@ -11,5 +11,5 @@ namespace Automathon.Game.MapSystem
                 GameplayManager.Instantiate(e);
             }
         }
-    } 
+    }
 }
