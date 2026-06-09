@@ -1,13 +1,13 @@
-using Newtonsoft.Json;
+/*using Newtonsoft.Json;
 using System.IO;
-using UnityEngine;
+using UnityEngine;*/
 
 namespace Automathon.Game.MapSystem
 {
     public static class MapSaver
     {
 
-        public static void RegisterMap(Map map)
+        /*public static void RegisterMap(Map map)
         {
             string mapDirectory = Application.dataPath + "/Maps";
 
@@ -51,6 +51,6 @@ namespace Automathon.Game.MapSystem
             );
 
             return data.ToMap();
-        }
+        }*/
     }
 }

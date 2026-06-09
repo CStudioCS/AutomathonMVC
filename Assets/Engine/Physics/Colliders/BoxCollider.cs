@@ -13,11 +13,11 @@ namespace Automathon.Engine.Physics
 
         public Vector2Int[] WorldVertices { get; private set; }
 
-        public BoxCollider(Vector2Int localPosition, int halfWidth, int halfHeight, int localRotationMillirad) : base()
+        public BoxCollider(Vector2Int localPosition, int width, int height, int localRotationMillirad) : base()
         {
             LocalCenterPosition = localPosition;
-            Width = halfWidth * 2;
-            Height = halfHeight * 2;
+            Width = width;
+            Height = height;
             LocalRotationMillirad = localRotationMillirad;
         }
 

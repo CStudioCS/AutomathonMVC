@@ -1,5 +1,3 @@
-
-
 using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
