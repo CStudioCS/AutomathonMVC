@@ -11,7 +11,12 @@ namespace Automathon.Game
 
         [SerializeField] private float grenadeShakingIntensity;
         [SerializeField] private float grenadeShakingDuration;
+
+        [SerializeField] private float machineGunCameraShakingIntensity;
         private bool subbed;
+
+        private CameraShaker cameraShaker;
+
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
@@ -41,6 +46,10 @@ namespace Automathon.Game
 
         private void OnMachineGunAbility()
         {
+            if (!cameraShaker)
+            {
+                cameraShaker = Camera.main.GetComponent<CameraShaker>();
+            }
             StartCoroutine(ShakeMultipleMachineGun());
         }
 
@@ -67,6 +76,7 @@ namespace Automathon.Game
             for (int i = 0; i < Entity.MachineGunAbility.NumFiredBullets + 2; i++)// +2 just because it feels better
             {
                 StartCoroutine(Shaker.Shake(turret, bulletShakingDuration, bulletShakingIntensity));
+                cameraShaker.CameraShake(intervalShootTime, machineGunCameraShakingIntensity);
                 yield return new WaitForSeconds(intervalShootTime);
             }
         }
