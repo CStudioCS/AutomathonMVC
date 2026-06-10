@@ -2,22 +2,22 @@ using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.MapSystem;
 
-namespace Automathon.Game.WallSystem
+namespace Automathon.Game
 {
     public class Wall : Entity, IPersistable
     {
         public WallData WallData { get; }
-        public Vector2Int HalfSize => WallData.HalfSize;
+        public Vector2Int Size => WallData.Size;
         public Rigidbody Rigidbody { get; private set; }
         public BoxCollider BoxCollider { get; private set; }
 
-        public Wall(Vector2Int position, Vector2Int halfSize, int rotationMilli)
-            : this(new WallData(position, halfSize, rotationMilli)) { }
+        public Wall(Vector2Int position, Vector2Int size, int rotationMilli)
+            : this(new WallData(position, size, rotationMilli)) { }
 
         public Wall(WallData data) : base(data)
         {
             WallData = data;
-            BoxCollider = new BoxCollider(Vector2Int.Zero, data.HalfSize.X, data.HalfSize.Y, 0);
+            BoxCollider = new BoxCollider(Vector2Int.Zero, data.Size.X, data.Size.Y, 0);
             Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
 
             Initialize(BoxCollider, Rigidbody);

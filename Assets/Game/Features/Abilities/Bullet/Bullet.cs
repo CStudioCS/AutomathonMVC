@@ -1,14 +1,13 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Game.HealthSystem;
 
-namespace Automathon.Game.BulletSystem
+namespace Automathon.Game
 {
     public class Bullet : Entity
     {
         private const int DAMAGE = 100;
         public const int RADIUS = 100;
-        public const int SPEED = 7000;
+        public const int SPEED = 10000;
         private const int LIFESPAN_MILLI = 10000;
 
         private CircleCollider circleCollider;

@@ -1,12 +1,10 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
-using Automathon.Game.Lobby.MultiTankManagement;
-using Automathon.Game.TankSystem;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Automathon.Game.Lobby
+namespace Automathon.Game
 {
     public class TankSpawnerView : MonoBehaviour
     {

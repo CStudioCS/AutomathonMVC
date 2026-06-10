@@ -1,12 +1,9 @@
-
-
 using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
-using Automathon.Game.BulletSystem;
 using Automathon.Utility;
 
-namespace Automathon.Game.GrenadeSystem
+namespace Automathon.Game
 {
     public class Grenade : Entity
     {

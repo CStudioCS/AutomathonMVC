@@ -1,10 +1,9 @@
 using Automathon.Engine;
-using Automathon.Game.Utility;
-using Automathon.Utility;
+using Automathon.Game.View;
 using System;
 using UnityEngine;
 
-namespace Automathon.Game.View
+namespace Automathon.Game
 {
     public abstract class EntityView : MonoBehaviour
     {

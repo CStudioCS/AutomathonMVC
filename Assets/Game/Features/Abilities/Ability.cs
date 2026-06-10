@@ -1,9 +1,8 @@
 using Automathon.Engine;
-using Automathon.Game.TankSystem;
 using System;
 
 
-namespace Automathon.Game.AbilitySystem
+namespace Automathon.Game
 {
     public abstract class Ability : Component
     {
@@ -16,9 +15,9 @@ namespace Automathon.Game.AbilitySystem
 
         public Tank Tank { get; private set; }
 
-        public Ability(int cooldown, Func<bool> shouldActivate)
+        public Ability(int cooldownMilli, Func<bool> shouldActivate)
         {
-            this.coolDownMillis = cooldown;
+            this.coolDownMillis = cooldownMilli;
             this.shouldActivate = shouldActivate;
         }
 
@@ -53,6 +52,7 @@ namespace Automathon.Game.AbilitySystem
                 isOnCooldown = false;
                 CooldownElapsed?.Invoke();
             }));
+
             Activate();
             AbilityActivated?.Invoke();
         }

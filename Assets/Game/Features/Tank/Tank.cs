@@ -1,17 +1,20 @@
 ﻿using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Game.BulletSystem;
-using Automathon.Game.GrenadeSystem;
-using Automathon.Game.HealthSystem;
 using Automathon.Game.Input;
-using Automathon.Game.ShieldSystem;
 
-namespace Automathon.Game.TankSystem
+namespace Automathon.Game
 {
     public class Tank : Entity
     {
-        private const int SPEED = 4000;
+        private const int SIZE = 600;
+        private const int SPEED = 6000;
         public const int MAX_HEALTH = 1000;
+
+        public BulletAbility BulletAbility;
+        public ShieldAbility ShieldAbility;
+        public GrenadeAbility GrenadeAbility;
+        public MachineGunAbility MachineGunAbility;
+        public Health Health;
 
         public IInputProvider InputProvider { get; private set; }
         private Rigidbody rigidbody;
@@ -23,16 +26,17 @@ namespace Automathon.Game.TankSystem
         {
             InputProvider = inputProvider;
 
-            BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, 500, 500, 0);
+            BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, SIZE, SIZE, 0);
             rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
 
             Initialize(
                 boxCollider,
                 rigidbody,
-                new BulletAbility(inputProvider.ShouldShoot),
-                new ShieldAbility(inputProvider.ShouldShield),
-                new GrenadeAbility(inputProvider.ShouldGrenade),
-                new Health(MAX_HEALTH, false, Death)
+                BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
+                GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
+                //ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
+                MachineGunAbility = new MachineGunAbility(10, 500, 3000, inputProvider.ShouldShield),
+                Health = new Health(MAX_HEALTH, false, Death)
                 );
         }
 
@@ -44,17 +48,13 @@ namespace Automathon.Game.TankSystem
             rigidbody.Velocity = movementInput * SPEED / 1000;
 
             Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
-            if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.PlayerControlsType.RightKeyboard)
-            {
+
+            /*if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.PlayerControlsType.RightKeyboard)
                 aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
-            }
-            aimingInput.NormalizeAtScale(1000);
+            */
 
             if (aimingInput != Vector2Int.Zero)
-            {
                 LastMilliDirection = aimingInput;
-                LastMilliDirection.NormalizeAtScale(1000);
-            }
             if (movementInput != Vector2Int.Zero)
             {
                 RotationMilli = movementInput.CalculateAngleMilliRad();

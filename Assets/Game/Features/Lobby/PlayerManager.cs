@@ -1,9 +1,8 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
-using Automathon.Game.TankSystem;
 using System.Collections.Generic;
 
-namespace Automathon.Game.Lobby.MultiTankManagement
+namespace Automathon.Game
 {
     public static class PlayerManager
     {
