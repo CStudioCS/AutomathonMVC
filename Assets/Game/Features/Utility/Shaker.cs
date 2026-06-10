@@ -10,26 +10,29 @@ namespace Assets.Game.View
         /// </summary>
         public static IEnumerator Shake(Transform entityView, float time, float intensity)
         {
-            Vector2 initPos = new Vector2(entityView.localPosition.x, entityView.localPosition.y);
+            Vector3 initPos = entityView.localPosition;
+
+            Vector2 localShakePos = Vector2.zero;
 
             float t = time;
             while (t >= 0)
             {
-                Vector2 entityPos = new Vector2(entityView.localPosition.x, entityView.localPosition.y);
-
+                Debug.Log(localShakePos);
                 Vector2 random = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)) * intensity;
 
                 float maxBound = intensity * t / time;
 
-                random = new Vector2(Mathf.Clamp(entityPos.x + random.x, initPos.x - maxBound, initPos.x + maxBound), Mathf.Clamp(entityPos.y + random.y, initPos.y - maxBound, initPos.y + maxBound)) - entityPos;
+                random = new Vector2(Mathf.Clamp(localShakePos.x + random.x, -maxBound, +maxBound), Mathf.Clamp(localShakePos.y + random.y, -maxBound, +maxBound)) - localShakePos;
 
                 entityView.localPosition += new Vector3(random.x, random.y, 0);
+
+                localShakePos += random;
 
                 t -= Time.deltaTime;
                 yield return 0;
             }
 
-            entityView.localPosition = new Vector3(initPos.x, initPos.y, 0);
+            entityView.localPosition -= new Vector3(localShakePos.x, localShakePos.y);
             Debug.Log(entityView.localPosition);
         }
     }
