@@ -41,9 +41,9 @@ namespace Automathon.Game.Input
             aimAction = playerInput.actions["Aim"];
         }
 
-        public bool ShouldDash() => dashAction.IsPressed();
+        public bool ShouldDash() => dashAction.WasPressedThisFrame();
 
-        public bool ShouldGrenade() => grenadeAction.IsPressed();
+        public bool ShouldGrenade() => grenadeAction.WasPressedThisFrame();
 
         public Vector2Int GetMilliMovementDir()
         {
@@ -51,7 +51,7 @@ namespace Automathon.Game.Input
             return movementDir.ToVector2IntScaled();
         }
 
-        public bool ShouldShield() => shieldAction.IsPressed();
+        public bool ShouldShield() => shieldAction.WasPressedThisFrame();
 
         public bool ShouldShoot() => shootAction.IsPressed();
 

@@ -13,17 +13,14 @@ namespace Automathon.Game
 
         public int Health { get; private set; } = MAX_HEALTH;
         public BoxCollider BoxCollider { get; private set; }
+
         public Shield(Vector2Int position, int rotationMillirad) : base(position)
         {
             RotationMilli = rotationMillirad;
             BoxCollider = new BoxCollider(Vector2Int.Zero, LENGTH, HEIGHT, 0);
             Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
 
-            Initialize(
-                Rigidbody,
-                BoxCollider,
-                new Health(MAX_HEALTH, true)
-                );
+            Initialize(Rigidbody, BoxCollider, new Health(MAX_HEALTH, true));
 
             AddBehavior(new Timer(LIFESPAN_MILLIS, null, () => GameplayManager.Destroy(this)));
         }

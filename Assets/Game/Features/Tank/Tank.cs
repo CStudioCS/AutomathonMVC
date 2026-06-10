@@ -13,6 +13,7 @@ namespace Automathon.Game
         public BulletAbility BulletAbility;
         public ShieldAbility ShieldAbility;
         public GrenadeAbility GrenadeAbility;
+        public MachineGunAbility MachineGunAbility;
         public Health Health;
 
         public IInputProvider InputProvider { get; private set; }
@@ -32,8 +33,9 @@ namespace Automathon.Game
                 boxCollider,
                 rigidbody,
                 BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
-                ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
                 GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
+                //ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
+                MachineGunAbility = new MachineGunAbility(10, 500, 3000, inputProvider.ShouldShield),
                 Health = new Health(MAX_HEALTH, false, Death)
                 );
         }

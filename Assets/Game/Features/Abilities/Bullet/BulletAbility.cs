@@ -8,7 +8,7 @@ namespace Automathon.Game
         private const int COOLDOWN_MILLIS = 300;
         private const int SPAWN_DISTANCE_FROM_TANK = 1000;
 
-        public BulletAbility(Func<bool> shouldActivate) : base(cooldown: COOLDOWN_MILLIS, shouldActivate: shouldActivate)
+        public BulletAbility(Func<bool> shouldActivate) : base(cooldownMilli: COOLDOWN_MILLIS, shouldActivate: shouldActivate)
         { }
 
         protected override void Activate()

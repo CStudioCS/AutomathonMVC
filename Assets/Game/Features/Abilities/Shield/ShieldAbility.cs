@@ -9,7 +9,7 @@ namespace Automathon.Game
         private const int COOLDOWN_MILLIS = 3000;
         private const int SPAWN_DISTANCE_FROM_TANK = 2000;
 
-        public ShieldAbility(Func<bool> shouldActivate) : base(cooldown: COOLDOWN_MILLIS, shouldActivate: shouldActivate)
+        public ShieldAbility(Func<bool> shouldActivate) : base(cooldownMilli: COOLDOWN_MILLIS, shouldActivate: shouldActivate)
         { }
 
         protected override void Activate()

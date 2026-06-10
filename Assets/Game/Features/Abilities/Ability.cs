@@ -15,9 +15,9 @@ namespace Automathon.Game
 
         public Tank Tank { get; private set; }
 
-        public Ability(int cooldown, Func<bool> shouldActivate)
+        public Ability(int cooldownMilli, Func<bool> shouldActivate)
         {
-            this.coolDownMillis = cooldown;
+            this.coolDownMillis = cooldownMilli;
             this.shouldActivate = shouldActivate;
         }
 
