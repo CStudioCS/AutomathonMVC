@@ -469,6 +469,17 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""b967a280-4a3e-4f28-82a7-b4298ddd5ed7"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",

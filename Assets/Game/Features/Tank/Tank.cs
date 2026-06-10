@@ -14,13 +14,15 @@ namespace Automathon.Game
         public ShieldAbility ShieldAbility;
         public GrenadeAbility GrenadeAbility;
         public MachineGunAbility MachineGunAbility;
+        public DashAbility DashAbility;
         public Health Health;
 
         public IInputProvider InputProvider { get; private set; }
         private Rigidbody rigidbody;
 
-        public Vector2Int LastMilliDirection { get; private set; }
+        public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
         public bool IsReady { get; set; }
+        public bool IsDashing { get; set; }
 
         public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
         {
@@ -34,6 +36,7 @@ namespace Automathon.Game
                 rigidbody,
                 BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
                 GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
+                DashAbility = new DashAbility(inputProvider.ShouldDash),
                 //ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
                 MachineGunAbility = new MachineGunAbility(10, 500, 3000, inputProvider.ShouldShield),
                 Health = new Health(MAX_HEALTH, false, Death)
@@ -45,7 +48,12 @@ namespace Automathon.Game
             base.Update();
 
             Vector2Int movementInput = InputProvider.GetMilliMovementDir();
-            rigidbody.Velocity = movementInput * SPEED / 1000;
+
+            // Only update velocity if not dashing (dash manages its own velocity)
+            if (!IsDashing)
+            {
+                rigidbody.Velocity = movementInput * SPEED / 1000;
+            }
 
             Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
 
@@ -59,6 +67,7 @@ namespace Automathon.Game
             {
                 RotationMilli = movementInput.CalculateAngleMilliRad();
                 rigidbody.AngularVelocityMilli = 0;
+                LastMilliDirection = movementInput;
             }
         }
 
