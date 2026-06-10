@@ -2,6 +2,7 @@ using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
 using Automathon.Utility;
+using System;
 
 namespace Automathon.Game
 {
@@ -11,6 +12,7 @@ namespace Automathon.Game
         private const int SPEED = 1800;
         private const int EXPLOSION_DELAY = 2000;
         private const int FRAGMENT_NUMBER = 12;
+        public Action Explode;
 
         public CircleCollider CircleCollider { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
@@ -29,6 +31,8 @@ namespace Automathon.Game
 
         private void BlowUp()
         {
+            Explode?.Invoke();
+
             for (int i = 0; i < FRAGMENT_NUMBER; i++)
             {
                 int theta = i * IntMath.PI_MILLI * 2 / FRAGMENT_NUMBER;

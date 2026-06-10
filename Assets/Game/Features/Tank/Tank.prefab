@@ -48,6 +48,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 709e666265fce2845a8d7901163bd429, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletShakingIntensity: 0.05
+  bulletShakingDuration: 0.1
+  grenadeShakingIntensity: 0.5
+  grenadeShakingDuration: 0.05
+  machineGunCameraShakingIntensity: 0.3
+  machineGunCameraShakingDuration: 0
   turret: {fileID: 3470613427567675882}
 --- !u!212 &6264126385519454714
 SpriteRenderer:

@@ -100,3 +100,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f70fe841afcc17049aa7402880fc218d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 0}
+  explosionShakeTime: 2
+  explosionShakeIntensity: 2
