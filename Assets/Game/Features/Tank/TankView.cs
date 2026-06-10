@@ -1,6 +1,7 @@
 using Assets.Game.View;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Automathon.Game
 {
@@ -13,9 +14,13 @@ namespace Automathon.Game
         [SerializeField] private float grenadeShakingDuration;
 
         [SerializeField] private float machineGunCameraShakingIntensity;
-        private bool subbed;
+
+        [SerializeField] private VisualEffect miniExplosionParticle;
 
         private CameraShaker cameraShaker;
+        [SerializeField] private Transform turret;
+        [SerializeField] private Transform turretTip;
+        private bool subbed;
 
         public override void Initialize(Tank entity)
         {
@@ -25,7 +30,6 @@ namespace Automathon.Game
             Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
         }
 
-        [SerializeField] private Transform turret;
 
         protected override void LateUpdate()
         {
@@ -37,6 +41,7 @@ namespace Automathon.Game
         private void OnShooting() //OnShoot is a unity message so don't rename this
         {
             StartCoroutine(Shaker.Shake(turret, bulletShakingDuration, bulletShakingIntensity));
+            Instantiate(miniExplosionParticle, turretTip);
         }
 
         private void OnMachineGunAbility()
