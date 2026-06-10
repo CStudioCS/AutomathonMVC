@@ -25,11 +25,6 @@ namespace Automathon.Game
             Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
         }
 
-        private void GrenadeAbility_AbilityActivated()
-        {
-            throw new System.NotImplementedException();
-        }
-
         [SerializeField] private Transform turret;
 
         protected override void LateUpdate()
@@ -53,11 +48,6 @@ namespace Automathon.Game
             StartCoroutine(ShakeMultipleMachineGun());
         }
 
-        private void OnShieldAbility()
-        {
-            // why not a shake
-        }
-
         private void OnGrenadeAbility()
         {
             StartCoroutine(Shaker.Shake(turret, grenadeShakingDuration, grenadeShakingIntensity));
@@ -79,6 +69,14 @@ namespace Automathon.Game
                 cameraShaker.CameraShake(intervalShootTime, machineGunCameraShakingIntensity);
                 yield return new WaitForSeconds(intervalShootTime);
             }
+        }
+
+        protected override void OnControllerDestroyed()
+        {
+            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbility;
+            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
+            base.OnControllerDestroyed();
         }
     }
 }
