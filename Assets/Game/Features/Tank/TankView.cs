@@ -5,11 +5,21 @@ namespace Automathon.Game
 {
     public class TankView : EntityView<Tank>
     {
+        [SerializeField] private float bulletShakingIntensity;
+        [SerializeField] private float bulletShakingDuration;
+
+        [SerializeField] private float bulletCameraShakingIntensity;
+        [SerializeField] private float bulletCameraShakingDuration;
         private bool subbed;
+
+        private CameraShaker cameraShaker;
+
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
             Entity.BulletAbility.AbilityActivated += OnShooting;
+            Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
+            Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
         }
 
         [SerializeField] private Transform turret;
@@ -23,15 +33,41 @@ namespace Automathon.Game
 
         private void OnShooting() //OnShoot is a unity message so don't rename this
         {
-            StartCoroutine(Shaker.Shake(turret, 0.1f, 0.05f));
+            StartCoroutine(Shaker.Shake(turret, bulletShakingDuration, bulletShakingIntensity));
+        }
+
+        private void OnMachineGunAbilityBulletShot()
+        {
+            if (!cameraShaker)
+            {
+                cameraShaker = Camera.main.GetComponent<CameraShaker>();
+            }
+
+            StartCoroutine(Shaker.Shake(turret, bulletShakingDuration, bulletShakingIntensity));
+            cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
+        }
+
+        private void OnGrenadeAbility()
+        {
+            //No shake when shooting a grenade imo
+            //StartCoroutine(Shaker.Shake(turret, grenadeShakingDuration, grenadeShakingIntensity));
         }
 
         protected override void OnDestroy()
         {
             Entity.BulletAbility.AbilityActivated -= OnShooting;
+            Entity.MachineGunAbility.BulletShot -= OnMachineGunAbilityBulletShot;
+            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
 
             base.OnDestroy();
         }
-    }
 
+        protected override void OnControllerDestroyed()
+        {
+            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
+            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
+            base.OnControllerDestroyed();
+        }
+    }
 }

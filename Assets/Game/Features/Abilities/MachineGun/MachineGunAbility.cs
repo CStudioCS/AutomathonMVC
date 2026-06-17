@@ -8,6 +8,7 @@ namespace Automathon.Game
         public int NumFiredBullets;
         public int TimeToFireAllMilli;
         private const int SPAWN_DISTANCE_FROM_TANK = 1000;
+        public event Action BulletShot;
 
         public MachineGunAbility(int numFiredBullets, int timeToFireAllMilli, int cooldownMilli, Func<bool> shouldActivate) : base(cooldownMilli, shouldActivate)
         {
@@ -22,11 +23,11 @@ namespace Automathon.Game
             {
                 for (int i = amountFired; i < NumFiredBullets; i++)
                 {
-                    Debug.Log((t.MaxValueFrames - t.ValueFrames) * 1000 / GameplayConstants.FRAMERATE);
                     if ((t.MaxValueFrames - t.ValueFrames) * 1000 / GameplayConstants.FRAMERATE < i * TimeToFireAllMilli / NumFiredBullets)
                         return;
 
                     GameplayManager.Instantiate(new Bullet(Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000, Tank.LastMilliDirection));
+                    BulletShot?.Invoke();
                     amountFired++;
                 }
             }));
