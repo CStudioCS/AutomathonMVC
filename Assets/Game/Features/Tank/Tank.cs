@@ -6,7 +6,8 @@ namespace Automathon.Game
 {
     public class Tank : Entity
     {
-        private const int SIZE = 700;
+        private const int TANK_HEIGHT = 838;
+        private const int TANK_WIDTH = 1138;
         private const int SPEED = 7000;
         public const int MAX_HEALTH = 1000;
 
@@ -29,7 +30,7 @@ namespace Automathon.Game
         {
             InputProvider = inputProvider;
 
-            BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, SIZE, SIZE, 0);
+            BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, TANK_WIDTH, TANK_HEIGHT, 0);
             rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
 
             Initialize(
