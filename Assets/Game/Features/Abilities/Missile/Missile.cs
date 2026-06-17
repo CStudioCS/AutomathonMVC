@@ -1,24 +1,24 @@
-using Automathon.Engine;
+﻿using Automathon.Engine;
 using Automathon.Engine.Physics;
 
 namespace Automathon.Game
 {
-    public class Bullet : Entity
+    public class Missile : Entity
     {
-        private const int DAMAGE = 100;
-        public const int RADIUS = 100;
-        public const int SPEED = 17000;
-        private const int LIFESPAN_MILLI = 10000;
+        private const int DAMAGE = 400;
+        public const int RADIUS = 300;
+        public const int SPEED = 13000;
+        private const int LIFESPAN_MILLI = 12000;
 
-        private Tank shotFromTank;
-
+        private Tank shotFrom;
         private CircleCollider circleCollider;
 
-        public Bullet(Vector2Int position, Vector2Int direction, Tank shotFrom) : base(position)
+        public Missile(Vector2Int position, Vector2Int direction, Tank shotFromTank) : base(position)
         {
-            this.shotFromTank = shotFrom;
+            this.shotFrom = shotFromTank;
+
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
-            Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
+            Rigidbody rigidbody = new Rigidbody(circleCollider, 3000, 300, 200);
 
             Initialize(circleCollider, rigidbody);
 
@@ -30,7 +30,7 @@ namespace Automathon.Game
 
         private void OnCollision(CollisionEvent collisionContact)
         {
-            if (collisionContact.Other.ParentEntity == shotFromTank)
+            if (collisionContact.Other.ParentEntity == shotFrom)
                 return;
 
             if (collisionContact.Other.ParentEntity.TryGetComponent(out Health health))

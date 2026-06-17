@@ -101,6 +101,9 @@ namespace Automathon
         public int LengthSquared()
             => X * X + Y * Y;
 
+        public long LongLengthSquared()
+            => (long)X * (long)X + (long)Y * (long)Y;
+
         public static Vector2Int MilliDirectionFromAngle(int angleMillirad)
             => new Vector2Int(TrigTable.Cos(angleMillirad), TrigTable.Sin(angleMillirad));
 
