@@ -7,7 +7,7 @@ namespace Automathon.Game
     {
         private const int DAMAGE = 100;
         public const int RADIUS = 100;
-        public const int SPEED = 15000;
+        public const int SPEED = 17000;
         private const int LIFESPAN_MILLI = 10000;
 
         private CircleCollider circleCollider;

@@ -6,8 +6,8 @@ namespace Automathon.Game
 {
     public class Tank : Entity
     {
-        private const int SIZE = 600;
-        private const int SPEED = 6000;
+        private const int SIZE = 700;
+        private const int SPEED = 7000;
         public const int MAX_HEALTH = 1000;
 
         public BulletAbility BulletAbility;
@@ -21,6 +21,7 @@ namespace Automathon.Game
         private Rigidbody rigidbody;
 
         public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
+        public Vector2Int LastMovingMilliDirection { get; private set; } = new Vector2Int(1000, 0);
         public bool IsReady { get; set; }
         public bool IsDashing { get; set; }
 
@@ -61,6 +62,7 @@ namespace Automathon.Game
 
             if (movementInput != Vector2Int.Zero)
             {
+                LastMovingMilliDirection = movementInput;
                 RotationMilli = movementInput.CalculateAngleMilliRad();
                 rigidbody.AngularVelocityMilli = 0;
 
