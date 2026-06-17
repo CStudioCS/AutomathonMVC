@@ -51,9 +51,7 @@ namespace Automathon.Game
 
             // Only update velocity if not dashing (dash manages its own velocity)
             if (!IsDashing)
-            {
                 rigidbody.Velocity = movementInput * SPEED / 1000;
-            }
 
             Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
 
@@ -61,14 +59,17 @@ namespace Automathon.Game
                 aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
             */
 
-            if (aimingInput != Vector2Int.Zero)
-                LastMilliDirection = aimingInput;
             if (movementInput != Vector2Int.Zero)
             {
                 RotationMilli = movementInput.CalculateAngleMilliRad();
                 rigidbody.AngularVelocityMilli = 0;
-                LastMilliDirection = movementInput;
+
+                if (InputProvider is PlayerInputProvider p && (p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard || p.ControlsType == PlayerInputProvider.PlayerControlsType.RightKeyboard))
+                    LastMilliDirection = movementInput;
             }
+
+            if (aimingInput != Vector2Int.Zero)
+                LastMilliDirection = aimingInput;
         }
 
         private void Death()

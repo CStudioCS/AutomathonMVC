@@ -8,7 +8,7 @@ namespace Automathon.Game.Input
     public class PlayerInputProvider : IInputProvider
     {
         public enum PlayerControlsType { LeftKeyboard, RightKeyboard, Gamepad }
-        public PlayerControlsType PlayerControls { get; private set; }
+        public PlayerControlsType ControlsType { get; private set; }
         private InputAction dashAction;
         private InputAction grenadeAction;
         private InputAction shieldAction;
@@ -32,7 +32,7 @@ namespace Automathon.Game.Input
 
         public PlayerInputProvider(PlayerInput playerInput)
         {
-            PlayerControls = SchemeToControlsType[playerInput.currentControlScheme];
+            ControlsType = SchemeToControlsType[playerInput.currentControlScheme];
             dashAction = playerInput.actions["Dash"];
             grenadeAction = playerInput.actions["Grenade"];
             shieldAction = playerInput.actions["Shield"];
@@ -58,7 +58,7 @@ namespace Automathon.Game.Input
         public Vector2Int GetMilliAimingDir()
         {
             Vector2 aimingDir = aimAction.ReadValue<Vector2>();
-            if (PlayerControls == PlayerControlsType.RightKeyboard)
+            if (ControlsType == PlayerControlsType.RightKeyboard)
             {
                 Vector3 worldPos = aimingDir.ScreenToWorldSpace();
                 return ((Vector2)worldPos).ToVector2IntScaled();
