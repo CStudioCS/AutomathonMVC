@@ -112,8 +112,6 @@ namespace Automathon.Engine.Physics
                 newContacts.Add(contact);
             }
 
-
-
             for (int i = 0; i < rigidbodies.Count; i++)
             {
                 for (int j = i + 1; j < rigidbodies.Count; j++)
@@ -124,14 +122,38 @@ namespace Automathon.Engine.Physics
                     if (rigidbody.InvMassMilli == 0 && otherRigidbody.InvMassMilli == 0)
                         continue;
 
-                    if (rigidbody.Collider is BoxCollider b1 && otherRigidbody.Collider is BoxCollider b2)
-                        HandleBoxBoxContact(rigidbody, b1, otherRigidbody, b2);
-                    else if ((rigidbody.Collider is BoxCollider b3 && otherRigidbody.Collider is CircleCollider c1))
-                        HandleBoxCircleContact(rigidbody, b3, otherRigidbody, c1);
-                    else if (rigidbody.Collider is CircleCollider c2 && otherRigidbody.Collider is BoxCollider b4)
-                        HandleBoxCircleContact(otherRigidbody, b4, rigidbody, c2);
-                    else if (rigidbody.Collider is CircleCollider c3 && otherRigidbody.Collider is CircleCollider c4)
-                        HandleCircleCircleContact(rigidbody, c3, otherRigidbody, c4);
+                    void HandleColliders(Collider coll1, Collider coll2)
+                    {
+                        if (coll1 is BoxCollider b1 && coll2 is BoxCollider b2)
+                            HandleBoxBoxContact(rigidbody, b1, otherRigidbody, b2);
+                        else if ((coll1 is BoxCollider b3 && coll2 is CircleCollider c1))
+                            HandleBoxCircleContact(rigidbody, b3, otherRigidbody, c1);
+                        else if (coll1 is CircleCollider c2 && coll2 is BoxCollider b4)
+                            HandleBoxCircleContact(otherRigidbody, b4, rigidbody, c2);
+                        else if (coll1 is CircleCollider c3 && coll2 is CircleCollider c4)
+                            HandleCircleCircleContact(rigidbody, c3, otherRigidbody, c4);
+                    }
+
+                    if (rigidbody.Collider is CompositeCollider composite && otherRigidbody.Collider is CompositeCollider composite2)
+                    {
+                        foreach (Collider c in composite.Colliders)
+                        {
+                            foreach (Collider c2 in composite2.Colliders)
+                                HandleColliders(c, c2);
+                        }
+                    }
+                    else if (rigidbody.Collider is CompositeCollider composite3)
+                    {
+                        foreach (Collider c in composite3.Colliders)
+                            HandleColliders(c, otherRigidbody.Collider);
+                    }
+                    else if (otherRigidbody.Collider is CompositeCollider composite4)
+                    {
+                        foreach (Collider c in composite4.Colliders)
+                            HandleColliders(rigidbody.Collider, c);
+                    }
+                    else
+                        HandleColliders(rigidbody.Collider, otherRigidbody.Collider);
                 }
             }
 

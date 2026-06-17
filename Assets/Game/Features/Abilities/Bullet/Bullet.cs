@@ -17,6 +17,9 @@ namespace Automathon.Game
         public Bullet(Vector2Int position, Vector2Int direction, Tank shotFrom) : base(position)
         {
             this.shotFromTank = shotFrom;
+
+            direction.NormalizeAtScale(1000);
+
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
             Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
 

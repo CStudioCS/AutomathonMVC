@@ -12,8 +12,8 @@ namespace Automathon.Game
 
         protected override void Activate()
         {
-            Vector2Int position = Tank.Position + Tank.LastMilliDirection * Tank.SPAWN_DISTANCE_FROM_TANK / 1000;
-            GameplayManager.Instantiate(new Missile(position, Tank.LastMilliDirection, Tank));
+            Vector2Int position = Tank.Position + Tank.LastMilliDirection * 1500 / 1000;
+            GameplayManager.Instantiate(new Missile(position, Tank));
         }
     }
 }

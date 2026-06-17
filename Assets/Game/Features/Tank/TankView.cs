@@ -16,7 +16,7 @@ namespace Automathon.Game
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
-            Entity.BulletAbility.AbilityActivated += OnShooting;
+            //Entity.BulletAbility.AbilityActivated += OnShooting;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
         }
 
@@ -48,7 +48,7 @@ namespace Automathon.Game
 
         protected override void OnDestroy()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
             Entity.MachineGunAbility.BulletShot -= OnMachineGunAbilityBulletShot;
 
             base.OnDestroy();
@@ -56,7 +56,7 @@ namespace Automathon.Game
 
         protected override void OnControllerDestroyed()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
             Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
             base.OnControllerDestroyed();
         }
