@@ -186,8 +186,10 @@ namespace Automathon.Engine.Physics
 
             foreach (Contact contact in contacts)
             {
-                AddToCollisionEvent(contact.ReferenceCollider, contact.IncidentCollider, contact.Position, contact.NormalMilli, contact.Penetration);
-                AddToCollisionEvent(contact.IncidentCollider, contact.ReferenceCollider, contact.Position, -contact.NormalMilli, contact.Penetration);
+                if (!contact.IncidentCollider.IsTrigger)
+                    AddToCollisionEvent(contact.ReferenceCollider, contact.IncidentCollider, contact.Position, contact.NormalMilli, contact.Penetration);
+                if (!contact.ReferenceCollider.IsTrigger)
+                    AddToCollisionEvent(contact.IncidentCollider, contact.ReferenceCollider, contact.Position, -contact.NormalMilli, contact.Penetration);
             }
 
             foreach (Dictionary<Collider, CollisionEvent> collisionEvents in colliderEvents.Values)
