@@ -6,10 +6,8 @@ namespace Automathon.Game
 {
     public class Tank : Entity
     {
-        private const int SIZE = 600;
         private const int TANK_HEIGHT = 838;
         private const int TANK_WIDTH = 1138;
-        private const int SPEED = 6000;
         private const int SPEED = 7000;
         public const int MAX_HEALTH = 1000;
 
