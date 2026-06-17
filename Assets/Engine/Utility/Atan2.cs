@@ -1,3 +1,5 @@
+using Automathon.Engine.Utility;
+
 namespace Automathon
 {
     /// <summary>
@@ -162,7 +164,13 @@ namespace Automathon
             if (result > HALF_PI_TIMES_1000) result = HALF_PI_TIMES_1000;
             if (result < -HALF_PI_TIMES_1000) result = -HALF_PI_TIMES_1000;
 
-            return (int)result;
+            if (X > 0)
+                return (int)result;
+            else if (Y > 0)
+                return (int)result + IntMath.PI_MILLI;
+
+            return (int)result - IntMath.PI_MILLI;
+
         }
     }
 }

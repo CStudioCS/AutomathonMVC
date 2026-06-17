@@ -10,16 +10,14 @@ namespace Automathon.Game
 
         [SerializeField] private float bulletCameraShakingIntensity;
         [SerializeField] private float bulletCameraShakingDuration;
-        private bool subbed;
 
         private CameraShaker cameraShaker;
 
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
-            Entity.BulletAbility.AbilityActivated += OnShooting;
+            //Entity.BulletAbility.AbilityActivated += OnShooting;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
         }
 
         [SerializeField] private Transform turret;
@@ -47,26 +45,19 @@ namespace Automathon.Game
             cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
         }
 
-        private void OnGrenadeAbility()
-        {
-            //No shake when shooting a grenade imo
-            //StartCoroutine(Shaker.Shake(turret, grenadeShakingDuration, grenadeShakingIntensity));
-        }
 
         protected override void OnDestroy()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
             Entity.MachineGunAbility.BulletShot -= OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
 
             base.OnDestroy();
         }
 
         protected override void OnControllerDestroyed()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
             Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
             base.OnControllerDestroyed();
         }
     }
