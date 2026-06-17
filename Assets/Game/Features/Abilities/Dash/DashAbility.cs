@@ -6,9 +6,9 @@ namespace Automathon.Game
 {
     public class DashAbility : Ability
     {
-        private const int COOLDOWN_MILLIS = 1200;
+        private const int COOLDOWN_MILLIS = 700;
         private const int DASH_SPEED_MILLI = 25000; // milli-units per frame
-        private const int DASH_DURATION_MILLIS = 200;
+        private const int DASH_DURATION_MILLIS = 150;
         private Rigidbody rigidbody;
         private Vector2Int originalVelocity;
 
@@ -28,7 +28,8 @@ namespace Automathon.Game
 
         protected override void Activate()
         {
-            Vector2Int dashDirection = Tank.LastMilliDirection;
+            Vector2Int dashDirection = Tank.LastMovingMilliDirection;
+            dashDirection.NormalizeAtScale(1000);
 
             // Store original velocity and apply dash velocity
             originalVelocity = rigidbody.Velocity;

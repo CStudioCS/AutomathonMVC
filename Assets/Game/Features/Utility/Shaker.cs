@@ -17,7 +17,6 @@ namespace Assets.Game.View
             float t = time;
             while (t >= 0)
             {
-                Debug.Log(localShakePos);
                 Vector2 random = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)) * intensity;
 
                 float maxBound = intensity * t / time;
@@ -33,7 +32,6 @@ namespace Assets.Game.View
             }
 
             entityView.localPosition -= new Vector3(localShakePos.x, localShakePos.y);
-            Debug.Log(entityView.localPosition);
         }
     }
 }
