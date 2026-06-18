@@ -20,7 +20,7 @@ namespace Automathon.Engine
             PhysicsManager.Initialize();
             PlayerManager.Initialize();
 
-            //Instantiate(new Wall(new Vector2Int(0, 1000), new Vector2Int(1000, 200), 0));
+            Instantiate(new Wall(new Vector2Int(0, 1000), new Vector2Int(1000, 200), 0));
         }
 
         public static void Update()

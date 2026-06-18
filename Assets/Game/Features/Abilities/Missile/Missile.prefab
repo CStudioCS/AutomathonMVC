@@ -102,6 +102,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee1a3b736120b547a373b49b5048ae9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraShakeIntensity: 0.5
+  cameraShakeDuration: 0.2
+  BigExplosion: {fileID: 5848813580190831784, guid: a3efcb1623abec545bfa83061a7bb09f, type: 3}
 --- !u!2083052967 &7504975165810184215
 VisualEffect:
   m_ObjectHideFlags: 0

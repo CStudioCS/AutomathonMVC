@@ -20,7 +20,7 @@ namespace Automathon.Game
         private const int LIFESPAN_MILLI = 5000;
         private const int ROTATION_MAX_STEP = 40;
 
-        private const int AOE_RADIUS = 5000;
+        public const int AOE_RADIUS = 1000;
 
         private Tank shotFromTank;
         private CircleCollider circleCollider;
