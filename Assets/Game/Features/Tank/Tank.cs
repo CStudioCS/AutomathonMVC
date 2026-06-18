@@ -21,7 +21,7 @@ namespace Automathon.Game
         public Health Health;
 
         public IInputProvider InputProvider { get; private set; }
-        private Rigidbody rigidbody;
+        public Rigidbody Rigidbody;
 
         public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
         public Vector2Int LastMovingMilliDirection { get; private set; } = new Vector2Int(1000, 0);
@@ -33,12 +33,12 @@ namespace Automathon.Game
             InputProvider = inputProvider;
 
             BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, TANK_WIDTH, TANK_HEIGHT, 0);
-            rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
+            Rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
 
             Initialize(
                 boxCollider,
-                rigidbody,
-                MachineGunAbility = new MachineGunAbility(10, 500, 3000, inputProvider.ShouldShoot),
+                Rigidbody,
+                MachineGunAbility = new MachineGunAbility(10, 500, inputProvider.ShouldShoot),
                 MissileAbility = new MissileAbility(inputProvider.ShouldMissile),
                 ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
                 DashAbility = new DashAbility(inputProvider.ShouldDash),
@@ -55,7 +55,7 @@ namespace Automathon.Game
 
             // Only update velocity if not dashing (dash manages its own velocity)
             if (!IsDashing)
-                rigidbody.Velocity = movementInput * SPEED / 1000;
+                Rigidbody.Velocity = movementInput * SPEED / 1000;
 
             Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
 
@@ -67,7 +67,7 @@ namespace Automathon.Game
             {
                 LastMovingMilliDirection = movementInput;
                 RotationMilli = movementInput.CalculateAngleMilliRad();
-                rigidbody.AngularVelocityMilli = 0;
+                Rigidbody.AngularVelocityMilli = 0;
 
                 if (InputProvider is PlayerInputProvider p && (p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard || p.ControlsType == PlayerInputProvider.PlayerControlsType.RightKeyboard))
                     LastMilliDirection = movementInput;

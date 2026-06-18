@@ -1,6 +1,7 @@
 using Assets.Game.View;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Automathon.Game
 {
@@ -17,9 +18,11 @@ namespace Automathon.Game
         [SerializeField] private AudioSource DashA;
 
         [SerializeField] private Transform turret;
+        [SerializeField] private Transform turretTip;
         [SerializeField] private Transform body;
         [SerializeField] private ParticleSystem dashBurstParticleSystem;
         [SerializeField] private ParticleSystem dashFlame;
+        [SerializeField] private VisualEffect miniExplosion;
 
         private CameraShaker cameraShaker;
 
@@ -31,6 +34,7 @@ namespace Automathon.Game
             //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
+            Entity.MissileAbility.AbilityActivated += OnMissileAbility;
         }
 
         protected override void LateUpdate()
@@ -49,13 +53,14 @@ namespace Automathon.Game
 
             StartCoroutine(Shaker.Shake(turret, bulletShakingDuration, bulletShakingIntensity));
             cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
+
+            EmitShootingMiniExplosion();
         }
 
         IEnumerator Dash(int dashDurationMili)
         {
             float dashDuration = (float)dashDurationMili / 1000f;
             dashFlame.Play();
-            print("poop");
             float timer = -0.10f;
 
             while (timer < dashDuration)
@@ -85,6 +90,11 @@ namespace Automathon.Game
             //StartCoroutine(Shaker.Shake(turret, grenadeShakingDuration, grenadeShakingIntensity));
         }
 
+        private void OnMissileAbility()
+        {
+            EmitShootingMiniExplosion();
+        }
+
         protected override void OnDestroy()
         {
             UnSub();
@@ -97,11 +107,20 @@ namespace Automathon.Game
             base.OnControllerDestroyed();
         }
 
+        private void EmitShootingMiniExplosion()
+        {
+            VisualEffect miniExplosionVFX = Instantiate(miniExplosion, turretTip.position, Quaternion.identity);
+            miniExplosionVFX.SetVector2("InitVelocity", Entity.Rigidbody.Velocity.ToVector2Scaled());
+            float rot = turret.rotation.eulerAngles.z * Mathf.Deg2Rad;
+            miniExplosionVFX.SetVector2("Direction", new Vector2(Mathf.Cos(rot), Mathf.Sin(rot)));
+        }
+
         private void UnSub()
         {
             //Entity.BulletAbility.AbilityActivated -= OnShooting;
             //Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
             Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
+            Entity.MissileAbility.AbilityActivated -= OnMissileAbility;
             Entity.DashAbility.AbilityActivated -= OnDashAbility;
         }
     }

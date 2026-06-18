@@ -100,7 +100,12 @@ namespace Automathon.Game
             foreach (Entity entity in aoeCollisions.Concat(oldAoeCollisions))
             {
                 if (entity != collisionContact.Other.ParentEntity && entity.TryGetComponent(out Health health))
-                    health.Damage(DAMAGE);
+                {
+                    if (entity is Shield)
+                        health.Kill();
+                    else
+                        health.Damage(DAMAGE);
+                }
             }
 
             GameplayManager.Destroy(this);
