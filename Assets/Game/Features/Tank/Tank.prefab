@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &150972934433117514
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 753487551678358328}
+  m_Layer: 0
+  m_Name: TurretTip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &753487551678358328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150972934433117514}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.795, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3470613427567675882}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1308921089331223049
 GameObject:
   m_ObjectHideFlags: 0
@@ -60,9 +91,11 @@ MonoBehaviour:
   DashCameraShakingIntensity: 0.1
   DashA: {fileID: 255471863185605165}
   turret: {fileID: 3470613427567675882}
+  turretTip: {fileID: 753487551678358328}
   body: {fileID: 8210389554031631047}
   dashBurstParticleSystem: {fileID: 9111156537589234756}
   dashFlame: {fileID: 1721732787265525480}
+  miniExplosion: {fileID: 1790504720443747316, guid: a4d677c90c055ea4882f04d1b487655d, type: 3}
 --- !u!114 &5077115049453272025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10374,5 +10407,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1166480437535098321}
+  - {fileID: 753487551678358328}
   m_Father: {fileID: 3528737004980678694}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

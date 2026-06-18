@@ -16,11 +16,11 @@ namespace Automathon.Game
         private const int DIRECT_DAMAGE = 400;
 
         public const int RADIUS = 300;
-        public const int SPEED = 5000;
+        public const int SPEED = 9000;
         private const int LIFESPAN_MILLI = 5000;
         private const int ROTATION_MAX_STEP = 40;
 
-        private const int AOE_RADIUS = 5000;
+        public const int AOE_RADIUS = 1000;
 
         private Tank shotFromTank;
         private CircleCollider circleCollider;
@@ -99,8 +99,13 @@ namespace Automathon.Game
 
             foreach (Entity entity in aoeCollisions.Concat(oldAoeCollisions))
             {
-                if (entity != collisionContact.Other.ParentEntity && entity.TryGetComponent(out Health health))
-                    health.Damage(DAMAGE);
+                if (entity.TryGetComponent(out Health health))
+                {
+                    if (entity is Shield)
+                        health.Kill();
+                    else if (entity != collisionContact.Other.ParentEntity)
+                        health.Damage(DAMAGE);
+                }
             }
 
             GameplayManager.Destroy(this);

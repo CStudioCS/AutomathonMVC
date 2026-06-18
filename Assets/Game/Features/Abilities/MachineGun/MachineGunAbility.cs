@@ -5,12 +5,14 @@ namespace Automathon.Game
 {
     public class MachineGunAbility : Ability
     {
+        private const int COOLDOWN_MILLI = 2000;
+
         public int NumFiredBullets;
         public int TimeToFireAllMilli;
 
         public event Action BulletShot;
 
-        public MachineGunAbility(int numFiredBullets, int timeToFireAllMilli, int cooldownMilli, Func<bool> shouldActivate) : base(cooldownMilli, shouldActivate)
+        public MachineGunAbility(int numFiredBullets, int timeToFireAllMilli, Func<bool> shouldActivate) : base(COOLDOWN_MILLI, shouldActivate)
         {
             NumFiredBullets = numFiredBullets;
             TimeToFireAllMilli = timeToFireAllMilli;

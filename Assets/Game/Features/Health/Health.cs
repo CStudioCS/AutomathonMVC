@@ -31,5 +31,8 @@ namespace Automathon.Game
                     GameplayManager.Destroy(ParentEntity);
             }
         }
+
+        public void Kill()
+            => Damage(MaxHealth);
     }
 }
