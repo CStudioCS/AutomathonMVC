@@ -8,7 +8,7 @@ namespace Automathon.Game
     {
         private const int COOLDOWN_MILLIS = 700;
         private const int DASH_SPEED_MILLI = 25000; // milli-units per frame
-        private const int DASH_DURATION_MILLIS = 150;
+        public const int DASH_DURATION_MILLIS = 150;
         private Rigidbody rigidbody;
         private Vector2Int originalVelocity;
 
