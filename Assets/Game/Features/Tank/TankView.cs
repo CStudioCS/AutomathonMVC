@@ -16,23 +16,24 @@ namespace Automathon.Game
         [SerializeField] private float DashCameraShakingIntensity;
         [SerializeField] private AudioSource DashA;
 
+        [SerializeField] private Transform turret;
+        [SerializeField] private Transform body;
+        [SerializeField] private ParticleSystem dashBurstParticleSystem;
+        [SerializeField] private ParticleSystem dashFlame;
+
         private CameraShaker cameraShaker;
 
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
+
             //Entity.BulletAbility.AbilityActivated += OnShooting;
+            //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
 
             tank = entity;
         }
-
-        [SerializeField] private Transform turret;
-        [SerializeField] private Transform body;
-        [SerializeField] private ParticleSystem dashBurstParticleSystem;
-        [SerializeField] private ParticleSystem dashFlame;
 
         private Tank tank;
 
@@ -81,7 +82,7 @@ namespace Automathon.Game
                 cameraShaker = Camera.main.GetComponent<CameraShaker>();
             }
             StartCoroutine(Shaker.Translate(turret, new Vector2(0, -1), DashAbility.DASH_DURATION_MILLIS, DashShakingIntensity));
-            cameraShaker.CameraTranslate(body.right,DashAbility.DASH_DURATION_MILLIS, DashCameraShakingIntensity);
+            cameraShaker.CameraTranslate(body.right, DashAbility.DASH_DURATION_MILLIS, DashCameraShakingIntensity);
             DashA.Play();
             //dashBurstParticleSystem.Play();  imo pas besoin de burst initiale mais bon c'est implémenté quoi
             StartCoroutine(Dash(DashAbility.DASH_DURATION_MILLIS));
@@ -95,19 +96,22 @@ namespace Automathon.Game
 
         protected override void OnDestroy()
         {
-            //Entity.BulletAbility.AbilityActivated -= OnShooting;
-            Entity.MachineGunAbility.BulletShot -= OnMachineGunAbilityBulletShot;
-
+            UnSub();
             base.OnDestroy();
         }
 
         protected override void OnControllerDestroyed()
         {
-            //Entity.BulletAbility.AbilityActivated -= OnShooting;
-            Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
-            Entity.DashAbility.AbilityActivated -= OnDashAbility;
+            UnSub();
             base.OnControllerDestroyed();
+        }
+
+        private void UnSub()
+        {
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
+            Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
+            Entity.DashAbility.AbilityActivated -= OnDashAbility;
         }
     }
 }
