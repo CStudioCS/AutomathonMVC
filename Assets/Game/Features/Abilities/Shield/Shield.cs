@@ -6,7 +6,7 @@ namespace Automathon.Game
     public class Shield : Entity
     {
         public Rigidbody Rigidbody { get; private set; }
-        private const int MAX_HEALTH = 400;
+        private const int MAX_HEALTH = 1500;
         private const int LENGTH = 1500;
         private const int HEIGHT = 200;
         private const int LIFESPAN_MILLIS = 10000;

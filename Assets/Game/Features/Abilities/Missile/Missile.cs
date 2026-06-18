@@ -99,11 +99,11 @@ namespace Automathon.Game
 
             foreach (Entity entity in aoeCollisions.Concat(oldAoeCollisions))
             {
-                if (entity != collisionContact.Other.ParentEntity && entity.TryGetComponent(out Health health))
+                if (entity.TryGetComponent(out Health health))
                 {
                     if (entity is Shield)
                         health.Kill();
-                    else
+                    else if (entity != collisionContact.Other.ParentEntity)
                         health.Damage(DAMAGE);
                 }
             }
