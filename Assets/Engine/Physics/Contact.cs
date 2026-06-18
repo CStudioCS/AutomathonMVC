@@ -60,10 +60,10 @@ namespace Automathon.Engine.Physics
 
             //one division by 1000 because the normal is mult by 1000, and another one because of InvIMilli
             Vector2Int v = (Reference.InvIMicro * DoubleVectProd(r1, NormalMilli) + Incident.InvIMicro * DoubleVectProd(r2, NormalMilli)) / 1000000000 / 1000000;
-            normalMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(NormalMilli));
+            normalMassMilli = 1000 * 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) + v.Dot(NormalMilli) * 1000);
 
             Vector2Int tangent = NormalMilli.OrthogonalCounterClockwise();
-            tangentialMassMilli = 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) / 1000 + v.Dot(tangent));
+            tangentialMassMilli = 1000 * 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) + v.Dot(tangent) * 1000);
         }
 
         public void ApplyImpulse()

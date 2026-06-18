@@ -16,7 +16,7 @@ namespace Automathon.Game
         private const int DIRECT_DAMAGE = 400;
 
         public const int RADIUS = 300;
-        public const int SPEED = 5000;
+        public const int SPEED = 9000;
         private const int LIFESPAN_MILLI = 5000;
         private const int ROTATION_MAX_STEP = 40;
 

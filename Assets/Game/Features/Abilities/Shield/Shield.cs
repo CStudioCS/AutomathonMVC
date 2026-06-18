@@ -18,7 +18,7 @@ namespace Automathon.Game
         {
             RotationMilli = rotationMillirad;
             BoxCollider = new BoxCollider(Vector2Int.Zero, LENGTH, HEIGHT, 0);
-            Rigidbody = new Rigidbody(BoxCollider, 1000, 500, 200);
+            Rigidbody = new Rigidbody(BoxCollider, 100, 10, 200);
 
             Initialize(Rigidbody, BoxCollider, new Health(MAX_HEALTH, true));
 

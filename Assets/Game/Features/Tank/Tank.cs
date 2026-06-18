@@ -52,7 +52,7 @@ namespace Automathon.Game
         {
             base.Update();
             Vector2Int movementInput = InputProvider.GetMilliMovementDir();
-            Debug.Log(Health.CurrentHealth);
+
             // Only update velocity if not dashing (dash manages its own velocity)
             if (!IsDashing)
                 rigidbody.Velocity = movementInput * SPEED / 1000;
