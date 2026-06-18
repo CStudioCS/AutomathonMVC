@@ -1,0 +1,7 @@
+Instantiate(new Wall(new Vector2Int(4175, 3159), new Vector2Int(4262, 470), 364));
+Instantiate(new Wall(new Vector2Int(-6905, 65), new Vector2Int(4716, 272), 5180));
+Instantiate(new Wall(new Vector2Int(11175, -1559), new Vector2Int(3930, 386), 1598));
+Instantiate(new Wall(new Vector2Int(-811, -3172), new Vector2Int(5916, 379), 5152));
+Instantiate(new Wall(new Vector2Int(-12070, 988), new Vector2Int(5602, 408), 6137));
+Instantiate(new Wall(new Vector2Int(7570, 230), new Vector2Int(5046, 469), 4279));
+Instantiate(new Wall(new Vector2Int(5721, -6366), new Vector2Int(4893, 333), 3040));
