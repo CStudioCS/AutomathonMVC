@@ -10,10 +10,12 @@ namespace Automathon.Game
         private const int TANK_WIDTH = 1138;
         private const int SPEED = 7000;
         public const int MAX_HEALTH = 1000;
+        public const int SPAWN_DISTANCE_FROM_TANK = 700;
 
         public BulletAbility BulletAbility;
         public ShieldAbility ShieldAbility;
         public GrenadeAbility GrenadeAbility;
+        public MissileAbility MissileAbility;
         public MachineGunAbility MachineGunAbility;
         public DashAbility DashAbility;
         public Health Health;
@@ -36,11 +38,12 @@ namespace Automathon.Game
             Initialize(
                 boxCollider,
                 rigidbody,
-                BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
-                GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
+                MachineGunAbility = new MachineGunAbility(10, 500, 3000, inputProvider.ShouldShoot),
+                MissileAbility = new MissileAbility(inputProvider.ShouldMissile),
+                ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
                 DashAbility = new DashAbility(inputProvider.ShouldDash),
-                //ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
-                MachineGunAbility = new MachineGunAbility(10, 500, 3000, inputProvider.ShouldShield),
+                //BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
+                //GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
                 Health = new Health(MAX_HEALTH, false, Death)
                 );
         }
@@ -48,9 +51,8 @@ namespace Automathon.Game
         public override void Update()
         {
             base.Update();
-
             Vector2Int movementInput = InputProvider.GetMilliMovementDir();
-
+            Debug.Log(Health.CurrentHealth);
             // Only update velocity if not dashing (dash manages its own velocity)
             if (!IsDashing)
                 rigidbody.Velocity = movementInput * SPEED / 1000;

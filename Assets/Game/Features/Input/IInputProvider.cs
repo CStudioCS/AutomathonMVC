@@ -6,7 +6,7 @@
         public Vector2Int GetMilliAimingDir();
         public bool ShouldShoot();
         public bool ShouldShield();
-        public bool ShouldGrenade();
+        public bool ShouldMissile();
         public bool ShouldDash();
     }
 }

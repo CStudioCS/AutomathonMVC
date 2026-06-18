@@ -10,10 +10,16 @@ namespace Automathon.Game
         public const int SPEED = 17000;
         private const int LIFESPAN_MILLI = 10000;
 
+        private Tank shotFromTank;
+
         private CircleCollider circleCollider;
 
-        public Bullet(Vector2Int position, Vector2Int direction) : base(position)
+        public Bullet(Vector2Int position, Vector2Int direction, Tank shotFrom) : base(position)
         {
+            this.shotFromTank = shotFrom;
+
+            direction.NormalizeAtScale(1000);
+
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
             Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
 
@@ -27,6 +33,9 @@ namespace Automathon.Game
 
         private void OnCollision(CollisionEvent collisionContact)
         {
+            if (collisionContact.Other.ParentEntity == shotFromTank)
+                return;
+
             if (collisionContact.Other.ParentEntity.TryGetComponent(out Health health))
                 health.Damage(DAMAGE);
 

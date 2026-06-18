@@ -52,7 +52,7 @@ namespace Automathon.Engine.Physics
         }
 
         public static bool CircleCircle(CircleCollider circle1, CircleCollider circle2)
-            => (circle2.WorldPosition - circle1.WorldPosition).LengthSquared() < (circle1.Radius + circle2.Radius) * (circle1.Radius + circle2.Radius);
+            => (circle2.WorldPosition - circle1.WorldPosition).LongLengthSquared() < ((long)circle1.Radius + (long)circle2.Radius) * ((long)circle1.Radius + (long)circle2.Radius);
 
         public class SATOutput
         {

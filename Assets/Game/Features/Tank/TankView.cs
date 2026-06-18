@@ -11,7 +11,6 @@ namespace Automathon.Game
 
         [SerializeField] private float bulletCameraShakingIntensity;
         [SerializeField] private float bulletCameraShakingDuration;
-        private bool subbed;
 
         [SerializeField] private float DashShakingIntensity;
         [SerializeField] private float DashCameraShakingIntensity;
@@ -22,7 +21,7 @@ namespace Automathon.Game
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
-            Entity.BulletAbility.AbilityActivated += OnShooting;
+            //Entity.BulletAbility.AbilityActivated += OnShooting;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
@@ -96,16 +95,15 @@ namespace Automathon.Game
 
         protected override void OnDestroy()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
             Entity.MachineGunAbility.BulletShot -= OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
 
             base.OnDestroy();
         }
 
         protected override void OnControllerDestroyed()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
             Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
             Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
             Entity.DashAbility.AbilityActivated -= OnDashAbility;

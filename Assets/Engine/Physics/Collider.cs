@@ -4,6 +4,7 @@ namespace Automathon.Engine.Physics
 {
     public abstract class Collider : Component
     {
+        public bool IsTrigger;
         public Action<CollisionEvent> OnCollision;
 
         public abstract bool Colliding(Collider collider);

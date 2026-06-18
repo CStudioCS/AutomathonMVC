@@ -43,7 +43,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Grenade",
+                    "name": "Missile",
                     "type": "Button",
                     "id": "27c5f898-bc57-4ee1-8800-db469aca5fe3",
                     "expectedControlType": "",
@@ -351,7 +351,7 @@
                 {
                     "name": "",
                     "id": "eb40bb66-4559-4dfa-9a2f-820438abb426",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -428,7 +428,7 @@
                 {
                     "name": "",
                     "id": "b3f66d0b-7751-423f-908b-a11c5bd95930",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -454,7 +454,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Grenade",
+                    "action": "Missile",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -465,7 +465,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard_right",
-                    "action": "Grenade",
+                    "action": "Missile",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -476,7 +476,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard_left",
-                    "action": "Grenade",
+                    "action": "Missile",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

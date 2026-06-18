@@ -10,7 +10,7 @@ namespace Automathon.Game.Input
         public enum PlayerControlsType { LeftKeyboard, RightKeyboard, Gamepad }
         public PlayerControlsType ControlsType { get; private set; }
         private InputAction dashAction;
-        private InputAction grenadeAction;
+        private InputAction missileAction;
         private InputAction shieldAction;
         private InputAction shootAction;
         private InputAction moveAction;
@@ -34,7 +34,7 @@ namespace Automathon.Game.Input
         {
             ControlsType = SchemeToControlsType[playerInput.currentControlScheme];
             dashAction = playerInput.actions["Dash"];
-            grenadeAction = playerInput.actions["Grenade"];
+            missileAction = playerInput.actions["Missile"];
             shieldAction = playerInput.actions["Shield"];
             shootAction = playerInput.actions["Shoot"];
             moveAction = playerInput.actions["Move"];
@@ -43,7 +43,7 @@ namespace Automathon.Game.Input
 
         public bool ShouldDash() => dashAction.WasPressedThisFrame();
 
-        public bool ShouldGrenade() => grenadeAction.WasPressedThisFrame();
+        public bool ShouldMissile() => missileAction.WasPressedThisFrame();
 
         public Vector2Int GetMilliMovementDir()
         {
