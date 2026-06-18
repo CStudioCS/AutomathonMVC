@@ -33,5 +33,29 @@ namespace Assets.Game.View
 
             entityView.localPosition -= new Vector3(localShakePos.x, localShakePos.y);
         }
+        public static IEnumerator Translate(Transform entityView, Vector2 dir, int miliTime, float distance)
+        {
+            Vector2 direction = dir;
+
+            Vector3 initPos = entityView.localPosition;
+
+            float time = (float)miliTime / 1000f;
+
+            float V = 4 * distance / time;
+            float g = V / time * 2;
+
+            float t = time;
+            while (t >= 0)
+            {
+                float deltaDist = -g * t * t / 2 + V * t;
+
+                entityView.localPosition = initPos + (Vector3)(deltaDist * direction);
+
+                t -= Time.deltaTime;
+                yield return 0;
+            }
+
+            entityView.localPosition = initPos;
+        }
     }
 }
