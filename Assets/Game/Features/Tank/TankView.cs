@@ -31,22 +31,13 @@ namespace Automathon.Game
             //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
-
-            tank = entity;
         }
-
-        private Tank tank;
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
 
             turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X));
-        }
-
-        private void OnShooting() //OnShoot is a unity message so don't rename this
-        {
-            StartCoroutine(Shaker.Shake(turret, bulletShakingDuration, bulletShakingIntensity));
         }
 
         private void OnMachineGunAbilityBulletShot()
