@@ -52,8 +52,8 @@ namespace Automathon.Engine.Physics
         /// </summary>
         public void PreStep()
         {
-            r1 = ComputeR(Reference.Collider);
-            r2 = ComputeR(Incident.Collider);
+            r1 = ComputeR(ReferenceCollider);
+            r2 = ComputeR(IncidentCollider);
 
             Vector2Int DoubleVectProd(Vector2Int r, Vector2Int n)
                 => new Vector2Int(-r.Y * (r.X * n.Y - r.Y * n.X), r.X * (r.X * n.Y - r.Y * n.X));
@@ -74,6 +74,9 @@ namespace Automathon.Engine.Physics
             //normalMassMilli and tangentialMassMilli are also scaled by 1000
             //oh yeah also frictionMilli
             //Therefore there is a bunch of /1000 everywhere in the code
+
+            if (ReferenceCollider.IsTrigger || IncidentCollider.IsTrigger)
+                return;
 
             Vector2Int dV = Incident.Velocity + Incident.AngularVelocityMilli * new Vector2Int(-r2.Y, r2.X) / 1000 - (Reference.Velocity + Reference.AngularVelocityMilli * new Vector2Int(-r1.Y, r1.X) / 1000); //Vector Product translated in coords because not 3D lol
 
@@ -101,6 +104,7 @@ namespace Automathon.Engine.Physics
 
             Reference.Velocity -= P * Reference.InvMassMilli / 1000;
             Reference.AngularVelocityMilli -= Reference.InvIMicro * (r1.X * P.Y - r1.Y * P.X) / 1000000;
+
             Incident.Velocity += P * Incident.InvMassMilli / 1000;
             Incident.AngularVelocityMilli += Incident.InvIMicro * (r2.X * P.Y - r2.Y * P.X) / 1000000;
         }

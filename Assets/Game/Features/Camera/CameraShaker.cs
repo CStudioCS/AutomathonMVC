@@ -7,4 +7,8 @@ public class CameraShaker : MonoBehaviour
     {
         StartCoroutine(Shaker.Shake(transform, shakeTime, shakeIntensity));
     }
+    public void CameraTranslate(Vector2 dir, int miliTime, float distance)
+    {
+        StartCoroutine(Shaker.Translate(transform, dir, miliTime, distance));
+    }
 }

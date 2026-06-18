@@ -11,11 +11,11 @@ namespace Automathon.Game.View
     {
         [SerializeField] private List<EntityView> prefabs = new();
 
-        private Dictionary<Type, EntityView> cache;
+        private static Dictionary<Type, EntityView> cache;
 
         public Dictionary<Type, EntityView> GetDictionary()
         {
-            if (cache != null) return cache;
+            if (cache != null && cache.Count == prefabs.Count) return cache;
 
             cache = new Dictionary<Type, EntityView>();
             foreach (var prefab in prefabs)
@@ -32,5 +32,11 @@ namespace Automathon.Game.View
 
         public EntityView GetPrefabFor(Type entityType)
             => GetDictionary().GetValueOrDefault(entityType);
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStaticFields()
+        {
+            cache = null;
+        }
     }
 }

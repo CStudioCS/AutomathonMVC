@@ -45,7 +45,7 @@ namespace Automathon.Game
                 // * 1200 / 1000 in order to space them out enough, it's kinda arbitrary but it works
                 int dist = 2 * Bullet.RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1200 / 1000;
 
-                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir);
+                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, null);
                 GameplayManager.Instantiate(bullet);
             }
 

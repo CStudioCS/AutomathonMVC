@@ -1,4 +1,5 @@
 using Assets.Game.View;
+using System.Collections;
 using UnityEngine;
 
 namespace Automathon.Game
@@ -10,19 +11,31 @@ namespace Automathon.Game
 
         [SerializeField] private float bulletCameraShakingIntensity;
         [SerializeField] private float bulletCameraShakingDuration;
-        private bool subbed;
+
+        [SerializeField] private float DashShakingIntensity;
+        [SerializeField] private float DashCameraShakingIntensity;
+        [SerializeField] private AudioSource DashA;
+
+        [SerializeField] private Transform turret;
+        [SerializeField] private Transform body;
+        [SerializeField] private ParticleSystem dashBurstParticleSystem;
+        [SerializeField] private ParticleSystem dashFlame;
 
         private CameraShaker cameraShaker;
 
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
-            Entity.BulletAbility.AbilityActivated += OnShooting;
+
+            //Entity.BulletAbility.AbilityActivated += OnShooting;
+            //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
+            Entity.DashAbility.AbilityActivated += OnDashAbility;
+
+            tank = entity;
         }
 
-        [SerializeField] private Transform turret;
+        private Tank tank;
 
         protected override void LateUpdate()
         {
@@ -47,6 +60,34 @@ namespace Automathon.Game
             cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
         }
 
+        IEnumerator Dash(int dashDurationMili)
+        {
+            float dashDuration = (float)dashDurationMili / 1000f;
+            dashFlame.Play();
+            print("poop");
+            float timer = -0.10f;
+
+            while (timer < dashDuration)
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+            dashFlame.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+        }
+
+        private void OnDashAbility()
+        {
+            if (!cameraShaker)
+            {
+                cameraShaker = Camera.main.GetComponent<CameraShaker>();
+            }
+            StartCoroutine(Shaker.Translate(turret, new Vector2(0, -1), DashAbility.DASH_DURATION_MILLIS, DashShakingIntensity));
+            cameraShaker.CameraTranslate(body.right, DashAbility.DASH_DURATION_MILLIS, DashCameraShakingIntensity);
+            DashA.Play();
+            //dashBurstParticleSystem.Play();  imo pas besoin de burst initiale mais bon c'est implémenté quoi
+            StartCoroutine(Dash(DashAbility.DASH_DURATION_MILLIS));
+        }
+
         private void OnGrenadeAbility()
         {
             //No shake when shooting a grenade imo
@@ -55,19 +96,22 @@ namespace Automathon.Game
 
         protected override void OnDestroy()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
-            Entity.MachineGunAbility.BulletShot -= OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
-
+            UnSub();
             base.OnDestroy();
         }
 
         protected override void OnControllerDestroyed()
         {
-            Entity.BulletAbility.AbilityActivated -= OnShooting;
-            Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
-            Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
+            UnSub();
             base.OnControllerDestroyed();
+        }
+
+        private void UnSub()
+        {
+            //Entity.BulletAbility.AbilityActivated -= OnShooting;
+            //Entity.GrenadeAbility.AbilityActivated -= OnGrenadeAbility;
+            Entity.MachineGunAbility.AbilityActivated -= OnMachineGunAbilityBulletShot;
+            Entity.DashAbility.AbilityActivated -= OnDashAbility;
         }
     }
 }
