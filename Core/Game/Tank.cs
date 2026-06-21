@@ -1,0 +1,86 @@
+﻿using Automathon.Engine;
+using Automathon.Engine.Physics;
+using Automathon.Game.Input;
+
+namespace Automathon.Game
+{
+    public class Tank : Entity
+    {
+        private const int TANK_HEIGHT = 838;
+        private const int TANK_WIDTH = 1138;
+        private const int SPEED = 7000;
+        public const int MAX_HEALTH = 1000;
+        public const int SPAWN_DISTANCE_FROM_TANK = 700;
+
+        //public BulletAbility BulletAbility;
+        //public GrenadeAbility GrenadeAbility;
+        public ShieldAbility ShieldAbility;
+        public MissileAbility MissileAbility;
+        public MachineGunAbility MachineGunAbility;
+        public DashAbility DashAbility;
+        public Health Health;
+
+        public IInputProvider InputProvider { get; private set; }
+        public Rigidbody Rigidbody;
+
+        public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
+        public Vector2Int LastMovingMilliDirection { get; private set; } = new Vector2Int(1000, 0);
+        public bool IsReady { get; set; }
+        public bool IsDashing { get; set; }
+
+        public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
+        {
+            InputProvider = inputProvider;
+
+            BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, TANK_WIDTH, TANK_HEIGHT, 0);
+            Rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
+
+            Initialize(
+                boxCollider,
+                Rigidbody,
+                MachineGunAbility = new MachineGunAbility(10, 500, inputProvider.ShouldShoot),
+                MissileAbility = new MissileAbility(inputProvider.ShouldMissile),
+                ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
+                DashAbility = new DashAbility(inputProvider.ShouldDash),
+                //BulletAbility = new BulletAbility(inputProvider.ShouldShoot), //i'm using fancy new syntax mwahahaha
+                //GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
+                Health = new Health(MAX_HEALTH, false, Death)
+                );
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            Vector2Int movementInput = InputProvider.GetMilliMovementDir();
+
+            // Only update velocity if not dashing (dash manages its own velocity)
+            if (!IsDashing)
+                Rigidbody.Velocity = movementInput * SPEED / 1000;
+
+            Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
+
+            /*if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.PlayerControlsType.RightKeyboard)
+                aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
+            */
+
+            if (movementInput != Vector2Int.Zero)
+            {
+                LastMovingMilliDirection = movementInput;
+                RotationMilli = movementInput.CalculateAngleMilliRad();
+                Rigidbody.AngularVelocityMilli = 0;
+
+                /*if (InputProvider is PlayerInputProvider p && (p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard || p.ControlsType == PlayerInputProvider.PlayerControlsType.RightKeyboard))
+                    LastMilliDirection = movementInput;*/
+            }
+
+            if (aimingInput != Vector2Int.Zero)
+                LastMilliDirection = aimingInput;
+        }
+
+        private void Death()
+        {
+            //The actual details of this will be made by whoever handles Gameplay end
+            GameplayManager.Destroy(this);
+        }
+    }
+}
