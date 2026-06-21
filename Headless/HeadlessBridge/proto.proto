@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+service Greeter {
+  rpc Step (Action) returns (StepResponse);
+  rpc Reset() returns ();
+}
+
+message Action {
+  repeated float action = 1;
+}
+
+message StepResponse {
+  repeated float observation = 1;
+  float reward = 2;
+  bool done = 3;
+}
