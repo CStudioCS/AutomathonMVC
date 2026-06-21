@@ -1,3 +1,4 @@
+using Automathon.AI;
 using Automathon.Engine;
 using Automathon.Game.View;
 using UnityEngine;
@@ -20,6 +21,8 @@ namespace Automathon.Game
             Debug.LogEvent += DebugForward;
             Debug.LogErrorEvent += DebugErrorForward;
             subbedToSpawnEntityView = true;
+
+            ServerHandler.StartServer();
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
             /*Map map1 = new Map("map1", new List<Entity> { new Wall(new Vector2Int(3000, 2000), new Vector2Int(6000, 2000), 1000), new Wall(new Vector2Int(-3000, -2000), new Vector2Int(6000, 2000), 1000) });
@@ -84,6 +87,7 @@ namespace Automathon.Game
 
         private void OnDestroy()
         {
+            ServerHandler.StopServer();
             GameplayManager.Dispose();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Automathon;
+using Automathon.AI;
 using Automathon.Engine;
 using Automathon.Game;
 
@@ -6,15 +7,17 @@ namespace HeadlessBridge;
 
 public class GameBridge
 {
-    private TrainingAIInputProvider inputProvider1;
-    private TrainingAIInputProvider inputProvider2;
+    private AIInputProvider inputProvider1;
+    private AIInputProvider inputProvider2;
 
     public void InitializeGame()
     {
         GameplayManager.Initialize();
 
-        inputProvider1 = new TrainingAIInputProvider();
-        inputProvider2 = new TrainingAIInputProvider();
+        inputProvider1 = new AIInputProvider();
+        inputProvider2 = new AIInputProvider();
+
+        ServerHandler.StartServer();
 
         GameplayManager.Instantiate(new Tank(new Vector2Int(-5000, 0), inputProvider1));
         GameplayManager.Instantiate(new Tank(new Vector2Int(5000, 0), inputProvider2));
@@ -32,6 +35,7 @@ public class GameBridge
 
     public void Dispose()
     {
+        ServerHandler.StopServer();
         GameplayManager.Dispose();
     }
 }
