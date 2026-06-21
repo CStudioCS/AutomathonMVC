@@ -1,16 +1,18 @@
 syntax = "proto3";
 
-service Greeter {
+service GymService {
   rpc Step (Action) returns (StepResponse);
-  rpc Reset() returns ();
+  rpc Reset(Empty) returns (Empty);
 }
 
 message Action {
   repeated float action = 1;
 }
 
+message Empty {
+}
+
 message StepResponse {
   repeated float observation = 1;
-  float reward = 2;
-  bool done = 3;
+  bool done = 2;
 }
