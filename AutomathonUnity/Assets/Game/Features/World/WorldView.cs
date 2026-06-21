@@ -17,6 +17,8 @@ namespace Automathon.Game
         {
             GameplayManager.Initialize();
             GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+            Debug.LogEvent += DebugForward;
+            Debug.LogErrorEvent += DebugErrorForward;
             subbedToSpawnEntityView = true;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
@@ -55,6 +57,12 @@ namespace Automathon.Game
         {
             GameplayManager.Update();
         }
+
+        private void DebugForward(string message)
+            => UnityEngine.Debug.Log(message);
+
+        private void DebugErrorForward(string message)
+            => UnityEngine.Debug.LogError(message);
 
         private void OnEnable()
         {
