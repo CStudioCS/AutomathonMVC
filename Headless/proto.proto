@@ -6,7 +6,8 @@ service GymService {
 }
 
 message Action {
-  repeated float action = 1;
+  repeated float action1 = 1;
+  repeated float action2 = 2;
 }
 
 message Empty {

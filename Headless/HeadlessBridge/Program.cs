@@ -5,11 +5,15 @@ using System.Threading.Tasks;
 
 namespace HeadlessBridge;
 
-public class Program
+public static class Program
 {
+    private static GameBridge gameBridge
+        ;
     private const int PORT = 50051;
     public static void Main(string[] args)
     {
+        gameBridge = new GameBridge();
+        gameBridge.InitializeGame();
         SetupServer().Wait();
     }
 
@@ -17,7 +21,7 @@ public class Program
     {
         Server server = new Server
         {
-            Services = { GymService.BindService(new Gym()) },
+            Services = { GymService.BindService(new Gym(gameBridge)) },
             Ports = { new ServerPort("localhost", PORT, ServerCredentials.Insecure) }
         };
 
@@ -46,5 +50,7 @@ public class Program
         }
 
         server.ShutdownAsync().Wait();
+
+        gameBridge.Dispose();
     }
 }

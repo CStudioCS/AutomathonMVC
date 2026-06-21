@@ -60,6 +60,11 @@ namespace Automathon.Engine
             PhysicsManager.Step();
         }
 
+        public static float[] GetState()
+        {
+            return new float[0];
+        }
+
         public static void EntityUpdateLoop()
         {
             foreach (Entity entity in entities.Items)
