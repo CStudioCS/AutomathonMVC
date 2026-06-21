@@ -1,7 +1,6 @@
 using Automathon.Engine;
 using System;
 
-
 namespace Automathon.Game
 {
     public abstract class Ability : Component

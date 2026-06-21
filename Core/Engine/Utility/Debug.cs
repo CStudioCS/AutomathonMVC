@@ -4,11 +4,13 @@ namespace Automathon
 {
     public static class Debug
     {
+        public static event Action<string> LogEvent;
+        public static event Action<string> LogErrorEvent;
         public static void Log(params object[] logs)
         {
             string message = string.Join(";; ", logs);
             Console.WriteLine(message.ToString());
-            UnityEngine.Debug.Log(message);
+            LogEvent?.Invoke(message);
         }
 
         public static void LogError(params object[] logs)
@@ -22,7 +24,7 @@ namespace Automathon
 
             Console.ForegroundColor = previousForegroundColor;
 
-            UnityEngine.Debug.LogError(message);
+            LogErrorEvent?.Invoke(message);
         }
     }
 }
