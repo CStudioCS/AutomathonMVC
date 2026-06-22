@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+service GymService {
+  rpc Step (AIAction) returns (StepResponse);
+  rpc Reset(Empty) returns (Empty);
+}
+
+message AIAction {
+  float movingDirX = 1;
+  float movingDirY = 2;
+  float aimingDirX = 3;
+  float aimingDirY = 4;
+  bool machineGun = 5;
+  bool missile = 6;
+  bool shield = 7;
+  bool dash = 8;
+  float dashDirectionX = 9;
+  float dashDirectionY = 10;
+}
+
+message Empty {
+}
+
+message StepResponse {
+  repeated float observation = 1;
+  bool done = 2;
+}

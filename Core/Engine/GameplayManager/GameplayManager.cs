@@ -1,3 +1,4 @@
+using Automathon.AI;
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
 using Automathon.Game;
@@ -60,6 +61,11 @@ namespace Automathon.Engine
             PhysicsManager.Step();
         }
 
+        public static float[] GetState()
+        {
+            return new float[0];
+        }
+
         public static void EntityUpdateLoop()
         {
             foreach (Entity entity in entities.Items)
@@ -104,6 +110,8 @@ namespace Automathon.Engine
             ProcessAllEntityChanges();
 
             PhysicsManager.Dispose();
+
+            ServerHandler.Dispose();
         }
     }
 }

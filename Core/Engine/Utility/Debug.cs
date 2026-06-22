@@ -6,6 +6,7 @@ namespace Automathon
     {
         public static event Action<string> LogEvent;
         public static event Action<string> LogErrorEvent;
+
         public static void Log(params object[] logs)
         {
             string message = string.Join(";; ", logs);

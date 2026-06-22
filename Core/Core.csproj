@@ -11,9 +11,23 @@
 
 	<ItemGroup>
 		<Compile Remove="**\*.meta" />
+		<Compile Remove="AI\Generated\**" />
 		<Content Remove="**\*.meta" />
 		<None Remove="**\*.meta" />
+		<None Remove="AI\Generated\**" />
 		<EmbeddedResource Remove="**\*.meta" />
+		<EmbeddedResource Remove="AI\Generated\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="AI/proto.proto" GrpcServices="Server" OutputDir="AI/Generated/">
+			<Link>proto.proto</Link>
+		</Protobuf>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="NetMQ" Version="4.0.4.2" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
 
 </Project>
