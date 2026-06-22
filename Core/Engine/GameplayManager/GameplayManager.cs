@@ -1,3 +1,4 @@
+using Automathon.AI;
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
 using Automathon.Game;
@@ -109,6 +110,8 @@ namespace Automathon.Engine
             ProcessAllEntityChanges();
 
             PhysicsManager.Dispose();
+
+            ServerHandler.Dispose();
         }
     }
 }
