@@ -8,6 +8,7 @@ namespace Automathon.Game
         public readonly int MaxHealth;
         private readonly Action onDeath;
         private readonly bool destroyOnDeath;
+        private bool invincible;
 
         public int CurrentHealth { get; private set; }
 
@@ -17,18 +18,32 @@ namespace Automathon.Game
             CurrentHealth = maxHealth;
             this.onDeath = onDeath;
             this.destroyOnDeath = destroyOnDeath;
+            this.invincible = false;
+        }
+
+        public void MakeInvincible()
+        {
+            invincible = true;
+        }
+
+        public void MakeVulnerable()
+        {
+            invincible = false;
         }
 
         public void Damage(int damage)
         {
-            CurrentHealth -= damage;
-            if (CurrentHealth <= 0)
+            if(!invincible)
             {
-                CurrentHealth = 0;
-                onDeath?.Invoke();
+                CurrentHealth -= damage;
+                if (CurrentHealth <= 0)
+                {
+                    CurrentHealth = 0;
+                    onDeath?.Invoke();
 
-                if (destroyOnDeath)
-                    GameplayManager.Destroy(ParentEntity);
+                    if (destroyOnDeath)
+                        GameplayManager.Destroy(ParentEntity);
+                }
             }
         }
 
