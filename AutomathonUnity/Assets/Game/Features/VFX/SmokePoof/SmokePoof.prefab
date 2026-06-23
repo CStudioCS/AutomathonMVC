@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5128875320894074281}
   - component: {fileID: 2828084409912907843}
   - component: {fileID: 6578492713227008865}
+  - component: {fileID: 5725276728430190787}
   m_Layer: 0
   m_Name: SmokePoof
   m_TagString: Untagged
@@ -114,3 +115,15 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &5725276728430190787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7790242661248213292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89d9869b375ddbc45bfa512e3791a2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

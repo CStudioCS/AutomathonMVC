@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5768332785867373854}
   - component: {fileID: 5848813580190831784}
   - component: {fileID: 5014004811224232622}
+  - component: {fileID: 7935104760133988634}
   m_Layer: 0
   m_Name: BigExplosion
   m_TagString: Untagged
@@ -114,3 +115,15 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+--- !u!114 &7935104760133988634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9119525347112116682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89d9869b375ddbc45bfa512e3791a2f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

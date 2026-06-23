@@ -7,7 +7,7 @@ namespace Automathon.Engine.Physics
 {
     public static class PhysicsManager
     {
-        private static readonly List<Rigidbody> rigidbodies = new();
+        private static List<Rigidbody> rigidbodies = new();
         private static List<Contact> contacts = new();
 
         public static int Substeps = 6;
@@ -16,6 +16,8 @@ namespace Automathon.Engine.Physics
 
         public static void Initialize()
         {
+            rigidbodies = new();
+            contacts = new();
             Rigidbody.Added += OnRigidbodyAdded;
             Rigidbody.Removed += OnRigidbodyRemoved;
         }

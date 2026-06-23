@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 
 public class TrackMarks : MonoBehaviour
 {
-    [SerializeField] private FadeOut markPrefab;
+    public static event Action<Vector2, Quaternion, float> SpawnTrackMark;
+
     [SerializeField] private Transform[] trackPoints;
     [SerializeField] private float distanceBetweenMarks = 0.5f;
     [SerializeField] private float markLifetime = 5f;
@@ -27,16 +29,13 @@ public class TrackMarks : MonoBehaviour
             foreach (Transform point in trackPoints)
             {
                 Vector3 offset = point.position - current;
-                FadeOut mark = Instantiate(
-                    markPrefab,
-                    lastMarkPosition + offset,
-                    transform.rotation);
-                Destroy(mark, markLifetime);
-                StartCoroutine(mark.Fade(markLifetime));
-
+                SpawnMark(lastMarkPosition + offset, transform.rotation);
             }
 
             traveled = Vector3.Distance(current, lastMarkPosition);
         }
     }
+
+    private void SpawnMark(Vector2 position, Quaternion rotation)
+        => SpawnTrackMark(position, rotation, markLifetime);
 }

@@ -19,7 +19,9 @@ public class FadeOut : MonoBehaviour
             spriteRenderer.color = color;
             yield return null;
         }
+
         color.a = 0f;
         spriteRenderer.color = color;
+        Destroy(gameObject);
     }
 }
