@@ -36,6 +36,7 @@ namespace Automathon.Game
             this.shotFromTank = shotFromTank;
 
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
+            circleCollider.Layer = CollisionLayer.Missile;
             aoeCollider = new CircleCollider(Vector2Int.Zero, AOE_RADIUS);
             aoeCollider.IsTrigger = true;
 

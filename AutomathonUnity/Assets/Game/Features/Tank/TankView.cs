@@ -57,9 +57,22 @@ namespace Automathon.Game
             EmitShootingMiniExplosion();
         }
 
+        public void SetAlpha(float alpha)
+        {
+            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            {
+                Color c = sr.color;
+                c.a = alpha;
+                sr.color = c;
+            }
+        }
+
         IEnumerator Dash(int dashDurationMili)
         {
             float dashDuration = (float)dashDurationMili / 1000f;
+
+            SetAlpha(0.5f);
+
             dashFlame.Play();
             float timer = -0.10f;
 
@@ -68,7 +81,10 @@ namespace Automathon.Game
                 timer += Time.deltaTime;
                 yield return null;
             }
+
             dashFlame.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+
+            SetAlpha(1f);
         }
 
         private void OnDashAbility()

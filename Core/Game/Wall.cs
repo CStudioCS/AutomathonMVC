@@ -18,6 +18,7 @@ namespace Automathon.Game
         {
             WallData = data;
             BoxCollider = new BoxCollider(Vector2Int.Zero, data.Size.X, data.Size.Y, 0);
+            this.BoxCollider.Layer = CollisionLayer.Wall;
             Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
 
             Initialize(BoxCollider, Rigidbody);

@@ -20,6 +20,7 @@ namespace Automathon.Engine
         {
             State = GameState.Lobby;
 
+            LayerMatrix.Initialize();
             PhysicsManager.Initialize();
             PlayerManager.Initialize();
 

@@ -33,6 +33,7 @@ namespace Automathon.Game
             InputProvider = inputProvider;
 
             BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, TANK_WIDTH, TANK_HEIGHT, 0);
+            boxCollider.Layer = CollisionLayer.Tank;
             Rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
 
             Initialize(

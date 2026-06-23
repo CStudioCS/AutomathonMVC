@@ -37,7 +37,11 @@ namespace Automathon.Game
 
             // Mark tank as dashing
             if (Tank != null)
+            {
                 Tank.IsDashing = true;
+                Tank.Health.MakeInvincible();
+                Tank.Rigidbody.Collider.Layer = CollisionLayer.Dash;
+            }
 
             // Start the dash effect timer
             ParentEntity.AddBehavior(new Timer(DASH_DURATION_MILLIS, null, OnComplete: () =>
@@ -47,7 +51,12 @@ namespace Automathon.Game
 
                 // Mark tank as no longer dashing
                 if (Tank != null)
+                {
                     Tank.IsDashing = false;
+                    Tank.Health.MakeVulnerable();
+                    Tank.Rigidbody.Collider.Layer = CollisionLayer.Tank;
+                }
+                   
             }));
         }
     }

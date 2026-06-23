@@ -124,6 +124,9 @@ namespace Automathon.Engine.Physics
 
                     void HandleColliders(Collider coll1, Collider coll2)
                     {
+                        if (!LayerMatrix.GetCollision(coll1.Layer, coll2.Layer))
+                            return;
+
                         if (coll1 is BoxCollider b1 && coll2 is BoxCollider b2)
                             HandleBoxBoxContact(rigidbody, b1, otherRigidbody, b2);
                         else if ((coll1 is BoxCollider b3 && coll2 is CircleCollider c1))

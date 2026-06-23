@@ -21,6 +21,7 @@ namespace Automathon.Game
             direction.NormalizeAtScale(1000);
 
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
+            circleCollider.Layer = CollisionLayer.Bullet;
             Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
 
             Initialize(circleCollider, rigidbody);
