@@ -10,6 +10,12 @@ namespace Automathon.Game
 {
     public class Missile : Entity
     {
+        public class MissileState : State
+        {
+            public required float Radius;
+            public required Vector2Int Velocity;
+        }
+
         private const bool AIMED = true; //do we aim the missile with the right stick ?
 
         private const int DAMAGE = 200;
@@ -119,6 +125,16 @@ namespace Automathon.Game
             circleCollider.OnCollision -= OnCollision;
             aoeCollider.OnCollision -= OnAoeCollision;
             base.OnDestroyed();
+        }
+
+        public override State GetState()
+        {
+            return new MissileState()
+            {
+                Position = this.Position,
+                Radius = RADIUS,
+                Velocity = rigidbody.Velocity,
+            };
         }
     }
 }

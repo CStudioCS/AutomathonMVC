@@ -2,6 +2,7 @@
 using Automathon.AI;
 using Automathon.Engine;
 using Automathon.Game;
+using System;
 
 namespace HeadlessBridge;
 
@@ -21,19 +22,28 @@ public class GameBridge
         GameplayManager.Instantiate(new Tank(new Vector2Int(5000, 0), inputProvider2));
     }
 
-    /*public float[] Step(float[] action1, float[] action2)
+    public bool Step()
     {
-        inputProvider1.UpdateFromAction(action1);
-        inputProvider2.UpdateFromAction(action2);
+        if (ServerHandler.GetAIResponse(out string response))
+        {
+            //inputProvider1.UpdateFromAction();
+            //inputProvider2.UpdateFromAction();
+            Debug.Log("Received a response");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Debug.Log("Didn't received a response");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
 
         GameplayManager.Update();
 
-        return GameplayManager.GetState();
-    }*/
+        return true;
+    }
 
     public void Dispose()
     {
-        ServerHandler.StopServer();
         GameplayManager.Dispose();
     }
 }

@@ -8,6 +8,14 @@ namespace Automathon.Game
 {
     public class Grenade : Entity
     {
+        public class GrenadeState : State
+        {
+            public required float Radius;
+            public required Vector2Int Velocity;
+            public required float NumFramesLeftBeforeExplosion;
+        }
+
+        private float numFramesLeftBeforeExplosion;
         private const int RADIUS = 300;
         private const int SPEED = 1800;
         private const int EXPLOSION_DELAY = 2000;
@@ -26,7 +34,7 @@ namespace Automathon.Game
 
             Rigidbody.Velocity = direction * SPEED / 1000;
 
-            AddBehavior(new Timer(EXPLOSION_DELAY, null, BlowUp));
+            AddBehavior(new Timer(EXPLOSION_DELAY, (t) => numFramesLeftBeforeExplosion = t.ValueFrames, BlowUp));
         }
 
         private void BlowUp()
@@ -52,5 +60,15 @@ namespace Automathon.Game
             GameplayManager.Destroy(this);
         }
 
+        public override State GetState()
+        {
+            return new GrenadeState()
+            {
+                Position = Position,
+                Radius = RADIUS,
+                Velocity = Rigidbody.Velocity,
+                NumFramesLeftBeforeExplosion = numFramesLeftBeforeExplosion,
+            };
+        }
     }
 }

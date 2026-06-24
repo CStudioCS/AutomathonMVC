@@ -1,6 +1,4 @@
-﻿using Automathon.AI;
-
-namespace HeadlessBridge;
+﻿namespace HeadlessBridge;
 
 public static class Program
 {
@@ -10,10 +8,7 @@ public static class Program
         gameBridge = new GameBridge();
         gameBridge.InitializeGame();
 
-        while (true)
-        {
-            ServerHandler.GetAIResponse(out _);
-        }
+        while (gameBridge.Step()) { }
 
         gameBridge.Dispose();
     }

@@ -5,6 +5,12 @@ namespace Automathon.Game
 {
     public class Bullet : Entity
     {
+        public class BulletState : State
+        {
+            public required float Radius;
+            public required Vector2Int Velocity;
+        }
+
         private const int DAMAGE = 100;
         public const int RADIUS = 100;
         public const int SPEED = 17000;
@@ -12,6 +18,7 @@ namespace Automathon.Game
 
         private Tank shotFromTank;
 
+        private Rigidbody rigidbody;
         private CircleCollider circleCollider;
 
         public Bullet(Vector2Int position, Vector2Int direction, Tank shotFrom) : base(position)
@@ -22,7 +29,7 @@ namespace Automathon.Game
 
             circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
             circleCollider.Layer = CollisionLayer.Bullet;
-            Rigidbody rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
+            rigidbody = new Rigidbody(circleCollider, 10000, 300, 200);
 
             Initialize(circleCollider, rigidbody);
 
@@ -49,6 +56,16 @@ namespace Automathon.Game
             //better safe than sound ig
             circleCollider.OnCollision -= OnCollision;
             base.OnDestroyed();
+        }
+
+        public override State GetState()
+        {
+            return new BulletState()
+            {
+                Position = this.Position,
+                Radius = RADIUS,
+                Velocity = rigidbody.Velocity,
+            };
         }
     }
 }

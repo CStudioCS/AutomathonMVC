@@ -68,7 +68,10 @@ namespace Automathon.Engine
 
         public static float[] GetState()
         {
-            return new float[0];
+
+
+
+            return new float[] { };
         }
 
         public static void EntityUpdateLoop()

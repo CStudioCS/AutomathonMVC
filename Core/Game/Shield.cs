@@ -5,6 +5,11 @@ namespace Automathon.Game
 {
     public class Shield : Entity
     {
+        public class ShieldState : Wall.WallState
+        {
+            public required Vector2Int Velocity;
+        }
+
         public Rigidbody Rigidbody { get; private set; }
         private const int MAX_HEALTH = 1500;
         private const int LENGTH = 1500;
@@ -25,5 +30,8 @@ namespace Automathon.Game
 
             AddBehavior(new Timer(LIFESPAN_MILLIS, null, () => GameplayManager.Destroy(this)));
         }
+
+        public override State GetState()
+            => new ShieldState() { Position = this.Position, RotationMilli = this.RotationMilli, Size = new Vector2Int(LENGTH, HEIGHT), Velocity = Rigidbody.Velocity };
     }
 }

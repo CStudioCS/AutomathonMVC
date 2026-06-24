@@ -34,21 +34,15 @@ namespace Automathon.AI
         {
             float[] state = GameplayManager.GetState();
 
-            Debug.Log("Try send");
             gameSocket.SendFrame(JsonConvert.SerializeObject(state));
 
-            Debug.Log("Sent");
 
             if (gameSocket.TryReceiveFrameString(TimeSpan.FromMilliseconds(500), out string response))
             {
-                // Handle the AI response
-                Debug.Log("Responded");
                 Debug.Log(response);
                 responseAction = response;
                 return true;
             }
-
-            Debug.Log("Didn't respond");
 
             gameSocket.Options.Linger = TimeSpan.Zero;
             gameSocket.Disconnect(tcpAddress);

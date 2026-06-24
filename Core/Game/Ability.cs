@@ -5,6 +5,7 @@ namespace Automathon.Game
 {
     public abstract class Ability : Component
     {
+        public int FramesOfCooldownLeft;
         private int coolDownMillis;
         private bool isOnCooldown = false;
         private Func<bool> shouldActivate;
@@ -46,10 +47,11 @@ namespace Automathon.Game
                 return;
 
             isOnCooldown = true;
-            ParentEntity.AddBehavior(new Timer(coolDownMillis, null, OnComplete: () =>
+            ParentEntity.AddBehavior(new Timer(coolDownMillis, (t) => FramesOfCooldownLeft = t.ValueFrames, OnComplete: () =>
             {
                 isOnCooldown = false;
                 CooldownElapsed?.Invoke();
+                FramesOfCooldownLeft = 0;
             }));
 
             Activate();

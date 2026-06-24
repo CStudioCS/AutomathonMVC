@@ -9,5 +9,10 @@
         public bool Shield;
         public bool Dash;
         public Vector2Int DashDir;
+
+        public AIAction(string json)
+        {
+
+        }
     }
 }

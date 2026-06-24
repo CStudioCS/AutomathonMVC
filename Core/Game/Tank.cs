@@ -6,6 +6,20 @@ namespace Automathon.Game
 {
     public class Tank : Entity
     {
+        public class TankState : State
+        {
+            public int Width;
+            public int Height;
+            public Vector2Int Velocity;
+
+            public int Health;
+
+            public int ShieldCooldownFramesLeft;
+            public int MissileCooldownFramesLeft;
+            public int MachineGunCooldownFramesLeft;
+            public int DashCooldownFramesLeft;
+        }
+
         private const int TANK_HEIGHT = 838;
         private const int TANK_WIDTH = 1138;
         private const int SPEED = 7000;
@@ -83,5 +97,19 @@ namespace Automathon.Game
             //The actual details of this will be made by whoever handles Gameplay end
             GameplayManager.Destroy(this);
         }
+
+        public override State GetState()
+            => new TankState()
+            {
+                Position = this.Position,
+                Width = TANK_WIDTH,
+                Height = TANK_HEIGHT,
+                Velocity = Rigidbody.Velocity,
+                Health = Health.CurrentHealth,
+                DashCooldownFramesLeft = DashAbility.FramesOfCooldownLeft,
+                MachineGunCooldownFramesLeft = MachineGunAbility.FramesOfCooldownLeft,
+                MissileCooldownFramesLeft = MissileAbility.FramesOfCooldownLeft,
+                ShieldCooldownFramesLeft = ShieldAbility.FramesOfCooldownLeft,
+            };
     }
 }
