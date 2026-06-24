@@ -7,8 +7,8 @@ namespace Automathon.Game
     {
         public class BulletState : State
         {
-            public required float Radius;
-            public required Vector2Int Velocity;
+            public float Radius;
+            public Vector2Int Velocity;
         }
 
         private const int DAMAGE = 100;

@@ -2,6 +2,7 @@
 using Automathon.AI;
 using Automathon.Engine;
 using Automathon.Game;
+using Newtonsoft.Json;
 using System;
 
 namespace HeadlessBridge;
@@ -26,7 +27,8 @@ public class GameBridge
     {
         if (ServerHandler.GetAIResponse(out string response))
         {
-            //inputProvider1.UpdateFromAction();
+            AIAction action = JsonConvert.DeserializeObject<AIAction>(response);
+            //inputProvider1.UpdateFromAction(aiAction);
             //inputProvider2.UpdateFromAction();
             Debug.Log("Received a response");
         }

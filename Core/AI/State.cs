@@ -2,6 +2,6 @@
 {
     public class State
     {
-        public required Vector2Int Position;
+        public Vector2Int Position;
     }
 }

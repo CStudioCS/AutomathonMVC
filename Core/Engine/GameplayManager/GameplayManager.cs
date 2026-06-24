@@ -58,8 +58,6 @@ namespace Automathon.Engine
 
         public static void Update()
         {
-            ServerHandler.GetAIResponse(out string response);
-
             EntityUpdateLoop();
 
             ProcessAllEntityChanges();

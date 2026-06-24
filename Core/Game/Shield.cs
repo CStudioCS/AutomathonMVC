@@ -7,7 +7,7 @@ namespace Automathon.Game
     {
         public class ShieldState : Wall.WallState
         {
-            public required Vector2Int Velocity;
+            public Vector2Int Velocity;
         }
 
         public Rigidbody Rigidbody { get; private set; }

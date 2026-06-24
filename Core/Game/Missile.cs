@@ -12,8 +12,8 @@ namespace Automathon.Game
     {
         public class MissileState : State
         {
-            public required float Radius;
-            public required Vector2Int Velocity;
+            public float Radius;
+            public Vector2Int Velocity;
         }
 
         private const bool AIMED = true; //do we aim the missile with the right stick ?

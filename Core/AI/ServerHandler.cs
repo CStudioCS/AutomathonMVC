@@ -40,7 +40,6 @@ namespace Automathon.AI
 
             if (gameSocket.TryReceiveFrameString(TimeSpan.FromMilliseconds(500), out string response))
             {
-                Debug.Log(response);
                 responseAction = response;
                 return true;
             }

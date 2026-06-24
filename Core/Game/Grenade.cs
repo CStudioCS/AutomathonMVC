@@ -10,9 +10,9 @@ namespace Automathon.Game
     {
         public class GrenadeState : State
         {
-            public required float Radius;
-            public required Vector2Int Velocity;
-            public required float NumFramesLeftBeforeExplosion;
+            public float Radius;
+            public Vector2Int Velocity;
+            public float NumFramesLeftBeforeExplosion;
         }
 
         private float numFramesLeftBeforeExplosion;
