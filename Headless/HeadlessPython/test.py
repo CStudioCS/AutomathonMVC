@@ -1,5 +1,6 @@
 import zmq
 import time
+import json
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
@@ -12,12 +13,11 @@ print("connected")
 
 def update():
     if poller.poll(500):
-        print("try receive")
         state = socket.recv_string()
-        print("received")
+        json.loads(state)
         socket.send_string(str(time.time()))
-        print("state delivered")
 
+        
 try:
     while True:
         update()

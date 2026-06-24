@@ -4,6 +4,7 @@ using Automathon.Engine.Utility;
 using Automathon.Game;
 using Automathon.Utility;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Automathon.Engine
@@ -66,12 +67,14 @@ namespace Automathon.Engine
             PhysicsManager.Step();
         }
 
-        public static float[] GetState()
+        public static List<State> GetState()
         {
+            List<State> entityStates = new();
 
+            foreach (Entity entity in entities.Items)
+                entityStates.Add(entity.GetState());
 
-
-            return new float[] { };
+            return entityStates;
         }
 
         public static void EntityUpdateLoop()
