@@ -19,8 +19,8 @@ class Vector2:
 
 @dataclass
 class AIAction:
-    MovingDirection: Vector2 = field(default_factory=lambda: Vector2(1, 0))
-    AimingDirection: Vector2 = field(default_factory=lambda: Vector2(0, 1))
+    MovingDirection: Vector2 = field(default_factory=lambda: Vector2(1000, 0))
+    AimingDirection: Vector2 = field(default_factory=lambda: Vector2(0, 1000))
     MachineGun: bool = False
     Missile: bool = False
     Shield: bool = False

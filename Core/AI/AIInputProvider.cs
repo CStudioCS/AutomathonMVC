@@ -5,6 +5,13 @@ namespace Automathon.AI
     public class AIInputProvider : IInputProvider
     {
         private AIAction lastAction;
+
+        public AIInputProvider()
+        {
+            lastAction.MovingDirection = new Vector2Int(1000, 0);
+            lastAction.AimingDirection = new Vector2Int(1000, 0);
+        }
+
         public void UpdateFromAction(AIAction action)
         {
             //prevent int overflow
@@ -18,7 +25,6 @@ namespace Automathon.AI
 
             CheckDir(ref action.MovingDirection);
             CheckDir(ref action.AimingDirection);
-
 
             //Attention : Data du user donc programmer defensivement pour eviter les erreurs
             if (action.MovingDirection == Vector2Int.Zero)
