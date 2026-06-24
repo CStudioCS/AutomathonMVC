@@ -1,7 +1,7 @@
-Instantiate(new Wall(new Vector2Int(4175, 3159), new Vector2Int(4262, 470), 364));
-Instantiate(new Wall(new Vector2Int(-6905, 65), new Vector2Int(4716, 272), 5180));
-Instantiate(new Wall(new Vector2Int(11175, -1559), new Vector2Int(3930, 386), 1598));
-Instantiate(new Wall(new Vector2Int(-811, -3172), new Vector2Int(5916, 379), 5152));
-Instantiate(new Wall(new Vector2Int(-12070, 988), new Vector2Int(5602, 408), 6137));
-Instantiate(new Wall(new Vector2Int(7570, 230), new Vector2Int(5046, 469), 4279));
-Instantiate(new Wall(new Vector2Int(5721, -6366), new Vector2Int(4893, 333), 3040));
+Instantiate(new Wall(new Vector2Int(10217, -212), new Vector2Int(4263, 406), 684));
+Instantiate(new Wall(new Vector2Int(6231, -3703), new Vector2Int(5438, 386), 616));
+Instantiate(new Wall(new Vector2Int(11037, 5351), new Vector2Int(4467, 585), 4617));
+Instantiate(new Wall(new Vector2Int(-9296, 1104), new Vector2Int(4017, 284), 1369));
+Instantiate(new Wall(new Vector2Int(-3745, 2574), new Vector2Int(4343, 561), 4540));
+Instantiate(new Wall(new Vector2Int(-11787, 6230), new Vector2Int(4727, 277), 4148));
+Instantiate(new Wall(new Vector2Int(7743, -1262), new Vector2Int(4709, 306), 2164));

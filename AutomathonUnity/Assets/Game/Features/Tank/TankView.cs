@@ -20,8 +20,12 @@ namespace Automathon.Game
         [SerializeField] private Transform turret;
         [SerializeField] private Transform turretTip;
         [SerializeField] private Transform body;
+
         [SerializeField] private ParticleSystem dashBurstParticleSystem;
         [SerializeField] private ParticleSystem dashFlame;
+
+        [SerializeField] private HealthBarView healthBar;
+
         [SerializeField] private VisualEffect miniExplosion;
 
         private CameraShaker cameraShaker;
@@ -29,6 +33,8 @@ namespace Automathon.Game
         public override void Initialize(Tank entity)
         {
             base.Initialize(entity);
+
+            healthBar.Bind(() => (float)Entity.Health.CurrentHealth / Entity.Health.MaxHealth);
 
             //Entity.BulletAbility.AbilityActivated += OnShooting;
             //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
