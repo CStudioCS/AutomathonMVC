@@ -14,5 +14,7 @@ public static class Program
         {
             ServerHandler.GetAIResponse(out _);
         }
+
+        gameBridge.Dispose();
     }
 }

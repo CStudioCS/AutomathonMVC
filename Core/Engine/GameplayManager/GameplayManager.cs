@@ -31,6 +31,8 @@ namespace Automathon.Engine
             Instantiate(new Wall(new Vector2Int(1821, 5341), new Vector2Int(3729, 328), 5067));
             Instantiate(new Wall(new Vector2Int(-12551, 3547), new Vector2Int(5759, 226), 6022));
             Instantiate(new Wall(new Vector2Int(904, -236), new Vector2Int(4676, 482), 1242));
+
+            ServerHandler.StartServer();
         }
 
         private static void GenerateRandomMap()
@@ -55,6 +57,8 @@ namespace Automathon.Engine
 
         public static void Update()
         {
+            ServerHandler.GetAIResponse(out string response);
+
             EntityUpdateLoop();
 
             ProcessAllEntityChanges();

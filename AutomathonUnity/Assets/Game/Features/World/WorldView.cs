@@ -11,19 +11,19 @@ namespace Automathon.Game
 
         private bool subbedToSpawnEntityView;
 
-
-
         private void Awake()
         {
-            GameplayManager.Initialize();
-            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
             Debug.LogEvent += DebugForward;
             Debug.LogErrorEvent += DebugErrorForward;
+
+            GameplayManager.Initialize();
+            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
             subbedToSpawnEntityView = true;
 
             //ServerHandler.StartServer();
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
+            QualitySettings.vSyncCount = 0;
             /*Map map1 = new Map("map1", new List<Entity> { new Wall(new Vector2Int(3000, 2000), new Vector2Int(6000, 2000), 1000), new Wall(new Vector2Int(-3000, -2000), new Vector2Int(6000, 2000), 1000) });
 
             MapSaver.RegisterMap(map1);

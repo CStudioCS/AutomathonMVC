@@ -17,13 +17,11 @@ public class GameBridge
         inputProvider1 = new AIInputProvider();
         inputProvider2 = new AIInputProvider();
 
-        ServerHandler.StartServer();
-
         GameplayManager.Instantiate(new Tank(new Vector2Int(-5000, 0), inputProvider1));
         GameplayManager.Instantiate(new Tank(new Vector2Int(5000, 0), inputProvider2));
     }
 
-    public float[] Step(float[] action1, float[] action2)
+    /*public float[] Step(float[] action1, float[] action2)
     {
         inputProvider1.UpdateFromAction(action1);
         inputProvider2.UpdateFromAction(action2);
@@ -31,7 +29,7 @@ public class GameBridge
         GameplayManager.Update();
 
         return GameplayManager.GetState();
-    }
+    }*/
 
     public void Dispose()
     {

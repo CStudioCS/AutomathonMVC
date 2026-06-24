@@ -1,9 +1,25 @@
 import zmq
+import time
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
-socket.connect("tcp://localhost:5555")
+socket.bind("tcp://*:5555")
 
-while True:
-    state = socket.recv_string()
-    socket.send_string("Hellooo !!! IT WOOORKS :O")
+poller = zmq.Poller()
+poller.register(socket, zmq.POLLIN)
+
+print("connected")
+
+def update():
+    if poller.poll(500):
+        print("try receive")
+        state = socket.recv_string()
+        print("received")
+        socket.send_string(str(time.time()))
+        print("state delivered")
+
+try:
+    while True:
+        update()
+except KeyboardInterrupt:
+    print("Shutting down Python side")
