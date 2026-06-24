@@ -12,8 +12,8 @@ namespace Automathon.Game
     {
         private const bool AIMED = true; //do we aim the missile with the right stick ?
 
-        private const int DAMAGE = 200;
-        private const int DIRECT_DAMAGE = 400;
+        private const int DAMAGE = 400;
+        private const int DIRECT_DAMAGE = 600;
 
         public const int RADIUS = 300;
         public const int SPEED = 9000;
