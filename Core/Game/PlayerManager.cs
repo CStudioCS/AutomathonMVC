@@ -44,7 +44,7 @@ namespace Automathon.Game
             }
 
             if (tanks.Count == 1)
-                GameplayManager.ChangeState(GameplayManager.GameState.Lobby);
+                GameplayManager.ChangeState(GameplayManager.GameplayState.Lobby);
         }
 
         public static void Dispose()

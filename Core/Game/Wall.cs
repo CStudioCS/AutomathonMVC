@@ -8,7 +8,7 @@ namespace Automathon.Game
         public class WallState : State
         {
             public Vector2Int Size;
-            public float RotationMilli;
+            public int RotationMilli;
         }
 
         public Vector2Int Size;

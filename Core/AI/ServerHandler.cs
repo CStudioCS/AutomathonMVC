@@ -33,7 +33,7 @@ namespace Automathon.AI
 
         public static bool GetAIResponse(out string responseAction)
         {
-            List<State> state = GameplayManager.GetState();
+            GameState state = GameplayManager.GetState();
             string stringState = JsonConvert.SerializeObject(state);
 
             gameSocket.SendFrame(stringState);

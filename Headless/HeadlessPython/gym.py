@@ -1,16 +1,30 @@
-import grpc
-import proto_pb2 as proto_pb2
-import proto_pb2_grpc as proto_pb2_grpc
-
+import zmq
+import json
+from dataclasses import asdict
+from datatypes import *
+from states import *
 
 class Gym:
     def __init__(self):
-        self.channel = grpc.insecure_channel("localhost:50051")
-        self.stub = proto_pb2_grpc.GymServiceStub(self.channel)
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.REP)
+        self.socket.bind("tcp://*:5555")
 
-    def step(self, action: list[float]):
-        step_response: proto_pb2.StepResponse = self.stub.Step(proto_pb2.Action(action=[5.0, 2.0, 3.0]))
-        return step_response.observation, step_response.done
+        self.poller = zmq.Poller()
+        self.poller.register(self.socket, zmq.POLLIN)
 
-    def reset(self):
-        self.stub.Reset(proto_pb2.Empty())
+    def step(self, action: AIAction, timeout=500):
+
+        if self.poller.poll(timeout):
+            state_string = self.socket.recv_string()
+            raw_dict = json.loads(state_string)
+
+            s = json.dumps(asdict(action))
+            self.socket.send_string(s)
+
+            return GameState(**raw_dict)
+        
+        raise TimeoutError()
+
+    def reset(self) -> GameState:
+        raise NotImplementedError #ask the game to reset, return state

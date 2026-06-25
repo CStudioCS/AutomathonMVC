@@ -10,12 +10,12 @@ namespace Automathon.Game
     {
         public class GrenadeState : State
         {
-            public float Radius;
+            public int Radius;
             public Vector2Int Velocity;
-            public float NumFramesLeftBeforeExplosion;
+            public int NumFramesLeftBeforeExplosion;
         }
 
-        private float numFramesLeftBeforeExplosion;
+        private int numFramesLeftBeforeExplosion;
         private const int RADIUS = 300;
         private const int SPEED = 1800;
         private const int EXPLOSION_DELAY = 2000;

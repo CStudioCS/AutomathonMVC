@@ -12,14 +12,14 @@ namespace Automathon.Engine
     public static class GameplayManager
     {
         private static DeferredList<Entity> entities = new();
-        public static GameState State { get; private set; }
+        public static GameplayState State { get; private set; }
         public static event Action<Entity> EntitySpawned;
 
-        public enum GameState { Lobby, Game }
+        public enum GameplayState { Lobby, Game }
 
         public static void Initialize()
         {
-            State = GameState.Lobby;
+            State = GameplayState.Lobby;
 
             LayerMatrix.Initialize();
             PhysicsManager.Initialize();
@@ -65,14 +65,18 @@ namespace Automathon.Engine
             PhysicsManager.Step();
         }
 
-        public static List<State> GetState()
+        public static GameState GetState()
         {
             List<State> entityStates = new();
 
             foreach (Entity entity in entities.Items)
                 entityStates.Add(entity.GetState());
 
-            return entityStates;
+            return new GameState()
+            {
+                Done = false,
+                States = entityStates
+            };
         }
 
         public static void EntityUpdateLoop()
@@ -104,7 +108,7 @@ namespace Automathon.Engine
             entities.Remove(entity);
         }
 
-        public static void ChangeState(GameState newState)
+        public static void ChangeState(GameplayState newState)
         {
             State = newState;
             //maybe emit an event here in the future

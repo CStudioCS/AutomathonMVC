@@ -12,7 +12,7 @@ namespace Automathon.Game
     {
         public class MissileState : State
         {
-            public float Radius;
+            public int Radius;
             public Vector2Int Velocity;
         }
 
