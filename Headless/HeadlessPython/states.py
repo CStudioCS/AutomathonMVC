@@ -20,12 +20,14 @@ class MissileState(StateBase):
     Radius: int
     Velocity: Vector2Int
 
-class WallState(StateBase):
-    Type: Literal["WallState"] = "WallState"
+class BaseWallState(StateBase):
     Size: Vector2Int
     RotationMilli: int
 
-class ShieldState(WallState):
+class WallState(BaseWallState):
+    Type: Literal["WallState"] = "WallState"
+
+class ShieldState(BaseWallState):
     Type: Literal["ShieldState"] = "ShieldState"
     Velocity: Vector2Int
 

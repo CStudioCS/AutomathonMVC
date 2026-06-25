@@ -14,3 +14,7 @@ class AIAction:
     Shield: bool = False
     Dash: bool = False
 
+@dataclass
+class AIMessage:
+    Reset: bool
+    Action: AIAction | None

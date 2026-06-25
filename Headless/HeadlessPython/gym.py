@@ -16,15 +16,25 @@ class Gym:
     def step(self, action: AIAction, timeout=500):
 
         if self.poller.poll(timeout):
-            state_string = self.socket.recv_string()
-            raw_dict = json.loads(state_string)
+            state = self.__receive_state__()
+            self.__send_action__(AIMessage(Reset=False, Action=action))
 
-            s = json.dumps(asdict(action))
-            self.socket.send_string(s)
-
-            return GameState(**raw_dict)
+            return state
         
         raise TimeoutError()
 
     def reset(self) -> GameState:
-        raise NotImplementedError #ask the game to reset, return state
+        self.__send_action__(AIMessage(Reset=False, Action=None))
+
+        state_string = self.socket.recv_string()
+        raw_dict = json.loads(state_string)
+        return GameState(**raw_dict) #ask the game to reset, return state
+
+    def __receive_state__(self):
+        state_string = self.socket.recv_string()
+        raw_dict = json.loads(state_string)
+        return GameState(**raw_dict)
+    
+    def __send_action__(self, msg: AIMessage):
+        s = json.dumps(asdict(msg))
+        self.socket.send_string(s)
