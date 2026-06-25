@@ -14,7 +14,7 @@ namespace Automathon.AI
 
         public void UpdateFromAction(AIAction action)
         {
-            void NormalizeAndCheckDir(ref Vector2Int dir)
+            void NormalizeAndCheckDir(ref Vector2Int dir, bool allowLower)
             {
                 //prevent int overflow
                 if (dir.X > 1000 * 1000)
@@ -22,12 +22,12 @@ namespace Automathon.AI
                 if (dir.Y > 1000 * 1000)
                     dir.Y = 1000;
 
-                if (dir != Vector2Int.Zero)
+                if (dir.LengthSquared() > 1000000 || !allowLower)
                     dir.NormalizeAtScale(1000);
             }
 
-            NormalizeAndCheckDir(ref action.MovingDirection);
-            NormalizeAndCheckDir(ref action.AimingDirection);
+            NormalizeAndCheckDir(ref action.MovingDirection, true);
+            NormalizeAndCheckDir(ref action.AimingDirection, false);
 
             //Attention : Data du user donc programmer defensivement pour eviter les erreurs
             if (action.AimingDirection == Vector2Int.Zero)

@@ -8,6 +8,7 @@ namespace Automathon.Game
     {
         [SerializeField] private TankView tankViewPrefab;
         [SerializeField] private EntityViewRegistry entityViewRegistry;
+        [SerializeField] private TankView tankView;
 
         private bool subbedToSpawnEntityView;
 
@@ -18,6 +19,14 @@ namespace Automathon.Game
 
             GameplayManager.Initialize();
             GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+
+            GameplayManager.AIInputProvider = new AI.AIInputProvider();
+            Tank tank = new Tank(Vector2Int.Right * 5000, GameplayManager.AIInputProvider);
+
+            GameplayManager.Instantiate(tank);
+            TankView t = Instantiate(tankView);
+            t.Initialize(tank);
+
             subbedToSpawnEntityView = true;
 
             //ServerHandler.StartServer();

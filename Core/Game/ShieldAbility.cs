@@ -18,7 +18,7 @@ namespace Automathon.Game
             direction.NormalizeAtScale(1000);
 
             Vector2Int position = Tank.Position + direction * SPAWN_DISTANCE_FROM_TANK / 1000;
-            int rotationMilliRad = Tank.LastMilliDirection.CalculateAngleMilliRad() + IntMath.PI_MILLI / 2;
+            int rotationMilliRad = Atan2Int.Atan2(Tank.LastMilliDirection.X, Tank.LastMilliDirection.Y) + IntMath.PI_MILLI / 2;
 
             GameplayManager.Instantiate(new Shield(position, rotationMilliRad));
         }

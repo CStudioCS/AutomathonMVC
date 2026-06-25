@@ -1,8 +1,6 @@
 import zmq
 import json
-from dataclasses import asdict
 from datatypes import *
-from states import *
 
 class Gym:
     def __init__(self):
@@ -36,5 +34,5 @@ class Gym:
         return GameState(**raw_dict)
     
     def __send_action__(self, msg: AIMessage):
-        s = json.dumps(asdict(msg))
+        s = msg.model_dump_json()
         self.socket.send_string(s)

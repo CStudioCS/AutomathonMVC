@@ -78,10 +78,11 @@ namespace Automathon.Game
                 aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
             */
 
+
             if (movementInput != Vector2Int.Zero)
             {
                 LastMovingMilliDirection = movementInput;
-                RotationMilli = movementInput.CalculateAngleMilliRad();
+                RotationMilli = Atan2Int.Atan2(movementInput.X, movementInput.Y);
                 Rigidbody.AngularVelocityMilli = 0;
 
                 /*if (InputProvider is PlayerInputProvider p && (p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard || p.ControlsType == PlayerInputProvider.PlayerControlsType.RightKeyboard))

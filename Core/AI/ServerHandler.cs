@@ -31,7 +31,7 @@ namespace Automathon.AI
             Debug.Log("Server started on port 5555");
         }
 
-        public static bool GetAIResponse(out string responseAction)
+        public static bool GetAIResponse(out AIMessage responseAction)
         {
             GameState state = GameplayManager.GetState();
             string stringState = JsonConvert.SerializeObject(state);
@@ -40,7 +40,17 @@ namespace Automathon.AI
 
             if (gameSocket.TryReceiveFrameString(TimeSpan.FromMilliseconds(500), out string response))
             {
-                responseAction = response;
+                try
+                {
+                    responseAction = JsonConvert.DeserializeObject<AIMessage>(response);
+                }
+                catch
+                {
+                    responseAction = null;
+                    Debug.LogError("Count not parse JSON sent from python");
+                    return false;
+                }
+
                 return true;
             }
 
@@ -50,7 +60,7 @@ namespace Automathon.AI
 
             gameSocket = new RequestSocket();
             gameSocket.Connect(tcpAddress);
-            responseAction = "";
+            responseAction = null;
             return false;
         }
 
@@ -64,7 +74,7 @@ namespace Automathon.AI
 
             gameSocket.Options.Linger = TimeSpan.Zero;
 
-            try { gameSocket.Unbind(tcpAddress); }
+            try { gameSocket.Disconnect(tcpAddress); }
             catch (KeyNotFoundException) { }
             catch (EndpointNotFoundException) { }
 

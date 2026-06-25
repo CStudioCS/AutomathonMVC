@@ -23,7 +23,7 @@ namespace Automathon.Game
 
         private void Update()
         {
-            if (GameplayManager.State != GameplayManager.GameState.Lobby)
+            if (GameplayManager.State != GameplayManager.GameplayState.Lobby)
                 return;
 
             HandleGamepadJoinInput();

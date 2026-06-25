@@ -4,7 +4,6 @@ using Automathon.Engine.Utility;
 using Automathon.Game;
 using Automathon.Utility;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Automathon.Engine
@@ -14,6 +13,7 @@ namespace Automathon.Engine
         private static DeferredList<Entity> entities = new();
         public static GameplayState State { get; private set; }
         public static event Action<Entity> EntitySpawned;
+        public static AIInputProvider AIInputProvider;
 
         public enum GameplayState { Lobby, Game }
 
@@ -58,6 +58,14 @@ namespace Automathon.Engine
 
         public static void Update()
         {
+            if (AIInputProvider != null && ServerHandler.GetAIResponse(out AIMessage response))
+            {
+                if (response.Reset)
+                    Debug.Log("Reset");
+                else
+                    AIInputProvider.UpdateFromAction(response.Action);
+            }
+
             EntityUpdateLoop();
 
             ProcessAllEntityChanges();
@@ -65,18 +73,41 @@ namespace Automathon.Engine
             PhysicsManager.Step();
         }
 
+        public static void Reset()
+        {
+
+        }
+
         public static GameState GetState()
         {
-            List<State> entityStates = new();
+            GameState gameState = new GameState();
+            int tankCount = 0;
 
             foreach (Entity entity in entities.Items)
-                entityStates.Add(entity.GetState());
-
-            return new GameState()
             {
-                Done = false,
-                States = entityStates
-            };
+                if (entity is Tank t)
+                {
+                    tankCount++;
+                    if (t.InputProvider is AIInputProvider)
+                        gameState.SelfTank = (Tank.TankState)t.GetState();
+                    else
+                        gameState.EnemyTank = (Tank.TankState)t.GetState();
+                }
+
+                else if (entity is Bullet)
+                    gameState.BulletStates.Add((Bullet.BulletState)entity.GetState());
+                else if (entity is Missile)
+                    gameState.MissileStates.Add((Missile.MissileState)entity.GetState());
+                else if (entity is Wall)
+                    gameState.WallStates.Add((Wall.WallState)entity.GetState());
+                else if (entity is Shield)
+                    gameState.ShieldStates.Add((Shield.ShieldState)entity.GetState());
+
+            }
+
+            gameState.Done = tankCount <= 1;
+
+            return gameState;
         }
 
         public static void EntityUpdateLoop()
