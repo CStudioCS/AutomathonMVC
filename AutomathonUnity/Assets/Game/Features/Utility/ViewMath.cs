@@ -11,6 +11,6 @@ namespace Automathon.Game.View
             => new Vector2Int((int)(vector.x * WorldConstants.SPACE_SCALE), (int)(vector.y * WorldConstants.SPACE_SCALE));
 
         public static Vector3 ScreenToWorldSpace(this Vector2 screenPos)
-            => Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -1));
+            => Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0));
     }
 }

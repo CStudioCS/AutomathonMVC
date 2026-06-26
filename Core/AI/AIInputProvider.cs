@@ -76,6 +76,7 @@ namespace Automathon.AI
                 }
 
                 UpdateFromAction(msg.SelfAction);
+                return;
             }
 
             Debug.LogError("Timeout, the AI took too long to respond. Make sure to launch the Python AI Server !");

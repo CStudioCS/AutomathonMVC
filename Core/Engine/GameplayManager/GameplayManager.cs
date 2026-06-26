@@ -84,6 +84,8 @@ namespace Automathon.Engine
             Tank2 = Instantiate(new Tank(new Vector2Int(10000, 0), inputProvider2));
 
             ProcessAllEntityChanges();
+
+            State = GameplayState.Game;
         }
 
         public static GameState GetState(InputProvider self)

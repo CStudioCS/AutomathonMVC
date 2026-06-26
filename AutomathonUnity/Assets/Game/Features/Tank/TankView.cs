@@ -1,4 +1,5 @@
 using Assets.Game.View;
+using Automathon.Game.Input;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -35,6 +36,10 @@ namespace Automathon.Game
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
             Entity.MissileAbility.AbilityActivated += OnMissileAbility;
+
+            if (entity.InputProvider is PlayerInputProvider p)
+                p.Setup(this);
+
         }
 
         protected override void LateUpdate()
