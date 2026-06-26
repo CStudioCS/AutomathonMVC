@@ -52,7 +52,7 @@ namespace Automathon.Game
                 return;
             }
 
-            EntityView entityView = Instantiate(entityViewPrefab);
+            EntityView entityView = Instantiate(entityViewPrefab, entity.Position.ToVector2Scaled(), ViewMath.MilliRadRotationToQuaternion(entity.RotationMilli));
             entityView.Initialize(entity);
         }
 
