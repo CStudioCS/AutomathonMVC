@@ -1,4 +1,3 @@
-using Automathon.AI;
 using Automathon.Engine;
 using Automathon.Game.Input;
 using Automathon.Game.View;
@@ -35,11 +34,7 @@ namespace Automathon.Game
             GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
 
             InputProviders = new();
-            InputProviders.Add(new AIInputProvider("tcp://localhost:5555"));
-
-            /*trainingManager = new TrainingManager("tcp://localhost:5555");
-            Instantiate(tankViewPrefab).Initialize(GameplayManager.Tank1);
-            Instantiate(tankViewPrefab).Initialize(GameplayManager.Tank2);*/
+            //InputProviders.Add(new AIInputProvider("tcp://localhost:5555"));
 
             subbedToSpawnEntityView = true;
 

@@ -1,5 +1,4 @@
 import zmq
-import json
 from datatypes import *
 
 class Gym:
@@ -33,8 +32,7 @@ class Gym:
 
     def __receive_state__(self):
         state_string = self.socket.recv_string()
-        raw_dict = json.loads(state_string)
-        return GameState(**raw_dict)
+        return GameState.model_validate_json(state_string)
     
     def __send_action__(self, msg: AIMessage):
         s = msg.model_dump_json()

@@ -86,7 +86,6 @@ namespace Automathon.Game.Input
             if (ControlsType == PlayerControlsType.LeftKeyboard)
             {
                 Vector2 mouseWorldPos = readInput.ScreenToWorldSpace();
-                Debug.Log(readInput);
                 Vector2Int aimingVector = mouseWorldPos.ToVector2IntScaled() - ParentEntity.Position;
 
                 if (aimingVector != Vector2Int.Zero)
