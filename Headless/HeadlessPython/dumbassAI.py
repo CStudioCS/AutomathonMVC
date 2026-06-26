@@ -1,13 +1,5 @@
-import zmq
-import json
-from gym import Gym
 from datatypes import *
 from math import sqrt
-
-env = Gym()
-print("Python Side launched")
-
-state = GameState(Done=False)
 
 def length_squared(v):
     return v.X * v.X + v.Y * v.Y
@@ -17,9 +9,7 @@ def normalize(v: Vector2Int):
     v.X = int(v.X * 1000 / length)
     v.Y = int(v.Y * 1000 / length)
 
-def update():
-    global state
-
+def decide_action(state: GameState):
     if state.SelfTank is not None and state.EnemyTank is not None:
         movingDir = Vector2Int(X=0, Y=0)
         aimDir = Vector2Int(X=0, Y=0)
@@ -57,15 +47,5 @@ def update():
         
     else:
         action = AIAction(MovingDirection=Vector2Int(X=1000, Y=0), AimingDirection=Vector2Int(X=0, Y=1000))
-
-    try:
-        state = env.step(action)
-    except TimeoutError :
-        print("Timeout")
-
-try:
-    while True:
-        update()
-
-except KeyboardInterrupt:
-    print("Shutting down Python side")
+    
+    return action

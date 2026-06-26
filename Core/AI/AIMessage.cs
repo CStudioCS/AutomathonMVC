@@ -1,8 +1,10 @@
 ﻿namespace Automathon.AI
 {
-    public class AIMessage
+    public struct AIMessage
     {
         public bool Reset;
-        public AIAction Action;
+        public bool DoneWithTraining;
+        public AIAction SelfAction;
+        public AIAction EnemyAction;
     }
 }

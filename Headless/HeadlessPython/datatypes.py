@@ -68,4 +68,6 @@ class AIAction(BaseModel):
 
 class AIMessage(BaseModel):
     Reset: bool
-    Action: AIAction | None
+    DoneWithTraining: bool
+    SelfAction: AIAction | None
+    EnemyAction: AIAction | None

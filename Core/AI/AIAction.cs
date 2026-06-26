@@ -1,6 +1,6 @@
 ﻿namespace Automathon.AI
 {
-    public struct AIAction
+    public class AIAction
     {
         public Vector2Int MovingDirection;
         public Vector2Int AimingDirection;

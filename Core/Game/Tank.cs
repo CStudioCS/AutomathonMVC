@@ -34,7 +34,7 @@ namespace Automathon.Game
         public DashAbility DashAbility;
         public Health Health;
 
-        public IInputProvider InputProvider { get; private set; }
+        public InputProvider InputProvider { get; private set; }
         public Rigidbody Rigidbody;
 
         public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
@@ -42,7 +42,7 @@ namespace Automathon.Game
         public bool IsReady { get; set; }
         public bool IsDashing { get; set; }
 
-        public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
+        public Tank(Vector2Int position, InputProvider inputProvider) : base(position)
         {
             InputProvider = inputProvider;
 
@@ -53,6 +53,7 @@ namespace Automathon.Game
             Initialize(
                 boxCollider,
                 Rigidbody,
+                inputProvider,
                 MachineGunAbility = new MachineGunAbility(10, 500, inputProvider.ShouldShoot),
                 MissileAbility = new MissileAbility(inputProvider.ShouldMissile),
                 ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),

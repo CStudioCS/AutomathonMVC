@@ -21,6 +21,12 @@ namespace Automathon.Engine.Physics
             LocalRotationMillirad = localRotationMillirad;
         }
 
+        public override void Initialize(Entity parentEntity)
+        {
+            base.Initialize(parentEntity);
+            PhysicsUpdate();
+        }
+
         public override bool Colliding(Collider collider)
         {
             if (collider is BoxCollider b)

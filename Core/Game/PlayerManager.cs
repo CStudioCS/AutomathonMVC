@@ -13,7 +13,7 @@ namespace Automathon.Game
             tanks = new();
         }
 
-        public static Tank OnPlayerJoined(IInputProvider inputProvider)
+        public static Tank OnPlayerJoined(InputProvider inputProvider)
         {
             Tank tank = new Tank(Vector2Int.Zero, inputProvider);
             GameplayManager.Instantiate(tank);
@@ -25,7 +25,7 @@ namespace Automathon.Game
             return tank;
         }
 
-        public static void OnPlayerLeft(IInputProvider inputProvider)
+        public static void OnPlayerLeft(InputProvider inputProvider)
         {
             Tank tankToDestroy = null;
             foreach (Tank tank in tanks)
