@@ -1,16 +1,41 @@
-import grpc
-import proto_pb2 as proto_pb2
-import proto_pb2_grpc as proto_pb2_grpc
-
+import zmq
+import json
+from datatypes import *
 
 class Gym:
     def __init__(self):
-        self.channel = grpc.insecure_channel("localhost:50051")
-        self.stub = proto_pb2_grpc.GymServiceStub(self.channel)
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.REQ)
+        self.socket.connect("tcp://localhost:5555")
 
-    def step(self, action: list[float]):
-        step_response: proto_pb2.StepResponse = self.stub.Step(proto_pb2.Action(action=[5.0, 2.0, 3.0]))
-        return step_response.observation, step_response.done
+        self.poller = zmq.Poller()
+        self.poller.register(self.socket, zmq.POLLIN)
 
-    def reset(self):
-        self.stub.Reset(proto_pb2.Empty())
+    def step(self, self_action: AIAction, enemy_action: AIAction, timeout : None | int=500):
+
+        self.__send_action__(AIMessage(Reset=False, DoneWithTraining=False, SelfAction=self_action, EnemyAction=enemy_action))
+
+        if self.poller.poll(timeout):
+            return self.__receive_state__()
+        
+        raise TimeoutError()
+
+    def reset(self, timeout : None | int=500) -> GameState:
+        self.__send_action__(AIMessage(Reset=True, DoneWithTraining=False, SelfAction=None, EnemyAction=None))
+        
+        if self.poller.poll(timeout):
+            return self.__receive_state__()
+        
+        raise TimeoutError()
+
+    def end_training(self):
+        self.__send_action__(AIMessage(Reset=False, DoneWithTraining=True, SelfAction=None, EnemyAction=None))
+
+    def __receive_state__(self):
+        state_string = self.socket.recv_string()
+        raw_dict = json.loads(state_string)
+        return GameState(**raw_dict)
+    
+    def __send_action__(self, msg: AIMessage):
+        s = msg.model_dump_json()
+        self.socket.send_string(s)

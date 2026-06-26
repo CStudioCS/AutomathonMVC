@@ -4,15 +4,13 @@ namespace HeadlessBridge;
 
 public static class Program
 {
-    private static GameBridge gameBridge;
+    private static TrainingManager gameBridge;
     public static void Main(string[] args)
     {
-        gameBridge = new GameBridge();
-        gameBridge.InitializeGame();
+        gameBridge = new TrainingManager(args[0]);
 
-        while (true)
-        {
-            ServerHandler.GetAIResponse(out _);
-        }
+        while (!gameBridge.Step()) { }
+
+        gameBridge.Dispose();
     }
 }

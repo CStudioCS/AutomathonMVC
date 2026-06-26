@@ -1,3 +1,4 @@
+using Automathon.Game;
 using Automathon.Utility;
 using System;
 
@@ -108,5 +109,7 @@ namespace Automathon.Engine
             component = null;
             return false;
         }
+
+        public abstract State GetState();
     }
 }

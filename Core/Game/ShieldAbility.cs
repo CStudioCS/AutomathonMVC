@@ -14,8 +14,11 @@ namespace Automathon.Game
 
         protected override void Activate()
         {
-            Vector2Int position = Tank.Position + Tank.LastMilliDirection * SPAWN_DISTANCE_FROM_TANK / 1000;
-            int rotationMilliRad = Tank.LastMilliDirection.CalculateAngleMilliRad() + IntMath.PI_MILLI / 2;
+            Vector2Int direction = Tank.LastMilliDirection;
+            direction.NormalizeAtScale(1000);
+
+            Vector2Int position = Tank.Position + direction * SPAWN_DISTANCE_FROM_TANK / 1000;
+            int rotationMilliRad = Atan2Int.Atan2(Tank.LastMilliDirection.X, Tank.LastMilliDirection.Y) + IntMath.PI_MILLI / 2;
 
             GameplayManager.Instantiate(new Shield(position, rotationMilliRad));
         }

@@ -9,7 +9,7 @@ namespace Automathon.Engine
     public class Coroutine : Behavior
     {
         public IEnumerator Enumerator;
-        private float waitTimer;
+        private int waitTimer;
         private Func<bool> pausedUntil;
 
         private Stack<IEnumerator> stack;

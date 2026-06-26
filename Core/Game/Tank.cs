@@ -6,6 +6,20 @@ namespace Automathon.Game
 {
     public class Tank : Entity
     {
+        public class TankState : State
+        {
+            public int Width;
+            public int Height;
+            public Vector2Int Velocity;
+
+            public int Health;
+
+            public int ShieldCooldownFramesLeft;
+            public int MissileCooldownFramesLeft;
+            public int MachineGunCooldownFramesLeft;
+            public int DashCooldownFramesLeft;
+        }
+
         private const int TANK_HEIGHT = 838;
         private const int TANK_WIDTH = 1138;
         private const int SPEED = 7000;
@@ -20,7 +34,7 @@ namespace Automathon.Game
         public DashAbility DashAbility;
         public Health Health;
 
-        public IInputProvider InputProvider { get; private set; }
+        public InputProvider InputProvider { get; private set; }
         public Rigidbody Rigidbody;
 
         public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
@@ -28,7 +42,7 @@ namespace Automathon.Game
         public bool IsReady { get; set; }
         public bool IsDashing { get; set; }
 
-        public Tank(Vector2Int position, IInputProvider inputProvider) : base(position)
+        public Tank(Vector2Int position, InputProvider inputProvider) : base(position)
         {
             InputProvider = inputProvider;
 
@@ -39,6 +53,7 @@ namespace Automathon.Game
             Initialize(
                 boxCollider,
                 Rigidbody,
+                inputProvider,
                 MachineGunAbility = new MachineGunAbility(10, 500, inputProvider.ShouldShoot),
                 MissileAbility = new MissileAbility(inputProvider.ShouldMissile),
                 ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
@@ -64,10 +79,11 @@ namespace Automathon.Game
                 aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
             */
 
+
             if (movementInput != Vector2Int.Zero)
             {
                 LastMovingMilliDirection = movementInput;
-                RotationMilli = movementInput.CalculateAngleMilliRad();
+                RotationMilli = Atan2Int.Atan2(movementInput.X, movementInput.Y);
                 Rigidbody.AngularVelocityMilli = 0;
 
                 /*if (InputProvider is PlayerInputProvider p && (p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard || p.ControlsType == PlayerInputProvider.PlayerControlsType.RightKeyboard))
@@ -83,5 +99,19 @@ namespace Automathon.Game
             //The actual details of this will be made by whoever handles Gameplay end
             GameplayManager.Destroy(this);
         }
+
+        public override State GetState()
+            => new TankState()
+            {
+                Position = this.Position,
+                Width = TANK_WIDTH,
+                Height = TANK_HEIGHT,
+                Velocity = Rigidbody.Velocity,
+                Health = Health.CurrentHealth,
+                DashCooldownFramesLeft = DashAbility.FramesOfCooldownLeft,
+                MachineGunCooldownFramesLeft = MachineGunAbility.FramesOfCooldownLeft,
+                MissileCooldownFramesLeft = MissileAbility.FramesOfCooldownLeft,
+                ShieldCooldownFramesLeft = ShieldAbility.FramesOfCooldownLeft,
+            };
     }
 }

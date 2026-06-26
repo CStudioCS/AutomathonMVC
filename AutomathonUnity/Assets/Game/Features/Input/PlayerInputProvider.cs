@@ -2,12 +2,15 @@ using Automathon.Game.View;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 
 namespace Automathon.Game.Input
 {
-    public class PlayerInputProvider : IInputProvider
+    public class PlayerInputProvider : InputProvider
     {
         public enum PlayerControlsType { LeftKeyboard, RightKeyboard, Gamepad }
+
+        public InputDevice[] InputDevices;
         public PlayerControlsType ControlsType { get; private set; }
         private InputAction dashAction;
         private InputAction missileAction;
@@ -30,9 +33,26 @@ namespace Automathon.Game.Input
             { PlayerControlsType.RightKeyboard, "Keyboard_right" }
         };
 
-        public PlayerInputProvider(PlayerInput playerInput)
+        public PlayerInputProvider(InputDevice[] inputDevices, PlayerControlsType controlType)
         {
-            ControlsType = SchemeToControlsType[playerInput.currentControlScheme];
+            this.InputDevices = inputDevices;
+            ControlsType = controlType;
+        }
+
+        public void Setup(TankView tankView)
+        {
+            PlayerInput playerInput = tankView.GetComponent<PlayerInput>();
+
+            playerInput.defaultControlScheme = ControlsTypeToScheme[ControlsType];
+            //playerInput.user.UnpairDevices();
+
+            foreach (var device in InputDevices)
+                InputUser.PerformPairingWithDevice(device, playerInput.user);
+
+            playerInput.enabled = true;
+
+            playerInput.SwitchCurrentControlScheme(playerInput.defaultControlScheme, InputDevices);
+
             dashAction = playerInput.actions["Dash"];
             missileAction = playerInput.actions["Missile"];
             shieldAction = playerInput.actions["Shield"];
@@ -41,29 +61,41 @@ namespace Automathon.Game.Input
             aimAction = playerInput.actions["Aim"];
         }
 
-        public bool ShouldDash() => dashAction.WasPressedThisFrame();
+        public override bool ShouldDash()
+            => dashAction.WasPressedThisFrame();
 
-        public bool ShouldMissile() => missileAction.WasPressedThisFrame();
+        public override bool ShouldMissile()
+            => missileAction.WasPressedThisFrame();
 
-        public Vector2Int GetMilliMovementDir()
+        public override Vector2Int GetMilliMovementDir()
         {
             Vector2 movementDir = moveAction.ReadValue<Vector2>();
             return movementDir.ToVector2IntScaled();
         }
 
-        public bool ShouldShield() => shieldAction.WasPressedThisFrame();
+        public override bool ShouldShield()
+            => shieldAction.WasPressedThisFrame();
 
-        public bool ShouldShoot() => shootAction.IsPressed();
+        public override bool ShouldShoot()
+            => shootAction.IsPressed();
 
-        public Vector2Int GetMilliAimingDir()
+        public override Vector2Int GetMilliAimingDir()
         {
-            Vector2 aimingDir = aimAction.ReadValue<Vector2>();
-            if (ControlsType == PlayerControlsType.RightKeyboard)
+            Vector2 readInput = aimAction.ReadValue<Vector2>();
+
+            if (ControlsType == PlayerControlsType.LeftKeyboard)
             {
-                Vector3 worldPos = aimingDir.ScreenToWorldSpace();
-                return ((Vector2)worldPos).ToVector2IntScaled();
+                Vector2 mouseWorldPos = readInput.ScreenToWorldSpace();
+                Debug.Log(readInput);
+                Vector2Int aimingVector = mouseWorldPos.ToVector2IntScaled() - ParentEntity.Position;
+
+                if (aimingVector != Vector2Int.Zero)
+                    aimingVector.NormalizeAtScale(1000);
+
+                return aimingVector;
             }
-            return new Vector2Int((int)(aimingDir.x * 1000), (int)(aimingDir.y * 1000));
+
+            return readInput.ToVector2IntScaled();
         }
     }
 }
