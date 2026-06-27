@@ -3,5 +3,8 @@ from play import Play
 
 play = Play(decide_action)
 
-while True:
-    play.respond()
+try:
+    while True:
+        play.respond()
+except KeyboardInterrupt:
+    print("Play server stopped.")

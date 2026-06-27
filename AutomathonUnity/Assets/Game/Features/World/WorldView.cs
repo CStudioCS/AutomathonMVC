@@ -34,7 +34,6 @@ namespace Automathon.Game
             GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
 
             InputProviders = new();
-            //InputProviders.Add(new AIInputProvider("tcp://localhost:5555"));
 
             subbedToSpawnEntityView = true;
 
@@ -56,11 +55,15 @@ namespace Automathon.Game
             entityView.Initialize(entity);
         }
 
-        public void OnPlayerJoined()
+        public void StartGame()
         {
-            Debug.Log("Player joined");
-            if (InputProviders.Count == GameplayConstants.MAX_PLAYERS)
-                GameplayManager.Reset(InputProviders[0], InputProviders[1]);
+            if (InputProviders.Count != 2)
+            {
+                Debug.LogError("Tried to start game without two input providers given");
+                return;
+            }
+
+            GameplayManager.Reset(InputProviders[0], InputProviders[1]);
         }
 
         void Update()
