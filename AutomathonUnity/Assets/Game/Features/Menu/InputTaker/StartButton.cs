@@ -5,6 +5,7 @@ namespace Automathon.Game.View
 {
     public class StartButton : MonoBehaviour
     {
+        [SerializeField] private GameObject inputMenu;
         [SerializeField] private InputTaker inputTaker1;
         [SerializeField] private InputTaker inputTaker2;
         [SerializeField] private Button button;
@@ -32,9 +33,7 @@ namespace Automathon.Game.View
                 }
 
                 WorldView.Instance.StartGame();
-                inputTaker1.gameObject.SetActive(false);
-                inputTaker2.gameObject.SetActive(false);
-                gameObject.SetActive(false);
+                inputMenu.SetActive(false);
             }
         }
 

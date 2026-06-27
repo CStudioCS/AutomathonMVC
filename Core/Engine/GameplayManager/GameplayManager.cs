@@ -14,6 +14,7 @@ namespace Automathon.Engine
         private static DeferredList<Entity> entities = new();
         public static GameplayState State { get; private set; }
         public static event Action<Entity> EntitySpawned;
+        public static event Action<Tank.TeamType> GameEnded;
 
         public static Tank Tank1;
         public static Tank Tank2;
@@ -26,7 +27,6 @@ namespace Automathon.Engine
 
             LayerMatrix.Initialize();
             PhysicsManager.Initialize();
-            PlayerManager.Initialize();
 
             //Wait for players to log in
             //The View side / Headless side will handle calling Reset with the right input providers
@@ -80,12 +80,20 @@ namespace Automathon.Engine
             Instantiate(new Wall(new Vector2Int(-12551, 3547), new Vector2Int(5759, 226), 6022));
             Instantiate(new Wall(new Vector2Int(904, -236), new Vector2Int(4676, 482), 1242));
 
-            Tank1 = Instantiate(new Tank(new Vector2Int(-10000, 0), inputProvider1));
-            Tank2 = Instantiate(new Tank(new Vector2Int(10000, 0), inputProvider2));
+            Tank1 = Instantiate(new Tank(Tank.TeamType.Green, new Vector2Int(-10000, 0), inputProvider1));
+            Tank2 = Instantiate(new Tank(Tank.TeamType.Red, new Vector2Int(10000, 0), inputProvider2));
 
             ProcessAllEntityChanges();
 
             State = GameplayState.Game;
+        }
+
+        public static void EndGame(Tank.TeamType loser)
+        {
+            State = GameplayState.Lobby;
+
+            Tank.TeamType winner = loser == Tank1.Team ? Tank2.Team : Tank1.Team;
+            GameEnded?.Invoke(winner);
         }
 
         public static GameState GetState(InputProvider self)
@@ -157,8 +165,6 @@ namespace Automathon.Engine
 
         public static void Dispose()
         {
-            PlayerManager.Dispose();
-
             foreach (Entity entity in entities.Items) Destroy(entity);
 
             ProcessAllEntityChanges();
