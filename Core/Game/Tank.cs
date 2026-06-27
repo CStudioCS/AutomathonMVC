@@ -20,12 +20,15 @@ namespace Automathon.Game
             public int DashCooldownFramesLeft;
         }
 
+        public enum TeamType { Red, Green }
+
         private const int TANK_HEIGHT = 838;
         private const int TANK_WIDTH = 1138;
         private const int SPEED = 7000;
         public const int MAX_HEALTH = 1000;
         public const int SPAWN_DISTANCE_FROM_TANK = 700;
 
+        public TeamType Team;
         //public BulletAbility BulletAbility;
         //public GrenadeAbility GrenadeAbility;
         public ShieldAbility ShieldAbility;
@@ -42,9 +45,10 @@ namespace Automathon.Game
         public bool IsReady { get; set; }
         public bool IsDashing { get; set; }
 
-        public Tank(Vector2Int position, InputProvider inputProvider) : base(position)
+        public Tank(TeamType team, Vector2Int position, InputProvider inputProvider) : base(position)
         {
             InputProvider = inputProvider;
+            Team = team;
 
             BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, TANK_WIDTH, TANK_HEIGHT, 0);
             boxCollider.Layer = CollisionLayer.Tank;
@@ -66,7 +70,15 @@ namespace Automathon.Game
 
         public override void Update()
         {
+            if (GameplayManager.State != GameplayManager.GameplayState.Game)
+            {
+                Rigidbody.Velocity = Vector2Int.Zero;
+                Rigidbody.AngularVelocityMilli = 0;
+                return;
+            }
+
             base.Update();
+
             Vector2Int movementInput = InputProvider.GetMilliMovementDir();
 
             // Only update velocity if not dashing (dash manages its own velocity)
@@ -96,8 +108,8 @@ namespace Automathon.Game
 
         private void Death()
         {
-            //The actual details of this will be made by whoever handles Gameplay end
             GameplayManager.Destroy(this);
+            GameplayManager.EndGame(Team);
         }
 
         public override State GetState()

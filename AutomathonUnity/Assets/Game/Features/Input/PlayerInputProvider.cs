@@ -8,7 +8,7 @@ namespace Automathon.Game.Input
 {
     public class PlayerInputProvider : InputProvider
     {
-        public enum PlayerControlsType { LeftKeyboard, RightKeyboard, Gamepad }
+        public enum PlayerControlsType { LeftKeyboard, RightKeyboard, Xbox, PlayStation, Switch }
 
         public InputDevice[] InputDevices;
         public PlayerControlsType ControlsType { get; private set; }
@@ -19,16 +19,11 @@ namespace Automathon.Game.Input
         private InputAction moveAction;
         private InputAction aimAction;
 
-        public static readonly Dictionary<string, PlayerControlsType> SchemeToControlsType = new Dictionary<string, PlayerControlsType>
-        {
-            { "Gamepad", PlayerControlsType.Gamepad },
-            { "Keyboard_left", PlayerControlsType.LeftKeyboard },
-            { "Keyboard_right", PlayerControlsType.RightKeyboard }
-        };
-
         public static readonly Dictionary<PlayerControlsType, string> ControlsTypeToScheme = new Dictionary<PlayerControlsType, string>
         {
-            { PlayerControlsType.Gamepad, "Gamepad" },
+            { PlayerControlsType.Xbox, "Gamepad" },
+            { PlayerControlsType.PlayStation, "Gamepad" },
+            { PlayerControlsType.Switch, "Gamepad" },
             { PlayerControlsType.LeftKeyboard, "Keyboard_left" },
             { PlayerControlsType.RightKeyboard, "Keyboard_right" }
         };
@@ -44,7 +39,6 @@ namespace Automathon.Game.Input
             PlayerInput playerInput = tankView.GetComponent<PlayerInput>();
 
             playerInput.defaultControlScheme = ControlsTypeToScheme[ControlsType];
-            //playerInput.user.UnpairDevices();
 
             foreach (var device in InputDevices)
                 InputUser.PerformPairingWithDevice(device, playerInput.user);

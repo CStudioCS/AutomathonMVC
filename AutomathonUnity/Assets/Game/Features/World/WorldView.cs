@@ -1,19 +1,26 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
 using Automathon.Game.View;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Automathon.Game
 {
     public class WorldView : MonoBehaviour
     {
-        public static WorldView Instance;
-        [SerializeField] private TankView tankViewPrefab;
-        [SerializeField] private EntityViewRegistry entityViewRegistry;
-        [SerializeField] private TankView tankView;
+        private enum LobbyStates { Logo, Input, End }
 
-        public List<InputProvider> InputProviders;
+
+        public static WorldView Instance;
+        private LobbyStates LobbyState;
+
+        [SerializeField] private EntityViewRegistry entityViewRegistry;
+
+        [Header("UI")]
+        [SerializeField] private GameObject gameLogo;
+        [SerializeField] private GameObject inputTakingMenu;
+        [SerializeField] private EndScreen endCard;
+
+        public InputProvider[] InputProviders;
 
         private bool subbedToSpawnEntityView;
 
@@ -32,14 +39,17 @@ namespace Automathon.Game
 
             GameplayManager.Initialize();
             GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+            GameplayManager.GameEnded += OnEndGame;
 
-            InputProviders = new();
-            //InputProviders.Add(new AIInputProvider("tcp://localhost:5555"));
+            InputProviders = new InputProvider[] { null, null };
 
             subbedToSpawnEntityView = true;
 
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
             QualitySettings.vSyncCount = 0;
+
+            LobbyState = LobbyStates.Logo;
+            gameLogo.SetActive(true);
         }
 
         private void SpawnEntityViewFromDict(Entity entity)
@@ -56,17 +66,51 @@ namespace Automathon.Game
             entityView.Initialize(entity);
         }
 
-        public void OnPlayerJoined()
+        public void StartGame()
         {
-            Debug.Log("Player joined");
-            if (InputProviders.Count == GameplayConstants.MAX_PLAYERS)
-                GameplayManager.Reset(InputProviders[0], InputProviders[1]);
+            if (InputProviders[0] == null || InputProviders[1] == null)
+            {
+                Debug.LogError("Tried to start game without two input providers given");
+                return;
+            }
+
+            inputTakingMenu.SetActive(false);
+            GameplayManager.Reset(InputProviders[0], InputProviders[1]);
         }
 
-        void Update()
+        private void Update()
         {
-            if (GameplayManager.State == GameplayManager.GameplayState.Game)
-                GameplayManager.Update();
+            GameplayManager.Update();
+
+            if (GameplayManager.State == GameplayManager.GameplayState.Lobby)
+                LobbyUpdate();
+        }
+
+
+        private void LobbyUpdate()
+        {
+            if (LobbyState == LobbyStates.Logo)
+            {
+                if (UnityEngine.Input.anyKeyDown)
+                {
+                    gameLogo.SetActive(false);
+
+                    LobbyState = LobbyStates.Input;
+                    inputTakingMenu.SetActive(true);
+                }
+            }
+        }
+
+        private void OnEndGame(Tank.TeamType winner)
+        {
+            endCard.Scroll(winner);
+            LobbyState = LobbyStates.End;
+        }
+
+        public void OnEndScreenDone()
+        {
+            LobbyState = LobbyStates.Input;
+            inputTakingMenu.SetActive(true);
         }
 
         private void DebugForward(string message)
@@ -80,6 +124,7 @@ namespace Automathon.Game
             if (!subbedToSpawnEntityView)
             {
                 GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+                GameplayManager.GameEnded += OnEndGame;
                 subbedToSpawnEntityView = true;
             }
         }
@@ -89,6 +134,7 @@ namespace Automathon.Game
             if (subbedToSpawnEntityView)
             {
                 GameplayManager.EntitySpawned -= SpawnEntityViewFromDict;
+                GameplayManager.GameEnded -= OnEndGame;
                 subbedToSpawnEntityView = false;
             }
         }

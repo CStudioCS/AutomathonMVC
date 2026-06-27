@@ -37,6 +37,15 @@ namespace Automathon.AI
             }
         }
 
+        public bool TestPing()
+        {
+            requestSocket.SendFrame("Ping");
+            if (requestSocket.TryReceiveFrameString(TimeSpan.FromMilliseconds(500), out string response))
+                return response == "Pong";
+
+            return false;
+        }
+
         public override void Update()
         {
             base.Update();
@@ -81,6 +90,11 @@ namespace Automathon.AI
 
             Debug.LogError("Timeout, the AI took too long to respond. Make sure to launch the Python AI Server !");
 
+            Reconnect();
+        }
+
+        private void Reconnect()
+        {
             requestSocket.Options.Linger = TimeSpan.Zero;
             requestSocket.Disconnect(tcpAddress);
             requestSocket.Dispose();
