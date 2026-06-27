@@ -1,7 +1,6 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
 using Automathon.Game.View;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Automathon.Game
@@ -13,7 +12,7 @@ namespace Automathon.Game
         [SerializeField] private EntityViewRegistry entityViewRegistry;
         [SerializeField] private TankView tankView;
 
-        public List<InputProvider> InputProviders;
+        public InputProvider[] InputProviders;
 
         private bool subbedToSpawnEntityView;
 
@@ -33,7 +32,7 @@ namespace Automathon.Game
             GameplayManager.Initialize();
             GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
 
-            InputProviders = new();
+            InputProviders = new InputProvider[] { null, null };
 
             subbedToSpawnEntityView = true;
 
@@ -57,7 +56,7 @@ namespace Automathon.Game
 
         public void StartGame()
         {
-            if (InputProviders.Count != 2)
+            if (InputProviders[0] == null || InputProviders[1] == null)
             {
                 Debug.LogError("Tried to start game without two input providers given");
                 return;
@@ -69,7 +68,10 @@ namespace Automathon.Game
         void Update()
         {
             if (GameplayManager.State == GameplayManager.GameplayState.Game)
+            {
                 GameplayManager.Update();
+
+            }
         }
 
         private void DebugForward(string message)

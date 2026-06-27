@@ -25,7 +25,7 @@ namespace Automathon.Game.View
         {
             if (inputTaker1.InputProvider != null && inputTaker2.InputProvider != null)
             {
-                if (WorldView.Instance.InputProviders.Count != 2)
+                if (WorldView.Instance.InputProviders[0] == null || WorldView.Instance.InputProviders[1] == null)
                 {
                     Debug.LogError("World view didn't receive input providers sent by input takers");
                     return;

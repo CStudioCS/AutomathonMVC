@@ -12,11 +12,12 @@ namespace Automathon.Game.View
         public InputProvider InputProvider;
         private Image currentDeviceImg;
 
+        [SerializeField] private int playerIndex;
         [SerializeField] private InputManager inputManager;
 
         [Header("Device Images")]
         [SerializeField] private Image noDeviceImg;
-        [SerializeField] private Image xBoxControllerDeviceImg;
+        [SerializeField] private Image xboxControllerDeviceImg;
         [SerializeField] private Image playStationControllerDeviceImg;
         [SerializeField] private Image switchControllerDeviceImg;
         [SerializeField] private Image leftKeyboardDeviceImg;
@@ -39,7 +40,7 @@ namespace Automathon.Game.View
         {
             controlsToImg = new Dictionary<PlayerInputProvider.PlayerControlsType, Image>()
             {
-                { PlayerInputProvider.PlayerControlsType.Xbox, xBoxControllerDeviceImg },
+                { PlayerInputProvider.PlayerControlsType.Xbox, xboxControllerDeviceImg },
                 { PlayerInputProvider.PlayerControlsType.PlayStation, playStationControllerDeviceImg },
                 { PlayerInputProvider.PlayerControlsType.Switch, switchControllerDeviceImg },
                 { PlayerInputProvider.PlayerControlsType.LeftKeyboard, leftKeyboardDeviceImg },
@@ -59,16 +60,24 @@ namespace Automathon.Game.View
             ResetButtonFields();
             ResetInput();
 
-            AIInputProvider aIInputProvider = new AIInputProvider(finalText);
-
-            if (aIInputProvider.TestPing())
+            try
             {
-                testResultsText.text = "Connection successful";
-                SetInputProvider(aIInputProvider);
-                SetCurrentDeviceImg(aiDeviceImg);
+                AIInputProvider aIInputProvider = new AIInputProvider(finalText);
+
+                if (aIInputProvider.TestPing())
+                {
+                    testResultsText.text = "Connection successful";
+                    SetInputProvider(aIInputProvider);
+                    SetCurrentDeviceImg(aiDeviceImg);
+                }
+                else
+                    testResultsText.text = "Could not connect to AI Server. Make sure Python's play script is already running.";
             }
-            else
-                testResultsText.text = "Could not connect to AI Server. Make sure Python's play script is already running.";
+            catch
+            {
+                testResultsText.text = "Invalid tcp address";
+
+            }
         }
 
         private void OnTyping(string text)
@@ -116,7 +125,7 @@ namespace Automathon.Game.View
 
             if (InputProvider != null)
             {
-                WorldView.Instance.InputProviders.Remove(InputProvider);
+                WorldView.Instance.InputProviders[playerIndex] = null;
                 InputProvider.OnDestroyed();
             }
         }
@@ -124,7 +133,7 @@ namespace Automathon.Game.View
         private void SetInputProvider(InputProvider inputProvider)
         {
             InputProvider = inputProvider;
-            WorldView.Instance.InputProviders.Add(inputProvider);
+            WorldView.Instance.InputProviders[playerIndex] = inputProvider;
         }
 
         private void SetCurrentDeviceImg(Image img)
