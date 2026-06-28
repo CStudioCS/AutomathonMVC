@@ -7,7 +7,9 @@ public static class Program
     private static TrainingManager gameBridge;
     public static void Main(string[] args)
     {
-        gameBridge = new TrainingManager(args[0]);
+        string tcpAddress = args.Length == 0 ? "tcp://localhost:5555" : args[0];
+
+        gameBridge = new TrainingManager(tcpAddress);
 
         while (!gameBridge.Step()) { }
 

@@ -21,7 +21,14 @@ namespace Automathon.AI
 
             this.tcpAddress = tcpAddress;
             responseSocket = new ResponseSocket();
-            responseSocket.Bind(tcpAddress);
+            try
+            {
+                responseSocket.Bind(tcpAddress);
+            }
+            catch
+            {
+                throw new Exception("Invalid tcp address.");
+            }
             responseSocket.Options.Linger = TimeSpan.Zero;
 
             selfInputProvider = new AIInputProvider();
@@ -29,7 +36,7 @@ namespace Automathon.AI
 
             GameplayManager.Reset(selfInputProvider, enemyInputProvider);
 
-            Console.WriteLine("GameBridge initialized and waiting for AI messages...");
+            Console.WriteLine($"TrainingManager bound to {tcpAddress} and waiting for AI messages...");
         }
 
         public bool Step()

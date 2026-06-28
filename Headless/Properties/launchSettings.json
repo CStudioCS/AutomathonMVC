@@ -1,8 +1,7 @@
 {
   "profiles": {
     "HeadlessBridge": {
-      "commandName": "Project",
-      "commandLineArgs": "tcp://*:5555"
+      "commandName": "Project"
     }
   }
 }
