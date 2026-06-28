@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core.csproj" />
+      <ProjectReference Include="..\AutomathonUnity\Assets\Core\Core.csproj" />
     </ItemGroup>
 
 

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<BaseOutputPath>../.build/bin/</BaseOutputPath>
-		<BaseIntermediateOutputPath>../.build/obj/</BaseIntermediateOutputPath>
+		<BaseOutputPath>../../../.build/bin/</BaseOutputPath>
+		<BaseIntermediateOutputPath>../../../.build/obj/</BaseIntermediateOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
