@@ -48,8 +48,8 @@ Launch ``example_train.py`` (it is pretty self explanatory and commenteded, you 
 ## Playing - With Unity
 - Launch ``example_play.py``, it is pretty self explanatory with comments (you just need a function that takes a ``GameState`` and outputs an ``AIAction``)
 - Launch the game
-Type the tcp port in the input field (by default it is 5555)
-An AI icon should appear, you can now play with the AI !
+- Type the tcp port in the input field (by default it is 5555)
+- An AI icon should appear, you can now play with the AI !
 
 
 # Known issues that will be fixed later : 
