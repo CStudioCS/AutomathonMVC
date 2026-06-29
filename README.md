@@ -1,4 +1,12 @@
-# To play the game, With the view from Unity
+# Automathon
+
+The Hackathon Game !!! Sorry for being a bit late. The game isn't ready yet and still lacks a lot of polish regarding art and sound, but the main gameplay loop is here, with AI integration. Gameplay will probably receive a lot of tweaks before the actual release.
+
+# Installation
+
+Download the release under the Release tab.
+
+# To play the game, with the view from Unity
 - Launch the game in ``AutomathonGame/AutomathonMVC.exe``
 - click once to remove the logo and have the input menu
 - Choose inputs (controller or IA or left keyboard + Mouse) (you can also use the arrow keys for a second player, but It's recommended to keep this for testing as playing fully with a keyboard is almost impossible)
