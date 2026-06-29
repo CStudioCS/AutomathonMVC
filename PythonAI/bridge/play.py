@@ -1,20 +1,19 @@
 import zmq
 import json
-from datatypes import *
+from bridge.datatypes import *
 from collections.abc import Callable
 
 class Play:
-    def __init__(self, decide_action_function: Callable[[GameState], AIAction]):
+    def __init__(self, decide_action_function: Callable[[GameState], AIAction], tcp_port:str="5555"):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REP)
-        tcp = "tcp://*:5555"
-        self.socket.bind(tcp)
+        self.socket.bind("tcp://*:" + tcp_port)
 
         self.poller = zmq.Poller()
         self.poller.register(self.socket, zmq.POLLIN)
 
         self.decide_action = decide_action_function
-        print(f"Play server started on {tcp} and up and running.")
+        print(f"Play server started on {tcp_port} and up and running.")
 
     def respond(self, timeout: int | None=500):
         if self.poller.poll(timeout):

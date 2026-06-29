@@ -1,11 +1,11 @@
 import zmq
-from datatypes import *
+from bridge.datatypes import *
 
 class Gym:
-    def __init__(self):
+    def __init__(self, tcp_port:str="5555"):
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
-        self.socket.connect("tcp://localhost:5555")
+        self.socket.connect("tcp://localhost:" + tcp_port)
 
         self.poller = zmq.Poller()
         self.poller.register(self.socket, zmq.POLLIN)
@@ -25,7 +25,7 @@ class Gym:
         if self.poller.poll(timeout):
             return self.__receive_state__()
         
-        raise TimeoutError()
+        raise TimeoutError("Make sure the Headless version of the game is running before launching the python training script!")
 
     def end_training(self):
         self.__send_action__(AIMessage(Reset=False, DoneWithTraining=True, SelfAction=None, EnemyAction=None))

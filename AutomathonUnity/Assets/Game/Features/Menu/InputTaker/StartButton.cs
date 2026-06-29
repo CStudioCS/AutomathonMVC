@@ -18,8 +18,7 @@ namespace Automathon.Game.View
 
         private void Update()
         {
-            if (inputTaker1.InputProvider != null && inputTaker2.InputProvider != null)
-                button.gameObject.SetActive(true);
+            button.gameObject.SetActive(inputTaker1.InputProvider != null && inputTaker2.InputProvider != null);
         }
 
         private void OnButtonClick()

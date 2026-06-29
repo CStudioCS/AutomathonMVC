@@ -28,6 +28,7 @@ namespace Automathon.Game
         [SerializeField] private HealthBarView healthBar;
 
         [SerializeField] private VisualEffect miniExplosion;
+        [SerializeField] private SpriteRenderer[] sprites;
 
         private CameraShaker cameraShaker;
 
@@ -45,6 +46,10 @@ namespace Automathon.Game
 
             if (entity.InputProvider is PlayerInputProvider p)
                 p.Setup(this);
+
+            if (entity.Team == Tank.TeamType.Red)
+                foreach (SpriteRenderer spriteRenderer in sprites)
+                    spriteRenderer.color = new Color(214 / 255f, 92 / 255f, 92 / 255f);
 
         }
 

@@ -98,6 +98,9 @@ MonoBehaviour:
   dashFlame: {fileID: 1721732787265525480}
   healthBar: {fileID: 8494104631797343003}
   miniExplosion: {fileID: 1790504720443747316, guid: a4d677c90c055ea4882f04d1b487655d, type: 3}
+  sprites:
+  - {fileID: 5725460266154767796}
+  - {fileID: 8147855872710034882}
 --- !u!114 &5077115049453272025
 MonoBehaviour:
   m_ObjectHideFlags: 0

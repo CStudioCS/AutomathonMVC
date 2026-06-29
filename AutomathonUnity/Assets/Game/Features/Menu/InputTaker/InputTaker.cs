@@ -62,7 +62,7 @@ namespace Automathon.Game.View
 
             try
             {
-                AIInputProvider aIInputProvider = new AIInputProvider(finalText);
+                AIInputProvider aIInputProvider = new AIInputProvider("tcp://localhost:" + finalText);
 
                 if (aIInputProvider.TestPing())
                 {
@@ -126,7 +126,9 @@ namespace Automathon.Game.View
             if (InputProvider != null)
             {
                 WorldView.Instance.InputProviders[playerIndex] = null;
-                InputProvider.OnDestroyed();
+                if (InputProvider is AIInputProvider aIInputProvider)
+                    aIInputProvider.EndLife();
+                InputProvider = null;
             }
         }
 

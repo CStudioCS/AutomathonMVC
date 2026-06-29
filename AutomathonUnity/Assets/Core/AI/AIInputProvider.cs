@@ -127,7 +127,7 @@ namespace Automathon.AI
             lastAction = action;
         }
 
-        public override void OnDestroyed()
+        public void EndLife()
         {
             base.OnDestroyed();
 
