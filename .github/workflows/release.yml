@@ -10,6 +10,7 @@ jobs:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
@@ -20,7 +21,7 @@ jobs:
             dotnet-target: linux-x64
           - os: macos-latest
             unity-target: StandaloneOSX
-            dotnet-target: osx-x64
+            dotnet-target: osx-arm64
 
     steps:
       - name: Checkout Code
@@ -47,6 +48,10 @@ jobs:
           projectPath: ./AutomathonUnity
           targetPlatform: ${{ matrix.unity-target }}
           buildsPath: ./Build/AutomathonGame
+
+      - name: Fix Directory Permissions (Linux Only)
+        if: runner.os == 'Linux'
+        run: sudo chown -R $USER:$USER ./Build
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
