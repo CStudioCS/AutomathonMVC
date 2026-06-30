@@ -55,16 +55,17 @@ jobs:
           # Output to a temporary folder first
           buildsPath: ./UnityBuildTemp
 
+      # 1. Fix the permissions FIRST so we are allowed to move the files
       - name: Fix Directory Permissions (Linux Only)
         if: runner.os == 'Linux'
         run: sudo chown -R $USER:$USER ./UnityBuildTemp
 
+      # 2. Restructure files into a named subfolder to prevent zip clutter
       - name: Restructure Unity Build Folder
         shell: bash
-        # Move the contents out of the target platform subfolder into the final Build folder
         run: |
-          mkdir -p ./Build
-          mv ./UnityBuildTemp/${{ matrix.unity-target }}/* ./Build/
+          mkdir -p ./Build/${{ matrix.zip-name }}
+          mv ./UnityBuildTemp/${{ matrix.unity-target }}/* ./Build/${{ matrix.zip-name }}/
           rm -rf ./UnityBuildTemp
 
       - name: Save Unity Library Cache
@@ -78,26 +79,34 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      # 3. Compile Headless directly into the clean subfolder
       - name: Build C# Project
-        # Added the properties from your Visual Studio image to create a trimmed, single-file executable
         run: >
           dotnet publish ./Headless/Headless.csproj 
           -r ${{ matrix.dotnet-target }} 
           -c Release 
-          -o ./Build/Headless 
+          -o ./Build/${{ matrix.zip-name }}/Headless 
           -p:PublishSingleFile=true 
           -p:PublishReadyToRun=true 
           -p:PublishTrimmed=true 
           --self-contained true
 
+      # 4. Copy Python folder into the clean subfolder
       - name: Copy Python Folder
         shell: bash
-        run: cp -r ./PythonAI ./Build/PythonAI
+        run: cp -r ./PythonAI ./Build/${{ matrix.zip-name }}/PythonAI
 
-      - name: Zip the Final Folder
+      # 5. Zip the named folder from Windows (creates a clean root folder in the zip)
+      - name: Zip the Final Folder (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path ./Build/${{ matrix.zip-name }} -DestinationPath ./${{ matrix.zip-name }}.zip
+
+      # 6. Zip the named folder from Mac/Linux (creates a clean root folder in the zip)
+      - name: Zip the Final Folder (Mac/Linux)
+        if: runner.os != 'Windows'
         shell: bash
-        # cd into Build to zip the contents directly, avoiding a redundant root folder inside the zip
-        run: cd Build && zip -r ../${{ matrix.zip-name }}.zip ./* && cd ..
+        run: cd Build && zip -r ../${{ matrix.zip-name }}.zip ./${{ matrix.zip-name }} && cd ..
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
