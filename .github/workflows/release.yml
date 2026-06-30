@@ -26,6 +26,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Cache Unity Library
+        uses: actions/cache@v4
+        with:
+          # Pointing specifically to your Unity project folder
+          path: AutomathonUnity/Library
+          # Using both the OS and the matrix target to avoid cross-platform cache corruption
+          key: Library-${{ runner.os }}-${{ matrix.unity-target }}-${{ hashFiles('AutomathonUnity/Packages/manifest.json') }}
+          restore-keys: |
+            Library-${{ runner.os }}-${{ matrix.unity-target }}-
+            Library-${{ runner.os }}-
+
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
         env:
