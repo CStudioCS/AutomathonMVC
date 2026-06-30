@@ -55,6 +55,10 @@ jobs:
           # Output to a temporary folder first
           buildsPath: ./UnityBuildTemp
 
+      - name: Fix Directory Permissions (Linux Only)
+        if: runner.os == 'Linux'
+        run: sudo chown -R $USER:$USER ./UnityBuildTemp
+
       - name: Restructure Unity Build Folder
         shell: bash
         # Move the contents out of the target platform subfolder into the final Build folder
@@ -68,10 +72,6 @@ jobs:
         with:
           path: AutomathonUnity/Library
           key: Library-${{ runner.os }}-${{ matrix.unity-target }}-${{ hashFiles('AutomathonUnity/Packages/manifest.json') }}
-
-      - name: Fix Directory Permissions (Linux Only)
-        if: runner.os == 'Linux'
-        run: sudo chown -R $USER:$USER ./Build
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
