@@ -1,0 +1,56 @@
+name: Multi-Platform Release
+
+on:
+  release:
+    types: [created] # Triggers when you publish a new release in GitHub
+
+jobs:
+  build-and-release:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            unity-target: StandaloneWindows64
+            dotnet-target: win-x64
+          - os: ubuntu-latest
+            unity-target: StandaloneLinux64
+            dotnet-target: linux-x64
+          - os: macos-latest
+            unity-target: StandaloneOSX
+            dotnet-target: osx-x64
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Unity Project
+        uses: game-ci/unity-builder@v4
+        with:
+          projectPath: ./AutomathonUnity
+          targetPlatform: ${{ matrix.unity-target }}
+          buildsPath: ./Build/AutomathonGame
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build C# Project
+        run: dotnet publish ./Headless/Headless.csproj -r ${{ matrix.dotnet-target }} -c Release -o ./Build/Headless
+
+      - name: Copy Python Folder
+        # Using bash ensures this basic command works across all three OS runners
+        shell: bash
+        run: cp -r ./PythonAI ./Build/PythonAI
+
+      - name: Zip the Final Folder
+        shell: bash
+        # tar is supported natively on modern Windows, Linux, and macOS runners
+        run: tar -czvf release-${{ matrix.os }}.tar.gz ./FinalOutput
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-${{ matrix.os }}.tar.gz
