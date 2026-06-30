@@ -1,8 +1,9 @@
 name: Multi-Platform Release
 
 on:
-  release:
-    types: [created] # Triggers when you publish a new release in GitHub
+  push:
+    branches:
+      - actions
 
 jobs:
   build-and-release:
@@ -27,6 +28,10 @@ jobs:
 
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ./AutomathonUnity
           targetPlatform: ${{ matrix.unity-target }}
@@ -48,9 +53,12 @@ jobs:
       - name: Zip the Final Folder
         shell: bash
         # tar is supported natively on modern Windows, Linux, and macOS runners
-        run: tar -czvf release-${{ matrix.os }}.tar.gz ./FinalOutput
+        run: tar -czvf release-${{ matrix.os }}.tar.gz ./Build
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: prerelease-${{ github.sha }}
+          name: Prerelease Build ${{ github.sha }}
+          prerelease: true
           files: release-${{ matrix.os }}.tar.gz
