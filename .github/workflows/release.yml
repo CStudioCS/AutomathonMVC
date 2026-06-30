@@ -19,28 +19,28 @@ jobs:
           - os: windows-latest
             unity-target: StandaloneWindows64
             dotnet-target: win-x64
+            zip-name: Automathon_Win64
           - os: ubuntu-latest
             unity-target: StandaloneLinux64
             dotnet-target: linux-x64
+            zip-name: Automathon_Linux
           - os: macos-latest
             unity-target: StandaloneOSX
             dotnet-target: osx-arm64
+            zip-name: Automathon_Osx_ARM64
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Cache Unity Library
-        uses: actions/cache@v4
+      - name: Restore Unity Library Cache
+        uses: actions/cache/restore@v4
         with:
-          # Pointing specifically to your Unity project folder
           path: AutomathonUnity/Library
-          # Using both the OS and the matrix target to avoid cross-platform cache corruption
           key: Library-${{ runner.os }}-${{ matrix.unity-target }}-${{ hashFiles('AutomathonUnity/Packages/manifest.json') }}
           restore-keys: |
             Library-${{ runner.os }}-${{ matrix.unity-target }}-
             Library-${{ runner.os }}-
-          save-always: true
 
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
@@ -51,7 +51,23 @@ jobs:
         with:
           projectPath: ./AutomathonUnity
           targetPlatform: ${{ matrix.unity-target }}
-          buildsPath: ./Build/AutomathonGame
+          buildName: AutomathonGame
+          # Output to a temporary folder first
+          buildsPath: ./UnityBuildTemp
+
+      - name: Restructure Unity Build Folder
+        shell: bash
+        # Move the contents out of the target platform subfolder into the final Build folder
+        run: |
+          mkdir -p ./Build
+          mv ./UnityBuildTemp/${{ matrix.unity-target }}/* ./Build/
+          rm -rf ./UnityBuildTemp
+
+      - name: Save Unity Library Cache
+        uses: actions/cache/save@v4
+        with:
+          path: AutomathonUnity/Library
+          key: Library-${{ runner.os }}-${{ matrix.unity-target }}-${{ hashFiles('AutomathonUnity/Packages/manifest.json') }}
 
       - name: Fix Directory Permissions (Linux Only)
         if: runner.os == 'Linux'
@@ -63,17 +79,25 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Build C# Project
-        run: dotnet publish ./Headless/Headless.csproj -r ${{ matrix.dotnet-target }} -c Release -o ./Build/Headless
+        # Added the properties from your Visual Studio image to create a trimmed, single-file executable
+        run: >
+          dotnet publish ./Headless/Headless.csproj 
+          -r ${{ matrix.dotnet-target }} 
+          -c Release 
+          -o ./Build/Headless 
+          -p:PublishSingleFile=true 
+          -p:PublishReadyToRun=true 
+          -p:PublishTrimmed=true 
+          --self-contained true
 
       - name: Copy Python Folder
-        # Using bash ensures this basic command works across all three OS runners
         shell: bash
         run: cp -r ./PythonAI ./Build/PythonAI
 
       - name: Zip the Final Folder
         shell: bash
-        # tar is supported natively on modern Windows, Linux, and macOS runners
-        run: tar -czvf release-${{ matrix.os }}.tar.gz ./Build
+        # cd into Build to zip the contents directly, avoiding a redundant root folder inside the zip
+        run: cd Build && zip -r ../${{ matrix.zip-name }}.zip ./* && cd ..
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
@@ -81,4 +105,4 @@ jobs:
           tag_name: prerelease-${{ github.sha }}
           name: Prerelease Build ${{ github.sha }}
           prerelease: true
-          files: release-${{ matrix.os }}.tar.gz
+          files: ${{ matrix.zip-name }}.zip
