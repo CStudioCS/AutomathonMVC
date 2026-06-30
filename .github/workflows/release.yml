@@ -5,6 +5,9 @@ on:
     branches:
       - actions
 
+permissions:
+  contents: write
+
 jobs:
   build-and-release:
     name: Build for ${{ matrix.os }}
@@ -37,6 +40,7 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-${{ matrix.unity-target }}-
             Library-${{ runner.os }}-
+          save-always: true
 
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4
