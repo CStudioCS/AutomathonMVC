@@ -1,5 +1,6 @@
 using Automathon.Engine.Physics;
 using Automathon.Engine.Utility;
+using Automathon.Game.MapSystem;
 using Automathon.Game;
 using Automathon.Game.Input;
 using Automathon.Utility;
@@ -35,27 +36,31 @@ namespace Automathon.Engine
             //Once reset is called, update can be managed from the other project using AIStep or simply Update
 
             //Last issue is -> if AI playing while not headless, we need to make sure to call the AI. Idk if we should do it from AIInputProvider
+            GenerateRandomMap();
         }
+
+        //private static void GenerateRandomMap()
+        //{
+        //    Random r = new();
+        //    Debug.Log(Directory.GetCurrentDirectory());
+        //    string s = "";
+        //    for (int i = 0; i < 7; i++)
+        //    {
+        //        int big = r.Next(3000, 6000);
+        //        int small = r.Next(200, 600);
+        //        int rot = r.Next(0, IntMath.PI_MILLI * 2);
+        //        int posX = r.Next(-13500, 13500);
+        //        int posY = r.Next(-7500, 7500);
+
+        //        Instantiate(new Wall(new Vector2Int(posX, posY), new Vector2Int(big, small), rot));
+        //        s += $"Instantiate(new Wall(new Vector2Int({posX}, {posY}), new Vector2Int({big}, {small}), {rot}));\n";
+        //    }
+
+        //    File.WriteAllText("./Assets/Maps/lastGeneratedMapData.txt", s);
+        //}
 
         private static void GenerateRandomMap()
-        {
-            Random r = new();
-            Debug.Log(Directory.GetCurrentDirectory());
-            string s = "";
-            for (int i = 0; i < 7; i++)
-            {
-                int big = r.Next(3000, 6000);
-                int small = r.Next(200, 600);
-                int rot = r.Next(0, IntMath.PI_MILLI * 2);
-                int posX = r.Next(-13500, 13500);
-                int posY = r.Next(-7500, 7500);
-
-                Instantiate(new Wall(new Vector2Int(posX, posY), new Vector2Int(big, small), rot));
-                s += $"Instantiate(new Wall(new Vector2Int({posX}, {posY}), new Vector2Int({big}, {small}), {rot}));\n";
-            }
-
-            File.WriteAllText("./Assets/Maps/lastGeneratedMapData.txt", s);
-        }
+            => RandomMapGenerator.GenerateRandomMap();
 
         public static void Update()
         {
