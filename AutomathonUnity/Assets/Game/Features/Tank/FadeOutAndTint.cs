@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class FadeOut : MonoBehaviour
+public class FadeOutAndTint : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer spriteRenderer;
 
@@ -23,5 +23,10 @@ public class FadeOut : MonoBehaviour
         color.a = 0f;
         spriteRenderer.color = color;
         Destroy(gameObject);
+    }
+
+    public void SetColor(Color color)
+    {
+        spriteRenderer.color = color;
     }
 }
