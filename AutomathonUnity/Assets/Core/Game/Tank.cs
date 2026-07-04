@@ -45,6 +45,9 @@ namespace Automathon.Game
         public bool IsReady { get; set; }
         public bool IsDashing { get; set; }
 
+        public bool IsPlayingKeyboardLeft { get; set; }
+        public PlayerInputProvider PlayerInputProvider { get; set; }
+
         public Tank(TeamType team, Vector2Int position, InputProvider inputProvider) : base(position)
         {
             InputProvider = inputProvider;
@@ -66,6 +69,16 @@ namespace Automathon.Game
                 //GrenadeAbility = new GrenadeAbility(inputProvider.ShouldGrenade),
                 Health = new Health(MAX_HEALTH, false, Death)
                 );
+
+            if (inputProvider is PlayerInputProvider p && p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard)
+            {
+                IsPlayingKeyboardLeft = true;
+                PlayerInputProvider = p;
+            }
+            else
+            {
+                IsPlayingKeyboardLeft = false;
+            }
         }
 
         public override void Update()

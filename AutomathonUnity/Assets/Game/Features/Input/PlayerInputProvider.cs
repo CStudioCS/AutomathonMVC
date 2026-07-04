@@ -90,5 +90,14 @@ namespace Automathon.Game.Input
 
             return readInput.ToVector2IntScaled();
         }
+
+        public Vector2Int GetMousePos()
+        {
+            if (ControlsType != PlayerControlsType.LeftKeyboard)
+                return Vector2Int.Zero;
+            Vector2 readInput = aimAction.ReadValue<Vector2>();
+            Vector2 mouseWorldPos = readInput.ScreenToWorldSpace();
+            return mouseWorldPos.ToVector2IntScaled();
+        }
     }
 }

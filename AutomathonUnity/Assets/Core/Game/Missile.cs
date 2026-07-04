@@ -76,7 +76,16 @@ namespace Automathon.Game
 
             if (AIMED)
             {
-                int goalRotationMilli = Atan2Int.Atan2(shotFromTank.LastMilliDirection.X, shotFromTank.LastMilliDirection.Y);
+                Vector2Int missileDirection;
+                if (shotFromTank.IsPlayingKeyboardLeft)
+                {
+                    missileDirection = shotFromTank.PlayerInputProvider.GetMousePos() - Position;//doesn't need to be normalised, would be cleaner but slower
+                }
+                else
+                {
+                    missileDirection = shotFromTank.LastMilliDirection;
+                }
+                int goalRotationMilli = Atan2Int.Atan2(missileDirection.X, missileDirection.Y);
                 int step = goalRotationMilli - RotationMilli;
 
                 if (step > IntMath.PI_MILLI)
