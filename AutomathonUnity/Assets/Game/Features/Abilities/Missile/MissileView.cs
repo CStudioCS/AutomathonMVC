@@ -13,7 +13,8 @@ namespace Automathon.Game
             VisualEffect bigExplosion = Instantiate(BigExplosion, transform.position, Quaternion.identity);
             bigExplosion.SetFloat("Radius", Missile.AOE_RADIUS / 1000);
 
-            Camera.main.GetComponent<CameraShaker>().CameraShake(cameraShakeDuration, cameraShakeIntensity);
+            if (Camera.main != null)
+                Camera.main.GetComponent<CameraShaker>().CameraShake(cameraShakeDuration, cameraShakeIntensity);
 
             base.OnControllerDestroyed();
         }

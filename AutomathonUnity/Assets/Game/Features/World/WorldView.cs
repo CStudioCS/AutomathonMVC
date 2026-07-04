@@ -1,4 +1,5 @@
 using Automathon.Engine;
+using Automathon.Game.Input;
 using Automathon.Game.View;
 using UnityEngine;
 
@@ -6,38 +7,49 @@ namespace Automathon.Game
 {
     public class WorldView : MonoBehaviour
     {
-        [SerializeField] private TankView tankViewPrefab;
+        private enum LobbyStates { Logo, Input, End }
+
+
+        public static WorldView Instance;
+        private LobbyStates LobbyState;
+
         [SerializeField] private EntityViewRegistry entityViewRegistry;
+
+        [Header("UI")]
+        [SerializeField] private GameObject gameLogo;
+        [SerializeField] private GameObject inputTakingMenu;
+        [SerializeField] private EndScreen endCard;
+
+        public InputProvider[] InputProviders;
 
         private bool subbedToSpawnEntityView;
 
-
-
         private void Awake()
         {
-            GameplayManager.Initialize();
-            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+            if (Instance != null)
+            {
+                Destroy(this);
+                return;
+            }
+
+            Instance = this;
+
             Debug.LogEvent += DebugForward;
             Debug.LogErrorEvent += DebugErrorForward;
+
+            GameplayManager.Initialize();
+            GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+            GameplayManager.GameEnded += OnEndGame;
+
+            InputProviders = new InputProvider[] { null, null };
+
             subbedToSpawnEntityView = true;
 
-            //ServerHandler.StartServer();
-
             Application.targetFrameRate = GameplayConstants.FRAMERATE;
-            /*Map map1 = new Map("map1", new List<Entity> { new Wall(new Vector2Int(3000, 2000), new Vector2Int(6000, 2000), 1000), new Wall(new Vector2Int(-3000, -2000), new Vector2Int(6000, 2000), 1000) });
+            QualitySettings.vSyncCount = 0;
 
-            MapSaver.RegisterMap(map1);
-            Map map = MapSaver.LoadMap("map1");
-
-            if (map != null)
-            {
-                MapGenerator.InstantiateMap(map);
-            }
-            else
-            {
-                Debug.Log("Failed to load map 'map1'. Skipping map instantiation.");
-            }
-            */
+            LobbyState = LobbyStates.Logo;
+            gameLogo.SetActive(true);
         }
 
         private void SpawnEntityViewFromDict(Entity entity)
@@ -46,18 +58,59 @@ namespace Automathon.Game
 
             if (entityViewPrefab == null)
             {
-                //Commented this since some entities are not auto spawned
-                //UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
+                UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
                 return;
             }
 
-            EntityView entityView = Instantiate(entityViewPrefab);
+            EntityView entityView = Instantiate(entityViewPrefab, entity.Position.ToVector2Scaled(), ViewMath.MilliRadRotationToQuaternion(entity.RotationMilli));
             entityView.Initialize(entity);
         }
 
-        void Update()
+        public void StartGame()
+        {
+            if (InputProviders[0] == null || InputProviders[1] == null)
+            {
+                Debug.LogError("Tried to start game without two input providers given");
+                return;
+            }
+
+            inputTakingMenu.SetActive(false);
+            GameplayManager.Reset(InputProviders[0], InputProviders[1]);
+        }
+
+        private void Update()
         {
             GameplayManager.Update();
+
+            if (GameplayManager.State == GameplayManager.GameplayState.Lobby)
+                LobbyUpdate();
+        }
+
+
+        private void LobbyUpdate()
+        {
+            if (LobbyState == LobbyStates.Logo)
+            {
+                if (UnityEngine.Input.anyKeyDown)
+                {
+                    gameLogo.SetActive(false);
+
+                    LobbyState = LobbyStates.Input;
+                    inputTakingMenu.SetActive(true);
+                }
+            }
+        }
+
+        private void OnEndGame(Tank.TeamType winner)
+        {
+            endCard.Scroll(winner);
+            LobbyState = LobbyStates.End;
+        }
+
+        public void OnEndScreenDone()
+        {
+            LobbyState = LobbyStates.Input;
+            inputTakingMenu.SetActive(true);
         }
 
         private void DebugForward(string message)
@@ -71,6 +124,7 @@ namespace Automathon.Game
             if (!subbedToSpawnEntityView)
             {
                 GameplayManager.EntitySpawned += SpawnEntityViewFromDict;
+                GameplayManager.GameEnded += OnEndGame;
                 subbedToSpawnEntityView = true;
             }
         }
@@ -80,6 +134,7 @@ namespace Automathon.Game
             if (subbedToSpawnEntityView)
             {
                 GameplayManager.EntitySpawned -= SpawnEntityViewFromDict;
+                GameplayManager.GameEnded -= OnEndGame;
                 subbedToSpawnEntityView = false;
             }
         }

@@ -1,16 +1,16 @@
 ﻿namespace Automathon.Game.Input
 {
-    public class EmptyInputProvider : IInputProvider
+    public class EmptyInputProvider : InputProvider
     {
-        public Vector2Int GetMilliAimingDir() => Vector2Int.Zero;
-        public bool ShouldDash() => false;
+        public override Vector2Int GetMilliAimingDir() => Vector2Int.Zero;
+        public override bool ShouldDash() => false;
 
-        public bool ShouldMissile() => false;
+        public override bool ShouldMissile() => false;
 
-        public Vector2Int GetMilliMovementDir() => Vector2Int.Zero;
+        public override Vector2Int GetMilliMovementDir() => Vector2Int.Zero;
 
-        public bool ShouldShield() => false;
+        public override bool ShouldShield() => false;
 
-        public bool ShouldShoot() => false;
+        public override bool ShouldShoot() => false;
     }
 }

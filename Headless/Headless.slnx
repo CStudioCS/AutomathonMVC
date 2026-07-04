@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../AutomathonUnity/Assets/Core/Core.csproj" />
+  <Project Path="Headless.csproj" />
+</Solution>

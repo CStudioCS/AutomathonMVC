@@ -1,4 +1,5 @@
 using Assets.Game.View;
+using Automathon.Game.Input;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -27,6 +28,7 @@ namespace Automathon.Game
         [SerializeField] private HealthBarView healthBar;
 
         [SerializeField] private VisualEffect miniExplosion;
+        [SerializeField] private SpriteRenderer[] sprites;
 
         private CameraShaker cameraShaker;
 
@@ -41,6 +43,14 @@ namespace Automathon.Game
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
             Entity.MissileAbility.AbilityActivated += OnMissileAbility;
+
+            if (entity.InputProvider is PlayerInputProvider p)
+                p.Setup(this);
+
+            if (entity.Team == Tank.TeamType.Red)
+                foreach (SpriteRenderer spriteRenderer in sprites)
+                    spriteRenderer.color = new Color(214 / 255f, 92 / 255f, 92 / 255f);
+
         }
 
         protected override void LateUpdate()

@@ -282,6 +282,17 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""240dd67c-96e6-4ce3-998e-2b70964276e3"",
+                    ""path"": ""<Pointer>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard_left"",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""c1f7a91b-d0fd-4a62-997e-7fb9b69bf235"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
@@ -319,7 +330,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/t"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard_left"",
+                    ""groups"": "";Keyboard_right"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -330,7 +341,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/g"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard_left"",
+                    ""groups"": "";Keyboard_right"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -341,7 +352,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard_left"",
+                    ""groups"": "";Keyboard_right"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
@@ -352,21 +363,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/h"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard_left"",
-                    ""action"": ""Aim"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""240dd67c-96e6-4ce3-998e-2b70964276e3"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
                     ""groups"": "";Keyboard_right"",
                     ""action"": ""Aim"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -385,7 +385,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard_right"",
+                    ""groups"": "";Keyboard_left"",
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -426,10 +426,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b3c1c7f0-bd20-4ee7-a0f1-899b24bca6d7"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/o"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard_left"",
+                    ""groups"": "";Keyboard_right"",
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -492,7 +492,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""1eee1e79-9688-4dfc-a740-94fe72d31c1e"",
-                    ""path"": ""<Keyboard>/slash"",
+                    ""path"": ""<Keyboard>/n"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard_right"",
@@ -506,7 +506,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard_left"",
+                    ""groups"": "";Keyboard_left"",
                     ""action"": ""Shield"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -525,7 +525,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b1b3aa23-4a1b-4825-ae5e-15907f8a3e9c"",
-                    ""path"": ""<Keyboard>/rightShift"",
+                    ""path"": ""<Keyboard>/u"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard_right"",
@@ -550,7 +550,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard_right"",
+                    ""groups"": "";Keyboard_left"",
                     ""action"": ""Missile"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -558,10 +558,10 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6d5d90a0-dded-4b6e-82fe-ba1431e2ada5"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/slash"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Keyboard_left"",
+                    ""groups"": "";Keyboard_right"",
                     ""action"": ""Missile"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
