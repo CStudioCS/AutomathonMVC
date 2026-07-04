@@ -16,7 +16,6 @@ namespace Automathon.Game
 
         [SerializeField] private float DashShakingIntensity;
         [SerializeField] private float DashCameraShakingIntensity;
-        [SerializeField] private AudioSource DashA;
 
         [SerializeField] private Transform turret;
         [SerializeField] private Transform turretTip;
@@ -105,13 +104,14 @@ namespace Automathon.Game
 
         private void OnDashAbility()
         {
+            SoundManager.instance.PlaySound("Dash");
             if (!cameraShaker)
             {
                 cameraShaker = Camera.main.GetComponent<CameraShaker>();
             }
             StartCoroutine(Shaker.Translate(turret, new Vector2(0, -1), DashAbility.DASH_DURATION_MILLIS, DashShakingIntensity));
             cameraShaker.CameraTranslate(body.right, DashAbility.DASH_DURATION_MILLIS, DashCameraShakingIntensity);
-            DashA.Play();
+
             //dashBurstParticleSystem.Play();  imo pas besoin de burst initiale mais bon c'est implémenté quoi
             StartCoroutine(Dash(DashAbility.DASH_DURATION_MILLIS));
         }

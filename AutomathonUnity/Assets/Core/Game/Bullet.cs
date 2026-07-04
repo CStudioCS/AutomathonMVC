@@ -44,6 +44,9 @@ namespace Automathon.Game
             if (collisionContact.Other.ParentEntity == shotFromTank)
                 return;
 
+            if (collisionContact.Other.Layer == CollisionLayer.Wall)
+                SoundManager.instance.PlaySound("BulletOnWall");
+
             if (collisionContact.Other.ParentEntity.TryGetComponent(out Health health))
                 health.Damage(DAMAGE);
 
