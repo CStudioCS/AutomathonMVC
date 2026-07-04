@@ -39,6 +39,7 @@ namespace Automathon.Game
 
             //Entity.BulletAbility.AbilityActivated += OnShooting;
             //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
+            Entity.MachineGunAbility.MachineGunFired += () => SoundManager.instance.PlaySound("MachineGun");
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
             Entity.MissileAbility.AbilityActivated += OnMissileAbility;

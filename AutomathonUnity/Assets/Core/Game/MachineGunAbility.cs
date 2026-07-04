@@ -11,6 +11,7 @@ namespace Automathon.Game
         public int TimeToFireAllMilli;
 
         public event Action BulletShot;
+        public event Action MachineGunFired;
 
         public MachineGunAbility(int numFiredBullets, int timeToFireAllMilli, Func<bool> shouldActivate) : base(COOLDOWN_MILLI, shouldActivate)
         {
@@ -20,6 +21,7 @@ namespace Automathon.Game
 
         protected override void Activate()
         {
+            MachineGunFired?.Invoke();
             int amountFired = 0;
             Tank.AddBehavior(new Timer(TimeToFireAllMilli, (t) =>
             {

@@ -1,5 +1,6 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
+using System;
 
 namespace Automathon.Game
 {
@@ -20,6 +21,9 @@ namespace Automathon.Game
 
         private Rigidbody rigidbody;
         private CircleCollider circleCollider;
+
+        public Action HitWall;
+        public Action HitTank;
 
         public Bullet(Vector2Int position, Vector2Int direction, Tank shotFrom) : base(position)
         {
@@ -44,8 +48,11 @@ namespace Automathon.Game
             if (collisionContact.Other.ParentEntity == shotFromTank)
                 return;
 
-            if (collisionContact.Other.Layer == CollisionLayer.Wall)
-                SoundManager.instance.PlaySound("BulletOnWall");
+            if (collisionContact.Other.Layer == CollisionLayer.Wall || collisionContact.Other.Layer == CollisionLayer.Shield)
+                HitWall?.Invoke();
+
+            if (collisionContact.Other.Layer == CollisionLayer.Tank)
+                HitTank?.Invoke();
 
             if (collisionContact.Other.ParentEntity.TryGetComponent(out Health health))
                 health.Damage(DAMAGE);

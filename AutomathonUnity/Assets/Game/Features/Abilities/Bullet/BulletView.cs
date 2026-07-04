@@ -5,7 +5,8 @@ namespace Automathon.Game
         public override void Initialize(Bullet entity)
         {
             base.Initialize(entity);
-            SoundManager.instance.PlaySound("FireBullet");
+            entity.HitWall += () => SoundManager.instance.PlaySound("HitWall");
+            entity.HitTank += () => SoundManager.instance.PlaySound("HitTank");
         }
     }
 }

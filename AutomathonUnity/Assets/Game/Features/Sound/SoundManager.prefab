@@ -47,9 +47,24 @@ MonoBehaviour:
   bufferSize: 10
   index: 0
   sounds:
-  - name: 
-    clip: {fileID: 0}
-    volume: 0
-  - name: 
-    clip: {fileID: 0}
-    volume: 0
+  - name: MachineGun
+    clip: {fileID: 8300000, guid: 9c911f6459cbb824f8856b5744ae7d52, type: 3}
+    volume: 0.5
+  - name: Dash
+    clip: {fileID: 8300000, guid: 4a300d323a1b6334c818534cbb569081, type: 3}
+    volume: 0.5
+  - name: HitWall
+    clip: {fileID: 8300000, guid: bf102a81864251a4ab9e567997417ea4, type: 3}
+    volume: 0.5
+  - name: FireMissile
+    clip: {fileID: 8300000, guid: 6675c230307555a40b3a1692a7f596a2, type: 3}
+    volume: 0.5
+  - name: ExplosionMissile
+    clip: {fileID: 8300000, guid: 2812f291253fe8d4a80d10aad6f07821, type: 3}
+    volume: 0.5
+  - name: Shield
+    clip: {fileID: 8300000, guid: e83546a8c53a26b4f9576111a64d5111, type: 3}
+    volume: 0.5
+  - name: HitTank
+    clip: {fileID: 8300000, guid: 65f98afc8cb757e4aa8f22509d22e497, type: 3}
+    volume: 0.5
