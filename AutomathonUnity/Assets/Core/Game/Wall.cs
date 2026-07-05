@@ -18,6 +18,7 @@ namespace Automathon.Game
         public Wall(Vector2Int position, Vector2Int size, int rotationMilli) : base(position)
         {
             RotationMilli = rotationMilli;
+            Size = size;
             BoxCollider = new BoxCollider(Vector2Int.Zero, size.X, size.Y, 0);
             this.BoxCollider.Layer = CollisionLayer.Wall;
             Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
