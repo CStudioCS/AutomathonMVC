@@ -1,8 +1,9 @@
+using Automathon.Game;
 using UnityEngine;
 
 public class TrackMarkParent : MonoBehaviour
 {
-    [SerializeField] private FadeOut markPrefab;
+    [SerializeField] private FadeOutAndTint markPrefab;
 
     private void Awake()
     {
@@ -14,9 +15,11 @@ public class TrackMarkParent : MonoBehaviour
         TrackMarks.SpawnTrackMark -= SpawnTrackMark;
     }
 
-    void SpawnTrackMark(Vector2 position, Quaternion rotation, float lifetime)
+    void SpawnTrackMark(Vector2 position, Quaternion rotation, float lifetime, Color color)
     {
-        FadeOut mark = Instantiate(markPrefab, position, rotation);
+        FadeOutAndTint mark = Instantiate(markPrefab, position, rotation);
+
+        mark.SetColor(color);
 
         mark.transform.parent = transform; //just to keep the scene view organized
 
