@@ -45,6 +45,7 @@ namespace Automathon.Game
 
             //Entity.BulletAbility.AbilityActivated += OnShooting;
             //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
+            Entity.MachineGunAbility.MachineGunFired += () => SoundManager.instance.PlaySound("MachineGun");
             Entity.MachineGunAbility.BulletShot += OnMachineGunAbilityBulletShot;
             Entity.DashAbility.AbilityActivated += OnDashAbility;
             Entity.MissileAbility.AbilityActivated += OnMissileAbility;
@@ -132,6 +133,7 @@ namespace Automathon.Game
 
         private void OnDashAbility()
         {
+            SoundManager.instance.PlaySound("Dash");
             IsDashing = true;
             if (!cameraShaker)
             {
@@ -140,8 +142,7 @@ namespace Automathon.Game
             StartCoroutine(Shaker.Translate(turret, new Vector2(0, -1), DashAbility.DASH_DURATION_MILLIS, DashShakingIntensity));
             cameraShaker.CameraTranslate(body.right, DashAbility.DASH_DURATION_MILLIS, DashCameraShakingIntensity);
 
-            //dashBurstParticleSystem.Play(); // imo pas besoin de burst initiale mais bon c'est implémenté quoi
-            
+            //dashBurstParticleSystem.Play();  imo pas besoin de burst initiale mais bon c'est implémenté quoi
             StartCoroutine(Dash(DashAbility.DASH_DURATION_MILLIS));
         }
 

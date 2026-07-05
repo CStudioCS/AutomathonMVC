@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3651784484736481992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3233551531881089347}
+  - component: {fileID: 3149847853886613547}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3233551531881089347
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651784484736481992}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.0717752, y: -0.6624917, z: -0.11508916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3149847853886613547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3651784484736481992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 830c50f19fc9308408fbbe01208b3269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bufferSize: 10
+  index: 0
+  sounds:
+  - name: MachineGun
+    clip: {fileID: 8300000, guid: 9c911f6459cbb824f8856b5744ae7d52, type: 3}
+    volume: 0.5
+  - name: Dash
+    clip: {fileID: 8300000, guid: 4a300d323a1b6334c818534cbb569081, type: 3}
+    volume: 0.5
+  - name: HitWall
+    clip: {fileID: 8300000, guid: bf102a81864251a4ab9e567997417ea4, type: 3}
+    volume: 0.5
+  - name: FireMissile
+    clip: {fileID: 8300000, guid: 6675c230307555a40b3a1692a7f596a2, type: 3}
+    volume: 0.5
+  - name: ExplosionMissile
+    clip: {fileID: 8300000, guid: 2812f291253fe8d4a80d10aad6f07821, type: 3}
+    volume: 0.5
+  - name: Shield
+    clip: {fileID: 8300000, guid: e83546a8c53a26b4f9576111a64d5111, type: 3}
+    volume: 0.5
+  - name: HitTank
+    clip: {fileID: 8300000, guid: 65f98afc8cb757e4aa8f22509d22e497, type: 3}
+    volume: 0.5

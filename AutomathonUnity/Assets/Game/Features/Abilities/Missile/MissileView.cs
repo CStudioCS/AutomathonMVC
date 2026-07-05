@@ -8,8 +8,17 @@ namespace Automathon.Game
         [SerializeField] private float cameraShakeIntensity;
         [SerializeField] private float cameraShakeDuration;
         [SerializeField] private VisualEffect BigExplosion;
+
+        public override void Initialize(Missile entity)
+        {
+            base.Initialize(entity);
+            SoundManager.instance.PlaySound("FireMissile");
+        }
+
         protected override void OnControllerDestroyed()
         {
+            SoundManager.instance.PlaySound("ExplosionMissile");
+
             VisualEffect bigExplosion = Instantiate(BigExplosion, transform.position, Quaternion.identity);
             bigExplosion.SetFloat("Radius", Missile.AOE_RADIUS / 1000);
 
