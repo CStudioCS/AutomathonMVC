@@ -16,6 +16,12 @@ namespace Automathon.Game
 
         [SerializeField] private float DashShakingIntensity;
         [SerializeField] private float DashCameraShakingIntensity;
+        [SerializeField] private AudioSource DashA;
+        [SerializeField] private TrailRenderer normalLeftTrailRenderer;
+        [SerializeField] private TrailRenderer normalRightTrailRenderer;
+        [SerializeField] private TrailRenderer dashLeftTrailRenderer;
+        [SerializeField] private TrailRenderer dashRightTrailRenderer;
+        public bool IsDashing { get; private set; } = false;
 
         [SerializeField] private Transform turret;
         [SerializeField] private Transform turretTip;
@@ -92,6 +98,8 @@ namespace Automathon.Game
             dashFlame.Play();
             float timer = -0.10f;
 
+            SetDashTrail();
+
             while (timer < dashDuration)
             {
                 timer += Time.deltaTime;
@@ -101,11 +109,32 @@ namespace Automathon.Game
             dashFlame.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 
             SetAlpha(1f);
+            SetNormalTrail();
+            IsDashing = false;
+        }
+
+        private void SetDashTrail()
+        {
+            normalLeftTrailRenderer.emitting = false;
+            normalRightTrailRenderer.emitting = false;
+            dashLeftTrailRenderer.Clear();
+            dashRightTrailRenderer.Clear();
+            dashLeftTrailRenderer.emitting = true;
+            dashRightTrailRenderer.emitting = true;
+        }
+
+        private void SetNormalTrail()
+        {
+            normalLeftTrailRenderer.emitting = true;
+            normalRightTrailRenderer.emitting = true;
+            dashLeftTrailRenderer.emitting = false;
+            dashRightTrailRenderer.emitting = false;
         }
 
         private void OnDashAbility()
         {
             SoundManager.instance.PlaySound("Dash");
+            IsDashing = true;
             if (!cameraShaker)
             {
                 cameraShaker = Camera.main.GetComponent<CameraShaker>();
