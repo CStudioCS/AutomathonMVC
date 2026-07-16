@@ -437,6 +437,132 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &766536938
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 766536940}
+  - component: {fileID: 766536939}
+  - component: {fileID: 766536941}
+  m_Layer: 0
+  m_Name: MudLayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &766536939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766536938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7981af74214949f1b094199659fe7c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ArenaCenter: {x: 0, y: 0}
+  ArenaSize: {x: 32, y: 18}
+  GroundZ: 20
+  MoveForFullTrace: 0.1
+  DepositBehind: 0.4
+  VelDamping: 0.83
+  VelDiffuse: 0.18
+  VelBlurSize: 2
+  AdvectScaleSlow: 1.05
+  AdvectScaleFast: 0.05
+  AdvectScalePush: 1.05
+  PushRadius: 1.8
+  TankVelInject: 0.14
+  BlastRadius: 4
+  BlastSpeed: 0.45
+  FadeSlow: 0.985
+  BlurSizeSlow: 2.5
+  BlurRateSlow: 0.1
+  FadeFast: 0.998
+  BlurSizeFast: 2
+  BlurRateFast: 0.02
+  FadePush: 0.97
+  BlurSizePush: 2
+  BlurRatePush: 0.3
+  TrailRadius: 0.45
+  TrailStrength: 0.4
+  TreadOffset: 0.22
+  TreadSpacing: 0.28
+  TreadHalfAlong: 0.09
+  TreadHalfAcross: 0.08
+  TreadStrength: 1
+  BulletRadius: 0.1
+  BulletStrength: 0.3
+  BulletStampSpacing: 0.07
+  BulletMaxSteps: 12
+  MissileRadius: 0.4
+  MissileStrength: 0.4
+  MissileStampSpacing: 0.08
+  MissileMaxSteps: 12
+  ShieldRadius: 0.25
+  ShieldStrength: 0.5
+  ShieldMoveThreshold: 0.02
+  ExplosionStrength: 1
+  ExplosionRadiusScale: 3
+  Mud0: {r: 0.050980393, g: 0.13333334, b: 0.2509804, a: 1}
+  Mud1: {r: 0.039215688, g: 0.22745098, b: 0.36078432, a: 1}
+  Mud2: {r: 0.0627451, g: 0.3137255, b: 0.5019608, a: 1}
+  Mud3: {r: 0.09411765, g: 0.4392157, b: 0.65882355, a: 1}
+  TrailColor: {r: 0.09411765, g: 0.4392157, b: 0.65882355, a: 1}
+  TreadColor: {r: 0.011764706, g: 0.043137256, b: 0.078431375, a: 1}
+  BulletColor: {r: 0.07058824, g: 0.0627451, b: 0.11764706, a: 1}
+  MissileColor: {r: 0.10980392, g: 0.09411765, b: 0.1882353, a: 1}
+  ExplosionColor: {r: 0.039215688, g: 0.039215688, b: 0.078431375, a: 1}
+  ShieldColor: {r: 0.16470589, g: 0.14117648, b: 0.27058825, a: 1}
+  StainWorldSize: 4
+  StainWarp: 0.8
+  WarpAdvect: 1
+  WarpGain: 1.15
+  WarpDamp: 0.97
+  WarpMax: 12
+  WarpDisplace: 1.6
+--- !u!4 &766536940
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766536938}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &766536941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766536938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b54a10d19ecd420db8b3f4261756bec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 260
+  size: 0.05
+  wanderSpeed: 0.5
+  wanderFreq: 0.4
+  flowScale: 22
+  renderZ: -1
+  particleColor: {r: 0, g: 0.8, b: 1, a: 1}
+  particleMaterial: {fileID: 2100000, guid: 10a61aa4e75e64c53a29afcada808363, type: 2}
 --- !u!114 &1056640714 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1862665782463405186, guid: 889ba599b48cba34dbdbcfd172a451f9, type: 3}
@@ -1033,3 +1159,4 @@ SceneRoots:
   - {fileID: 2212534419630197749}
   - {fileID: 1465727}
   - {fileID: 1373652494}
+  - {fileID: 766536940}

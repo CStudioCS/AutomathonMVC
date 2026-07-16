@@ -10,6 +10,10 @@ namespace Automathon.Game
             base.Initialize(wall);
 
             spriteRenderer.size = new Vector2(wall.BoxCollider.Width / (float)WorldConstants.SPACE_SCALE, wall.BoxCollider.Height / (float)WorldConstants.SPACE_SCALE);
+
+            // The NeonOutline is authored on the prefab; rebuild it now that the wall's size is known.
+            NeonOutline outline = GetComponent<NeonOutline>();
+            if (outline != null) outline.Rebuild();
         }
     }
 
