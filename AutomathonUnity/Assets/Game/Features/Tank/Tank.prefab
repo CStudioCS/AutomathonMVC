@@ -107,6 +107,8 @@ MonoBehaviour:
   sprites:
   - {fileID: 5725460266154767796}
   - {fileID: 8147855872710034882}
+  tankGreenMaterial: {fileID: 2100000, guid: 3cc1cd4bc14f447328a988767acb9117, type: 2}
+  tankRedMaterial: {fileID: 2100000, guid: d55ac7d4a93a949368390bf863b88373, type: 2}
 --- !u!114 &5077115049453272025
 MonoBehaviour:
   m_ObjectHideFlags: 0

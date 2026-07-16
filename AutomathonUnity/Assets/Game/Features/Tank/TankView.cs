@@ -34,8 +34,24 @@ namespace Automathon.Game
 
         [SerializeField] private VisualEffect miniExplosion;
         [SerializeField] private SpriteRenderer[] sprites;
+        [SerializeField] private Material tankGreenMaterial; // TankTwoTone material for team Green
+        [SerializeField] private Material tankRedMaterial;   // TankTwoTone material for team Red
 
         private CameraShaker cameraShaker;
+
+        // Yellow dash gradient (#ffe040). fadeAlpha=true tapers the tail to transparent.
+        private static Gradient BuildDashGradient(bool fadeAlpha)
+        {
+            var g = new Gradient();
+            GradientAlphaKey[] alpha = fadeAlpha
+                ? new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) }
+                : new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) };
+            Color32 yellow = new Color32(0xff, 0xe0, 0x40, 0xff);
+            g.SetKeys(
+                new[] { new GradientColorKey(yellow, 0f), new GradientColorKey(yellow, 1f) },
+                alpha);
+            return g;
+        }
 
         public override void Initialize(Tank entity)
         {
@@ -53,10 +69,40 @@ namespace Automathon.Game
             if (entity.InputProvider is PlayerInputProvider p)
                 p.Setup(this);
 
-            if (entity.Team == Tank.TeamType.Red)
-                foreach (SpriteRenderer spriteRenderer in sprites)
-                    spriteRenderer.color = new Color(214 / 255f, 92 / 255f, 92 / 255f);
+            // Two-tone skin recolour via a per-team material asset (TankGreen/TankRed .mat).
+            // Applies to the tank body + turret (the `sprites` set).
+            Material teamMat = entity.Team == Tank.TeamType.Green ? tankGreenMaterial : tankRedMaterial;
+            foreach (SpriteRenderer spriteRenderer in sprites)
+            {
+                spriteRenderer.sharedMaterial = teamMat;
+                spriteRenderer.color = Color.white;       // shader ignores RGB; alpha stays for the dash fade
+            }
 
+            // The black tread marks came from the TrackMarks decal spawner (now drawn into the
+            // mud layer instead), NOT the trail renderers — so only disable TrackMarks and keep
+            // the normal/dash TrailRenderers, which are the flame-like tank trails.
+            foreach (TrackMarks tm in GetComponentsInChildren<TrackMarks>(true))
+                tm.enabled = false;
+
+            // Yellow dash effects (#ffe040): flame particles + dash trails.
+            foreach (ParticleSystem ps in new[] { dashFlame, dashBurstParticleSystem })
+            {
+                if (ps == null) continue;
+                ParticleSystem.MainModule main = ps.main;
+                main.startColor = new ParticleSystem.MinMaxGradient(BuildDashGradient(false)) { mode = ParticleSystemGradientMode.RandomColor };
+                ParticleSystem.ColorOverLifetimeModule col = ps.colorOverLifetime;
+                if (col.enabled) col.color = new ParticleSystem.MinMaxGradient(BuildDashGradient(true)); // override any baked-in over-lifetime tint
+            }
+            foreach (TrailRenderer tr in new[] { dashLeftTrailRenderer, dashRightTrailRenderer })
+                if (tr != null) tr.colorGradient = BuildDashGradient(true);
+
+            // The two driving trails behind the tank -> #ccff00 (fades out along their length).
+            Gradient lime = new Gradient();
+            lime.SetKeys(
+                new[] { new GradientColorKey(new Color32(204, 255, 0, 255), 0f), new GradientColorKey(new Color32(204, 255, 0, 255), 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) });
+            foreach (TrailRenderer tr in new[] { normalLeftTrailRenderer, normalRightTrailRenderer })
+                if (tr != null) tr.colorGradient = lime;
         }
 
         protected override void LateUpdate()
