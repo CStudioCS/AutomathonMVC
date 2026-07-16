@@ -19,12 +19,18 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _GlitchAmplitude: 0.03
+    - _GlitchIntensity: 0
+    - _GlitchLineBands: 64
+    - _GlitchLineDensity: 0.35
+    - _GlitchLineOffset: 0
+    - _GlitchSpeed: 60
     - _LineCount: 240
     - _LineOpacity: 0.22
     - _PixelHeight: 360
@@ -33,3 +39,4 @@ Material:
     m_Colors:
     - _LineColor: {r: 0.16471, g: 0.14118, b: 0.27059, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
