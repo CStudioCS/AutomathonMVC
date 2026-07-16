@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 297178802477511224}
+  outline: {fileID: 7251685202469317750}
 --- !u!114 &7251685202469317750
 MonoBehaviour:
   m_ObjectHideFlags: 0

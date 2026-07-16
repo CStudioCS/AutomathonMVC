@@ -563,6 +563,7 @@ MonoBehaviour:
   renderZ: -1
   particleColor: {r: 0, g: 0.8, b: 1, a: 1}
   particleMaterial: {fileID: 2100000, guid: 10a61aa4e75e64c53a29afcada808363, type: 2}
+  mudLayer: {fileID: 766536939}
 --- !u!114 &1056640714 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1862665782463405186, guid: 889ba599b48cba34dbdbcfd172a451f9, type: 3}

@@ -10,7 +10,7 @@ namespace Automathon.Game
     // whose size is set at spawn) call Rebuild() once; moving objects (shields) set Follow = true.
     public class NeonOutline : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer targetSprite; // sprite to outline (defaults to this GO's)
+        [SerializeField] private SpriteRenderer targetSprite; // sprite to outline (authored on the prefab)
         [SerializeField] private Material outlineMaterial;    // additive HDR line material asset
         [SerializeField] private float width = 0.07f;         // world units
         [SerializeField] private bool follow = false;         // recompute every frame (moving/rotating objects)
@@ -35,7 +35,6 @@ namespace Automathon.Game
         private void EnsureLine()
         {
             if (lineGo != null) return;
-            if (targetSprite == null) targetSprite = GetComponent<SpriteRenderer>();
             if (targetSprite != null) targetSprite.enabled = false; // hollow: hide the filled sprite
 
             lineGo = new GameObject("NeonOutline"); // root (scale 1) -> width never stretches
