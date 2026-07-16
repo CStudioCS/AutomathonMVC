@@ -15,7 +15,6 @@ Shader "Hidden/Automathon/MudBufferUpdate"
             #include "UnityCG.cginc"
 
             #define MAX_CIRCLE 128
-            #define MAX_TREAD 32
 
             sampler2D _MainTex;
             float4    _MainTex_TexelSize;
@@ -29,11 +28,6 @@ Shader "Hidden/Automathon/MudBufferUpdate"
             int    _CircleCount;
             float4 _CirclePos[MAX_CIRCLE];   // xy = uv, z = radius (world), w = strength
             float4 _CircleColor[MAX_CIRCLE]; // rgb
-
-            int    _TreadCount;
-            float4 _TreadPos[MAX_TREAD];     // xy = uv, z = strength
-            float4 _TreadAxes[MAX_TREAD];    // xy = dir, z = halfAlong, w = halfAcross
-            float4 _TreadColor;
 
             struct appdata { float4 vertex : POSITION; float2 uv : TEXCOORD0; };
             struct v2f     { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
@@ -72,22 +66,6 @@ Shader "Hidden/Automathon/MudBufferUpdate"
                     float d = length(wd);
                     float f = saturate(1.0 - d / max(_CirclePos[a].z, 1e-4)) * _CirclePos[a].w;
                     v.rgb += _CircleColor[a].rgb * f;
-                    v.a += f;
-                }
-
-                // Tread rectangles (premultiplied colour, soft edge).
-                [loop]
-                for (int t = 0; t < _TreadCount; t++)
-                {
-                    float2 wd = (i.uv - _TreadPos[t].xy) * _ArenaSize;
-                    float2 dir = _TreadAxes[t].xy;
-                    float2 perp = float2(-dir.y, dir.x);
-                    float al = abs(dot(wd, dir));
-                    float ac = abs(dot(wd, perp));
-                    float f = (1.0 - smoothstep(_TreadAxes[t].z * 0.6, _TreadAxes[t].z, al)) *
-                              (1.0 - smoothstep(_TreadAxes[t].w * 0.6, _TreadAxes[t].w, ac)) *
-                              _TreadPos[t].z;
-                    v.rgb += _TreadColor.rgb * f;
                     v.a += f;
                 }
 
