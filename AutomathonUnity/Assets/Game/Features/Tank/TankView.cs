@@ -106,6 +106,7 @@ namespace Automathon.Game
             cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
 
             EmitShootingMiniExplosion();
+            ScreenGlitch.Trigger();
         }
 
         public void SetAlpha(float alpha)
@@ -164,6 +165,7 @@ namespace Automathon.Game
         private void OnDashAbility()
         {
             SoundManager.instance.PlaySound("Dash");
+            ScreenGlitch.Trigger();
             IsDashing = true;
             if (!cameraShaker)
             {
@@ -185,6 +187,7 @@ namespace Automathon.Game
         private void OnMissileAbility()
         {
             EmitShootingMiniExplosion();
+            ScreenGlitch.Trigger();
         }
 
         protected override void OnDestroy()

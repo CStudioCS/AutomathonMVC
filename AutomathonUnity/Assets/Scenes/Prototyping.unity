@@ -493,11 +493,6 @@ MonoBehaviour:
   BlurRatePush: 0.3
   TrailRadius: 0.45
   TrailStrength: 0.4
-  TreadOffset: 0.22
-  TreadSpacing: 0.28
-  TreadHalfAlong: 0.09
-  TreadHalfAcross: 0.08
-  TreadStrength: 1
   BulletRadius: 0.1
   BulletStrength: 0.3
   BulletStampSpacing: 0.07
@@ -516,7 +511,6 @@ MonoBehaviour:
   Mud2: {r: 0.0627451, g: 0.3137255, b: 0.5019608, a: 1}
   Mud3: {r: 0.09411765, g: 0.4392157, b: 0.65882355, a: 1}
   TrailColor: {r: 0.09411765, g: 0.4392157, b: 0.65882355, a: 1}
-  TreadColor: {r: 0.011764706, g: 0.043137256, b: 0.078431375, a: 1}
   BulletColor: {r: 0.07058824, g: 0.0627451, b: 0.11764706, a: 1}
   MissileColor: {r: 0.10980392, g: 0.09411765, b: 0.1882353, a: 1}
   ExplosionColor: {r: 0.039215688, g: 0.039215688, b: 0.078431375, a: 1}
@@ -653,6 +647,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1729208155}
   - component: {fileID: 1729208154}
+  - component: {fileID: 1729208156}
   m_Layer: 0
   m_Name: Global Volume
   m_TagString: Untagged
@@ -692,6 +687,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1729208156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729208153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d80f3ab2f404d10adf7c745079b3a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vhsMaterial: {fileID: 2100000, guid: 9a2b8c7d6e5f40312a1b0c9d8e7f6a5b, type: 2}
+  postVolume: {fileID: 1729208154}
+  light:
+    duration: 0.1
+    vhsGlitchIntensity: 0.5
+    maxLineOffset: 0.0075
+    chromaticAberration: 0.5
+    lensDistortion: 0.1
+  heavy:
+    duration: 0.35
+    vhsGlitchIntensity: 10
+    maxLineOffset: 0.03
+    chromaticAberration: 2
+    lensDistortion: 0.25
 --- !u!1 &1826698993 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4401792881148272414, guid: 889ba599b48cba34dbdbcfd172a451f9, type: 3}
