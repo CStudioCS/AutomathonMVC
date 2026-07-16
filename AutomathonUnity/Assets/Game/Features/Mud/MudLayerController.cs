@@ -7,7 +7,7 @@ namespace Automathon.Game.View
     /// Cell-shaded mud ground over a lightweight viscous fluid. A velocity field (injected by
     /// tanks + explosions, damped) advects three "dye" buffers whose CHANNELS are per-type
     /// intensities (not blended colour):
-    ///   slow: R=trail, G=explosion | fast: R=tread, G=shield | push: R=bullet, G=missile.
+    ///   slow: R=trail, G=explosion | fast: G=shield | push: R=bullet, G=missile.
     /// Each buffer fades/blurs/advects the same as before. The ground shader picks the max
     /// intensity per pixel and shows that type's TRUE colour (else base mud), smoothstep-AA'd.
     ///
@@ -20,7 +20,6 @@ namespace Automathon.Game.View
     public class MudLayerController : MonoBehaviour
     {
         private const int MaxCircle = 128;
-        private const int MaxTread = 32;
         private const int MaxPush = 8;
         private const int MaxBlast = 8;
 
@@ -64,13 +63,6 @@ namespace Automathon.Game.View
         [SerializeField] private float TrailRadius = 0.45f;
         [SerializeField] private float TrailStrength = 0.4f;
 
-        [Header("Tank treads")]
-        [SerializeField] private float TreadOffset = 0.22f;
-        [SerializeField] private float TreadSpacing = 0.28f;
-        [SerializeField] private float TreadHalfAlong = 0.09f;
-        [SerializeField] private float TreadHalfAcross = 0.08f;
-        [SerializeField] private float TreadStrength = 1f;
-
         [Header("Bullet marks")]
         [SerializeField] private float BulletRadius = 0.1f;
         [SerializeField] private float BulletStrength = 0.3f;
@@ -100,7 +92,6 @@ namespace Automathon.Game.View
         [SerializeField] private Color Mud2 = new Color32(16, 80, 128, 255);     // #105080
         [SerializeField] private Color Mud3 = new Color32(24, 112, 168, 255);    // #1870a8 brightest
         [SerializeField] private Color TrailColor = new Color32(24, 112, 168, 255); // #1870a8 (lightens the mud)
-        [SerializeField] private Color TreadColor = new Color32(3, 11, 20, 255);   // #030b14
         [SerializeField] private Color BulletColor = new Color32(18, 16, 30, 255);  // #12101e
         [SerializeField] private Color MissileColor = new Color32(28, 24, 48, 255); // #1c1830
         [SerializeField] private Color ExplosionColor = new Color32(10, 10, 20, 255);// #0a0a14
@@ -118,7 +109,6 @@ namespace Automathon.Game.View
         private sealed class TankMudState
         {
             public Vector3 LastCenter;
-            public float TreadAcc; // centre-distance accumulator for evenly-spaced tread rungs
         }
 
         private struct PendingMark
@@ -146,9 +136,6 @@ namespace Automathon.Game.View
         private readonly Vector4[] pushCirclePos = new Vector4[MaxCircle];
         private readonly Vector4[] pushCircleColor = new Vector4[MaxCircle];
         private int pushCircleCount;
-        private readonly Vector4[] treadPos = new Vector4[MaxTread];
-        private readonly Vector4[] treadAxes = new Vector4[MaxTread];
-        private int treadCount;
         private readonly Vector4[] pusherPos = new Vector4[MaxPush];
         private readonly Vector4[] pusherVel = new Vector4[MaxPush];
         private int pushCount;
@@ -189,10 +176,6 @@ namespace Automathon.Game.View
         private static readonly int CircleCountId = Shader.PropertyToID("_CircleCount");
         private static readonly int CirclePosId = Shader.PropertyToID("_CirclePos");
         private static readonly int CircleColorId = Shader.PropertyToID("_CircleColor");
-        private static readonly int TreadCountId = Shader.PropertyToID("_TreadCount");
-        private static readonly int TreadPosId = Shader.PropertyToID("_TreadPos");
-        private static readonly int TreadAxesId = Shader.PropertyToID("_TreadAxes");
-        private static readonly int TreadColorId = Shader.PropertyToID("_TreadColor");
         private static readonly int VelDampingId = Shader.PropertyToID("_VelDamping");
         private static readonly int VelDiffuseId = Shader.PropertyToID("_VelDiffuse");
         private static readonly int VelBlurSizeId = Shader.PropertyToID("_VelBlurSize");
@@ -232,7 +215,6 @@ namespace Automathon.Game.View
             velMat = new Material(velShader);
             warpMat = new Material(warpShader);
             groundMat = new Material(groundShader);
-            updateMat.SetVector(TreadColorId, LinRGB(TreadColor)); // all tread marks use this colour
 
             slowA = CreateBuffer(RenderTextureFormat.ARGBHalf);
             slowB = CreateBuffer(RenderTextureFormat.ARGBHalf);
@@ -330,11 +312,11 @@ namespace Automathon.Game.View
             updateMat.SetTexture(VelBufferId, velA);
 
             BlitColour(ref slowA, ref slowB, FadeSlow, BlurSizeSlow, BlurRateSlow, AdvectScaleSlow,
-                slowCircleCount, slowCirclePos, slowCircleColor, 0);
+                slowCircleCount, slowCirclePos, slowCircleColor);
             BlitColour(ref fastA, ref fastB, FadeFast, BlurSizeFast, BlurRateFast, AdvectScaleFast,
-                fastCircleCount, fastCirclePos, fastCircleColor, treadCount);
+                fastCircleCount, fastCirclePos, fastCircleColor);
             BlitColour(ref pushA, ref pushB, FadePush, BlurSizePush, BlurRatePush, AdvectScalePush,
-                pushCircleCount, pushCirclePos, pushCircleColor, 0);
+                pushCircleCount, pushCirclePos, pushCircleColor);
 
             groundMat.SetTexture(MudBufferSlowId, slowA);
             groundMat.SetTexture(MudBufferFastId, fastA);
@@ -342,7 +324,7 @@ namespace Automathon.Game.View
         }
 
         private void BlitColour(ref RenderTexture a, ref RenderTexture b, float fade, float blurSize,
-            float blurRate, float advectScale, int circleCount, Vector4[] circlePos, Vector4[] circleColor, int treads)
+            float blurRate, float advectScale, int circleCount, Vector4[] circlePos, Vector4[] circleColor)
         {
             updateMat.SetFloat(FadeId, fade);
             updateMat.SetFloat(BlurSizeId, blurSize);
@@ -351,12 +333,6 @@ namespace Automathon.Game.View
             updateMat.SetInt(CircleCountId, circleCount);
             updateMat.SetVectorArray(CirclePosId, circlePos);
             updateMat.SetVectorArray(CircleColorId, circleColor);
-            updateMat.SetInt(TreadCountId, treads);
-            if (treads > 0)
-            {
-                updateMat.SetVectorArray(TreadPosId, treadPos);
-                updateMat.SetVectorArray(TreadAxesId, treadAxes);
-            }
             Graphics.Blit(a, b, updateMat);
             (a, b) = (b, a);
         }
@@ -366,7 +342,6 @@ namespace Automathon.Game.View
             slowCircleCount = 0;
             fastCircleCount = 0;
             pushCircleCount = 0;
-            treadCount = 0;
             pushCount = 0;
             blastCount = 0;
             Vector2 min = ArenaCenter - ArenaSize * 0.5f;
@@ -408,22 +383,10 @@ namespace Automathon.Game.View
                 if (strength <= 0.0001f || moved <= 1e-5f) continue;
 
                 Vector2 dir = delta / moved;
-                Vector2 perp = new Vector2(-dir.y, dir.x);
                 Vector2 basePos = p - dir * DepositBehind;
 
                 AddPusher(p, delta, min);
                 AddSlowCircle(basePos, TrailRadius, TrailColor, strength, min);
-
-                // Tread rungs: evenly spaced by CENTRE distance, both rows placed at the same
-                // interpolated points -> consistent + aligned (esp. going straight).
-                st.TreadAcc += moved;
-                while (st.TreadAcc >= TreadSpacing && treadCount <= MaxTread - 2)
-                {
-                    st.TreadAcc -= TreadSpacing;
-                    Vector2 c = p - dir * (DepositBehind + st.TreadAcc);
-                    AddTread(c + perp * TreadOffset, dir, min);
-                    AddTread(c - perp * TreadOffset, dir, min);
-                }
             }
 
             PruneTankStates();
@@ -545,15 +508,6 @@ namespace Automathon.Game.View
             Vector2 uv = Uv(world, min);
             blastPos[blastCount] = new Vector4(uv.x, uv.y, BlastRadius, BlastSpeed);
             blastCount++;
-        }
-
-        private void AddTread(Vector2 world, Vector2 dir, Vector2 min)
-        {
-            if (treadCount >= MaxTread) return;
-            Vector2 uv = Uv(world, min);
-            treadPos[treadCount] = new Vector4(uv.x, uv.y, TreadStrength, 0f);
-            treadAxes[treadCount] = new Vector4(dir.x, dir.y, TreadHalfAlong, TreadHalfAcross);
-            treadCount++;
         }
 
         private Vector2 Uv(Vector2 world, Vector2 min)

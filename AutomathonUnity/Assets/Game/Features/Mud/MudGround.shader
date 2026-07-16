@@ -1,5 +1,5 @@
 // Smooth (fluid) compositing of three premultiplied colour buffers over the base mud.
-//   Slow: trail + explosion | Fast: tread + shield | Push: bullet + missile.
+//   Slow: trail + explosion | Fast: shield | Push: bullet + missile.
 Shader "Automathon/MudGround"
 {
     Properties

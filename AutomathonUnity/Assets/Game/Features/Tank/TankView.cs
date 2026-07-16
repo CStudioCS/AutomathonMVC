@@ -26,6 +26,7 @@ namespace Automathon.Game
         [SerializeField] private Transform turret;
         [SerializeField] private Transform turretTip;
         [SerializeField] private Transform body;
+        [SerializeField] private float bodyTurnTime = 0.1f; // characteristic time (s) for the body's smooth turn toward the move direction
 
         [SerializeField] private ParticleSystem dashBurstParticleSystem;
         [SerializeField] private ParticleSystem dashFlame;
@@ -33,26 +34,14 @@ namespace Automathon.Game
         [SerializeField] private HealthBarView healthBar;
 
         [SerializeField] private VisualEffect miniExplosion;
-        [SerializeField] private SpriteRenderer[] sprites;
-        [SerializeField] private Material tankGreenMaterial; // TankTwoTone material for team Green
-        [SerializeField] private Material tankRedMaterial;   // TankTwoTone material for team Red
-        [SerializeField] private Color dashColor = new Color32(0xff, 0xe0, 0x40, 0xff);  // #ffe040 dash flame/trail
-        [SerializeField] private Color trailColor = new Color32(204, 255, 0, 255);       // #ccff00 driving trail
+        [SerializeField] private SpriteRenderer[] sprites;          // dimmed during the dash fade (SetAlpha)
+        [SerializeField] private SpriteRenderer[] teamColorSprites; // recoloured with this player's team colour
+        [SerializeField] private Color player1Color = new Color32(0x00, 0x9b, 0x00, 0xff); // #009b00 team Green (P1)
+        [SerializeField] private Color player2Color = new Color32(0xff, 0x66, 0x00, 0xff); // #ff6600 team Red (P2)
 
         private CameraShaker cameraShaker;
-
-        // Solid-colour trail gradient; fadeAlpha=true tapers the tail out.
-        private static Gradient BuildTrailGradient(Color color, bool fadeAlpha)
-        {
-            var g = new Gradient();
-            GradientAlphaKey[] alpha = fadeAlpha
-                ? new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) }
-                : new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 1f) };
-            g.SetKeys(
-                new[] { new GradientColorKey(color, 0f), new GradientColorKey(color, 1f) },
-                alpha);
-            return g;
-        }
+        private Quaternion smoothedBodyRotation;
+        private bool bodyRotationInitialized;
 
         public override void Initialize(Tank entity)
         {
@@ -70,35 +59,38 @@ namespace Automathon.Game
             if (entity.InputProvider is PlayerInputProvider p)
                 p.Setup(this);
 
-            // Two-tone skin recolour via a per-team material asset (TankGreen/TankRed .mat).
-            // Applies to the tank body + turret (the `sprites` set).
-            Material teamMat = entity.Team == Tank.TeamType.Green ? tankGreenMaterial : tankRedMaterial;
-            foreach (SpriteRenderer spriteRenderer in sprites)
-            {
-                spriteRenderer.sharedMaterial = teamMat;
-                spriteRenderer.color = Color.white;       // shader ignores RGB; alpha stays for the dash fade
-            }
+            // Team colour: tint the serialized subset of sprites with this player's team colour.
+            Color teamColor = entity.Team == Tank.TeamType.Green ? player1Color : player2Color;
+            foreach (SpriteRenderer spriteRenderer in teamColorSprites)
+                if (spriteRenderer != null) spriteRenderer.color = teamColor;
 
-            // Dash flame particles + dash trails use the dash colour.
-            foreach (ParticleSystem ps in new[] { dashFlame, dashBurstParticleSystem })
-            {
-                if (ps == null) continue;
-                ParticleSystem.MainModule main = ps.main;
-                main.startColor = new ParticleSystem.MinMaxGradient(BuildTrailGradient(dashColor, false)) { mode = ParticleSystemGradientMode.RandomColor };
-                ParticleSystem.ColorOverLifetimeModule col = ps.colorOverLifetime;
-                if (col.enabled) col.color = new ParticleSystem.MinMaxGradient(BuildTrailGradient(dashColor, true)); // override any baked-in over-lifetime tint
-            }
-            foreach (TrailRenderer tr in new[] { dashLeftTrailRenderer, dashRightTrailRenderer })
-                if (tr != null) tr.colorGradient = BuildTrailGradient(dashColor, true);
-
-            // The two driving trails behind the tank.
-            foreach (TrailRenderer tr in new[] { normalLeftTrailRenderer, normalRightTrailRenderer })
-                if (tr != null) tr.colorGradient = BuildTrailGradient(trailColor, true);
+            // Dash flame/burst particles and the dash + driving trail renderers are coloured on
+            // the prefab components (authored in the editor).
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
+
+            // View-only smoothing: base.LateUpdate snaps the root to the entity's move-direction
+            // rotation; ease the body toward it instead. Shortest-arc via Slerp, frame-rate-
+            // independent exponential approach (time constant = bodyTurnTime). First frame snaps so
+            // the body spawns already facing its direction.
+            if (body != null)
+            {
+                Quaternion target = transform.rotation;
+                if (!bodyRotationInitialized)
+                {
+                    smoothedBodyRotation = target;
+                    bodyRotationInitialized = true;
+                }
+                else
+                {
+                    float k = bodyTurnTime > 0f ? 1f - Mathf.Exp(-Time.deltaTime / bodyTurnTime) : 1f;
+                    smoothedBodyRotation = Quaternion.Slerp(smoothedBodyRotation, target, k);
+                }
+                body.rotation = smoothedBodyRotation;
+            }
 
             turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X));
         }
@@ -120,6 +112,7 @@ namespace Automathon.Game
         {
             foreach (SpriteRenderer sr in sprites)
             {
+                if (sr == null) continue;
                 Color c = sr.color;
                 c.a = alpha;
                 sr.color = c;
