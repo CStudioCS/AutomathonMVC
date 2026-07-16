@@ -17,6 +17,7 @@ namespace Automathon.Game.View
         [SerializeField] private float renderZ = -1f;         // in front of gameplay
         [SerializeField] private Color particleColor = new Color32(0, 204, 255, 255); // #00ccff
         [SerializeField] private Material particleMaterial;   // additive glow material asset
+        [SerializeField] private MudLayerController mudLayer;  // arena-bounds source (sibling controller)
 
         private Vector2 arenaMin;
         private Vector2 arenaSize;
@@ -31,7 +32,7 @@ namespace Automathon.Game.View
 
         private void Start()
         {
-            MudLayerController mud = GetComponent<MudLayerController>();
+            MudLayerController mud = mudLayer;
             Vector2 center = mud != null ? mud.ArenaCenterWorld : Vector2.zero;
             arenaSize = mud != null ? mud.ArenaSizeWorld : new Vector2(32f, 18f);
             arenaMin = center - arenaSize * 0.5f;

@@ -109,6 +109,8 @@ MonoBehaviour:
   - {fileID: 8147855872710034882}
   tankGreenMaterial: {fileID: 2100000, guid: 3cc1cd4bc14f447328a988767acb9117, type: 2}
   tankRedMaterial: {fileID: 2100000, guid: d55ac7d4a93a949368390bf863b88373, type: 2}
+  dashColor: {r: 1, g: 0.8784314, b: 0.2509804, a: 1}
+  trailColor: {r: 0.8, g: 1, b: 0, a: 1}
 --- !u!114 &5077115049453272025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +264,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308921089331223049}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea4c0facb5516f14d8b8cd98c2804efc, type: 3}
   m_Name: 

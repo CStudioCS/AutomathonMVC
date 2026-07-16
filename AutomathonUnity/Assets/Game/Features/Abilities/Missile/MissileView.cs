@@ -12,13 +12,8 @@ namespace Automathon.Game
         public override void Initialize(Missile entity)
         {
             base.Initialize(entity);
-            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
-                sr.color = new Color32(255, 68, 204, 255); // #ff44cc pink (body sprite)
-
-            // No trail behind the missile — disable the smoke VFX (it acts as a trail).
-            foreach (VisualEffect vfx in GetComponentsInChildren<VisualEffect>())
-                vfx.enabled = false;
-
+            // Missile colour is authored on the prefab's SpriteRenderer; its smoke-trail VFX is
+            // disabled on the prefab (no trail behind the missile).
             SoundManager.instance.PlaySound("FireMissile");
         }
 
