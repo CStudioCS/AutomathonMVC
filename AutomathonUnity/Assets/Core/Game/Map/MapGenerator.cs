@@ -1,5 +1,4 @@
 using Automathon.Engine;
-using System.IO;
 
 namespace Automathon.Game.MapSystem
 {
@@ -23,7 +22,9 @@ namespace Automathon.Game.MapSystem
                     s += $"Instantiate(new Wall(new Vector2Int({posX}, {posY}), new Vector2Int({sizeX}, {sizeY}), {rot}));\n";
                 }
             }
-            File.WriteAllText("./Assets/Maps/lastGeneratedMapData.txt", s);
+
+            //ça marche pas ta merde sur des builds espèce de salopio
+            //File.WriteAllText("./Assets/Maps/lastGeneratedMapData.txt", s);
         }
     }
 }
