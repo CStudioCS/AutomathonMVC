@@ -1,12 +1,10 @@
 using Automathon.Engine.Physics;
-using Automathon.Engine.Utility;
-using Automathon.Game.MapSystem;
 using Automathon.Game;
 using Automathon.Game.Input;
+using Automathon.Game.MapSystem;
 using Automathon.Utility;
 using NetMQ;
 using System;
-using System.IO;
 
 namespace Automathon.Engine
 {
@@ -29,13 +27,6 @@ namespace Automathon.Engine
             LayerMatrix.Initialize();
             PhysicsManager.Initialize();
 
-            //Wait for players to log in
-            //The View side / Headless side will handle calling Reset with the right input providers
-            //We can't do like LPI where we would just let players play from the beginning, since there is AI we'll have to
-            //have a menu to set it
-            //Once reset is called, update can be managed from the other project using AIStep or simply Update
-
-            //Last issue is -> if AI playing while not headless, we need to make sure to call the AI. Idk if we should do it from AIInputProvider
             GenerateRandomMap();
         }
 
