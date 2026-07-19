@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 671813322922377892}
   - component: {fileID: 297178802477511224}
   - component: {fileID: 4839800170746784447}
+  - component: {fileID: 7251685202469317750}
   m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
@@ -101,3 +102,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 297178802477511224}
+  outline: {fileID: 7251685202469317750}
+--- !u!114 &7251685202469317750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5207588853574940013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3850f4e7081184e59a18ad0c0906f081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSprite: {fileID: 297178802477511224}
+  outlineMaterial: {fileID: 2100000, guid: 5a2ee62b734e84d3abb36e4ca6e7eedc, type: 2}
+  width: 0.07
+  follow: 0

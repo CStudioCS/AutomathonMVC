@@ -80,6 +80,10 @@ namespace Automathon.Game
 
         private void Update()
         {
+#if AUTOMATHON_DEBUG
+            HandleDebugInput();
+#endif
+
             GameplayManager.Update();
 
             if (GameplayManager.State == GameplayManager.GameplayState.Lobby)
@@ -100,6 +104,43 @@ namespace Automathon.Game
                 }
             }
         }
+
+#if AUTOMATHON_DEBUG
+        // Dev-only solo play (gated by the AUTOMATHON_DEBUG scripting define symbol):
+        //   F1  from the lobby  -> start a match driven entirely by keyboard + mouse
+        //   Tab during a match  -> switch which tank the keyboard + mouse controls
+        private void HandleDebugInput()
+        {
+            UnityEngine.InputSystem.Keyboard keyboard = UnityEngine.InputSystem.Keyboard.current;
+            if (keyboard == null) return;
+
+            if (GameplayManager.State == GameplayManager.GameplayState.Lobby)
+            {
+                if (keyboard.f1Key.wasPressedThisFrame)
+                    StartDebugGame();
+            }
+            else if (keyboard.tabKey.wasPressedThisFrame) // GameplayState.Game
+            {
+                int next = 1 - Automathon.Game.Input.DebugInputProvider.ControlledIndex;
+                Automathon.Game.Input.DebugInputProvider.ControlledIndex = next;
+                UnityEngine.Debug.Log($"[DEBUG] Now controlling tank #{next} ({(next == 0 ? "Green" : "Red")})");
+            }
+        }
+
+        private void StartDebugGame()
+        {
+            gameLogo.SetActive(false);
+
+            Automathon.Game.Input.DebugInputProvider.ControlledIndex = 0;
+            InputProviders[0] = new Automathon.Game.Input.DebugInputProvider(0);
+            InputProviders[1] = new Automathon.Game.Input.DebugInputProvider(1);
+
+            StartGame(); // hides the input menu and calls GameplayManager.Reset with both providers
+
+            UnityEngine.Debug.Log("[DEBUG] Solo match started. WASD/ZQSD move, mouse aim, LMB gun, " +
+                "RMB missile, E shield, Left-Shift dash. Press Tab to switch tanks.");
+        }
+#endif
 
         private void OnEndGame(Tank.TeamType winner)
         {

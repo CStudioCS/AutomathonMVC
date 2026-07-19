@@ -50,12 +50,14 @@ namespace Automathon.Game
             InputProvider = inputProvider;
             Team = team;
 
-            BoxCollider boxCollider = new BoxCollider(Vector2Int.Zero, TANK_WIDTH, TANK_HEIGHT, 0);
-            boxCollider.Layer = CollisionLayer.Tank;
-            Rigidbody = new Rigidbody(boxCollider, 1000, 500, 200);
+            // Circular hitbox: diameter = the smaller side of the old rectangle (min(W, H)).
+            int radius = System.Math.Min(TANK_WIDTH, TANK_HEIGHT) / 2;
+            CircleCollider circleCollider = new CircleCollider(Vector2Int.Zero, radius);
+            circleCollider.Layer = CollisionLayer.Tank;
+            Rigidbody = new Rigidbody(circleCollider, 1000, 500, 200);
 
             Initialize(
-                boxCollider,
+                circleCollider,
                 Rigidbody,
                 inputProvider,
                 MachineGunAbility = new MachineGunAbility(10, 500, inputProvider.ShouldShoot),
