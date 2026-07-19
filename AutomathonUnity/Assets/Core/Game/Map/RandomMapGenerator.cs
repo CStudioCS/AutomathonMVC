@@ -17,7 +17,7 @@ namespace Automathon.Game.MapSystem
 
         Random random;
 
-        Vector2Int spawnA = new Vector2Int(-6750,0);
+        Vector2Int spawnA = new Vector2Int(-6750, 0);
         Vector2Int spawnB = new Vector2Int(6750, 0);
 
         public static void GenerateRandomMap()
@@ -45,7 +45,7 @@ namespace Automathon.Game.MapSystem
         }
         private void AddWalls(List<Wall> wallList, bool[,] walls)
         {
-            for(int j = 0; j < definitionX*definitionY; j++)
+            for (int j = 0; j < definitionX * definitionY; j++)
             {
                 AddWall(wallList, walls, j);
             }
@@ -57,7 +57,7 @@ namespace Automathon.Game.MapSystem
 
             if (j % definitionX + 1 < definitionX)
             {
-                if (walls[j,j+1])
+                if (walls[j, j + 1])
                 {
                     int posX = origineX + (j % definitionX + 1) * lengthX;
                     int posY = origineY + (j / definitionX) * lengthY + lengthY / 2;
@@ -65,16 +65,16 @@ namespace Automathon.Game.MapSystem
                     wallList.Add(new Wall(new Vector2Int(posX, posY), new Vector2Int(lengthX / 10, lengthY), 0));
                 }
 
-                
+
             }
             if (j < definitionX * (definitionY - 1))
             {
-                if (walls[j,j + definitionX])
+                if (walls[j, j + definitionX])
                 {
-                    int posX = origineX + (j % definitionX) * lengthX + lengthX/2;
+                    int posX = origineX + (j % definitionX) * lengthX + lengthX / 2;
                     int posY = origineY + (j / definitionX + 1) * lengthY;
 
-                    wallList.Add(new Wall(new Vector2Int(posX, posY), new Vector2Int(lengthX, lengthY/10), 0));
+                    wallList.Add(new Wall(new Vector2Int(posX, posY), new Vector2Int(lengthX, lengthY / 10), 0));
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace Automathon.Game.MapSystem
         public bool[,] WallPlacement()
         {
             random = new Random();
-            bool[,] walls = new bool[definitionX* definitionY, definitionX * definitionY];
+            bool[,] walls = new bool[definitionX * definitionY, definitionX * definitionY];
 
             for (int i = 0; i < walls.GetLength(0); i++)
             {
@@ -147,7 +147,7 @@ namespace Automathon.Game.MapSystem
         private List<int> TrouverVoisinsNonVisites(int j, bool[] vue)
         {
             List<int> voisins = new List<int>();
-            if(j % definitionX > 0)
+            if (j % definitionX > 0)
             {
                 if (!vue[j - 1])
                 {
