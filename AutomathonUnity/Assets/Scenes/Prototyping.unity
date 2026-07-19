@@ -467,6 +467,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7981af74214949f1b094199659fe7c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  updateShader: {fileID: 4800000, guid: 17c45f883a7bc45ebba8c54ab521e8b2, type: 3}
+  velShader: {fileID: 4800000, guid: db2e21af85d524dd78841c9dc43e2376, type: 3}
+  warpShader: {fileID: 4800000, guid: d935345db24d64199b167139669f19c6, type: 3}
+  groundShader: {fileID: 4800000, guid: 0cb0d3bc99b49435fa378af09a70a920, type: 3}
   ArenaCenter: {x: 0, y: 0}
   ArenaSize: {x: 32, y: 18}
   GroundZ: 20
