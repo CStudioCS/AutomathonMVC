@@ -6,8 +6,8 @@ namespace Automathon.Game
         {
             base.Initialize(entity);
             // Bullet colour is authored on the prefab's SpriteRenderer.
-            entity.HitWall += () => SoundManager.instance.PlaySound("HitWall");
-            entity.HitTank += () => SoundManager.instance.PlaySound("HitTank");
+            entity.HitWall += () => { SoundManager.instance.PlaySound("HitWall"); ScreenGlitch.Trigger(); };
+            entity.HitTank += () => { SoundManager.instance.PlaySound("HitTank"); ScreenGlitch.Trigger(); };
         }
     }
 }
