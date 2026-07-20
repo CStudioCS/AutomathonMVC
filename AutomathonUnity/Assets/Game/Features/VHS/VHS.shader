@@ -11,6 +11,13 @@ Shader "Automathon/VHS"
         _LineColor   ("Horizontal Line Color", Color) = (0.6, 0.6, 0.65, 1)
         _ScanCount    ("Scanline Count", Float) = 90
         _ScanStrength ("Scanline Strength", Range(0,1)) = 0.12
+
+        [Header(Glitch)]
+        _GlitchIntensity   ("Glitch Intensity (driven) - scales line density", Range(0,2)) = 0
+        _GlitchLineOffset  ("Glitch Line Offset (uv, driven) - shift distance", Range(0,0.2)) = 0
+        _GlitchSpeed       ("Glitch Wobble Speed", Float) = 60
+        _GlitchLineBands   ("Glitch Line Bands", Float) = 64
+        _GlitchLineDensity ("Glitch Line Density", Range(0,1)) = 0.35
     }
     SubShader
     {
@@ -33,6 +40,11 @@ Shader "Automathon/VHS"
             float4 _LineColor;
             float  _ScanCount;
             float  _ScanStrength;
+            float  _GlitchIntensity;
+            float  _GlitchLineOffset;
+            float  _GlitchSpeed;
+            float  _GlitchLineBands;
+            float  _GlitchLineDensity;
 
             half4 Frag (Varyings input) : SV_Target
             {
@@ -44,7 +56,21 @@ Shader "Automathon/VHS"
                 float2 grid = float2(_PixelHeight * aspect, _PixelHeight);
                 float2 puv = (floor(uv * grid) + 0.5) / grid;
 
-                float3 col = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, puv).rgb;
+                // --- Glitch: shove certain horizontal line-bands sideways with a rapid sine ---
+                float gx = 0.0;
+                if (_GlitchIntensity > 0.0 || _GlitchLineOffset > 0.0)
+                {
+                    float band = floor(uv.y * _GlitchLineBands);
+                    // per-band gate that reshuffles a few times a second -> only some bands jump
+                    float gate = frac(sin(band * 78.233 + floor(_Time.y * 12.0) * 3.71) * 43758.5453);
+                    // intensity scales how MANY bands jump (density); offset is the shift distance
+                    float density = _GlitchLineDensity * saturate(_GlitchIntensity);
+                    float sel = step(1.0 - density, gate);
+                    float wave = sin(_Time.y * _GlitchSpeed + band * 1.7);   // rapid horizontal wobble
+                    gx = sel * wave * _GlitchLineOffset;
+                }
+
+                float3 col = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, puv + float2(gx, 0.0)).rgb;
 
                 // --- Horizontal gray lines (soft, semi-transparent overlay) ---
                 float cell = frac(uv.y * _LineCount) - 0.5;   // centred -0.5..0.5 within each line period

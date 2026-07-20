@@ -11,9 +11,10 @@ namespace Automathon.Game.View
     /// Each buffer fades/blurs/advects the same as before. The ground shader picks the max
     /// intensity per pixel and shows that type's TRUE colour (else base mud), smoothstep-AA'd.
     ///
-    /// SETUP: one MudLayerController on a GameObject (already in Prototyping). Shaders load via
-    /// Shader.Find; buffers + ground quad self-create. TankView disables the black track marks;
-    /// MissileView pushes explosions via AddExplosionMark.
+    /// SETUP: one MudLayerController on a GameObject (already in Prototyping). The four shaders are
+    /// serialized references (wired in the editor) so they ship in player builds; buffers + ground
+    /// quad self-create. TankView disables the black track marks; MissileView pushes explosions via
+    /// AddExplosionMark.
     ///
     /// NOTE: tuning values are CONSTANTS for now; convert to [SerializeField] before pushing.
     /// </summary>
@@ -24,6 +25,16 @@ namespace Automathon.Game.View
         private const int MaxBlast = 8;
 
         private const int Resolution = 512; // render-texture size (compile-time)
+
+        // Serialized so the shaders are referenced by this scene component and therefore included
+        // in player builds. They used to be located purely via Shader.Find, but shaders with no
+        // asset reference get stripped from the build -> Shader.Find returns null -> mud disabled.
+        // Assigned in the editor; Shader.Find remains an editor-only fallback (see ResolveShaders).
+        [Header("Shaders")]
+        [SerializeField] private Shader updateShader;   // Hidden/Automathon/MudBufferUpdate
+        [SerializeField] private Shader velShader;       // Hidden/Automathon/MudVelocityUpdate
+        [SerializeField] private Shader warpShader;      // Hidden/Automathon/MudWarpUpdate
+        [SerializeField] private Shader groundShader;    // Automathon/MudGround
 
         [Header("Arena")]
         [SerializeField] private Vector2 ArenaCenter = Vector2.zero;
@@ -196,14 +207,22 @@ namespace Automathon.Game.View
             });
         }
 
+        // Prefer the serialized shader assets (so they ship in builds); Shader.Find is only an
+        // editor-time fallback for scenes where the fields were not wired. In a player build the
+        // shaders must be wired here, else Shader.Find finds nothing (stripped) and mud disables.
+        private void ResolveShaders()
+        {
+            if (updateShader == null) updateShader = Shader.Find("Hidden/Automathon/MudBufferUpdate");
+            if (velShader == null) velShader = Shader.Find("Hidden/Automathon/MudVelocityUpdate");
+            if (warpShader == null) warpShader = Shader.Find("Hidden/Automathon/MudWarpUpdate");
+            if (groundShader == null) groundShader = Shader.Find("Automathon/MudGround");
+        }
+
         private void Awake()
         {
             instance = this;
 
-            Shader updateShader = Shader.Find("Hidden/Automathon/MudBufferUpdate");
-            Shader velShader = Shader.Find("Hidden/Automathon/MudVelocityUpdate");
-            Shader warpShader = Shader.Find("Hidden/Automathon/MudWarpUpdate");
-            Shader groundShader = Shader.Find("Automathon/MudGround");
+            ResolveShaders();
             if (updateShader == null || velShader == null || warpShader == null || groundShader == null)
             {
                 UnityEngine.Debug.LogError("[MudLayer] Missing shaders. Disabling.");

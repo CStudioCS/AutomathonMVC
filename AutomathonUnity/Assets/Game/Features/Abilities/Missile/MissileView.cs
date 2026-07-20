@@ -20,6 +20,7 @@ namespace Automathon.Game
         protected override void OnControllerDestroyed()
         {
             SoundManager.instance.PlaySound("ExplosionMissile");
+            ScreenGlitch.TriggerHeavy();
 
             VisualEffect bigExplosion = Instantiate(BigExplosion, transform.position, Quaternion.identity);
             bigExplosion.SetFloat("Radius", Missile.AOE_RADIUS / 1000);
