@@ -58,7 +58,8 @@ namespace Automathon.Game
 
             if (entityViewPrefab == null)
             {
-                UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
+                //UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
+                //pk une error hein on est pas obligé de spawn un view pour chaque entity, on peut juste pas en avoir besoin
                 return;
             }
 
