@@ -1,4 +1,5 @@
 using Automathon.Engine;
+using Automathon.Engine.Physics;
 using System;
 using System.Collections.Generic;
 
@@ -32,25 +33,31 @@ namespace Automathon.Game.MapSystem
         }
 
         //Generation des murs
-        private List<Wall> GenerateWallList()
+        private List<Entity> GenerateWallList()
         {
             bool[,] walls = WallPlacement();
-            List<Wall> wallList = new List<Wall>();
+            List<Entity> wallList = new List<Entity>();
 
             lengthX = mapLength / definitionX;
             lengthY = mapHeight / definitionY;
 
             AddWalls(wallList, walls);
+
+            wallList.Add(new InvisibleWall(new Vector2Int(0, mapHeight / 2),new Vector2Int(mapLength, lengthY / 10), 0));
+            wallList.Add(new InvisibleWall(new Vector2Int(0, -mapHeight / 2), new Vector2Int(mapLength, lengthY / 10), 0));
+            wallList.Add(new InvisibleWall(new Vector2Int(-mapLength/2, 0), new Vector2Int(lengthX / 10, mapHeight), 0));
+            wallList.Add(new InvisibleWall(new Vector2Int(mapLength / 2, 0), new Vector2Int(lengthY / 10, mapHeight), 0));
+
             return wallList;
         }
-        private void AddWalls(List<Wall> wallList, bool[,] walls)
+        private void AddWalls(List<Entity> wallList, bool[,] walls)
         {
             for (int j = 0; j < definitionX * definitionY; j++)
             {
                 AddWall(wallList, walls, j);
             }
         }
-        private void AddWall(List<Wall> wallList, bool[,] walls, int j)
+        private void AddWall(List<Entity> wallList, bool[,] walls, int j)
         {
             int origineX = -mapLength / 2;
             int origineY = -mapHeight / 2;
@@ -104,7 +111,7 @@ namespace Automathon.Game.MapSystem
             bool[] vue = new bool[definitionX * definitionY];
             TraiterNoeud(0, walls, vue);
 
-            foreach (var (a, b) in PickRandomWalls(walls, 10))
+            foreach (var (a, b) in PickRandomWalls(walls, 20))
             {
                 walls[a, b] = false;
                 walls[b, a] = false;
