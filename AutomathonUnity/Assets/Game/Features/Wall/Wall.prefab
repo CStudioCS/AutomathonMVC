@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 671813322922377892}
   - component: {fileID: 297178802477511224}
   - component: {fileID: 4839800170746784447}
-  - component: {fileID: 7251685202469317750}
+  - component: {fileID: 4314447920124460347}
   m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 57de8f9fbaa30a54bb8aa33fc56b5d87, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,11 +78,11 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 94980f7266e1259478f29b69d49a5325, type: 3}
+  m_Sprite: {fileID: 7482667652216324306, guid: 0cde361381ffd1a4aacb9c8352935229, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 2
+  m_DrawMode: 0
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -101,9 +101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cb7476c9df7f7e47ad70688a214b8c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 297178802477511224}
-  outline: {fileID: 7251685202469317750}
---- !u!114 &7251685202469317750
+  zapper: {fileID: 4314447920124460347}
+--- !u!114 &4314447920124460347
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,10 +111,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5207588853574940013}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3850f4e7081184e59a18ad0c0906f081, type: 3}
+  m_Script: {fileID: 11500000, guid: 51b9f5922941dbe42a19237f880761bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSprite: {fileID: 297178802477511224}
-  outlineMaterial: {fileID: 2100000, guid: 5a2ee62b734e84d3abb36e4ca6e7eedc, type: 2}
-  width: 0.07
-  follow: 0
+  glowPadding: 0.5
