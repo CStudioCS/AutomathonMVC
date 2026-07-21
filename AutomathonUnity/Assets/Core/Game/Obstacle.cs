@@ -20,7 +20,7 @@ namespace Automathon.Game
             RotationMilli = rotationMilli;
             Size = size;
             BoxCollider = new BoxCollider(Vector2Int.Zero, size.X, size.Y, 0);
-            this.BoxCollider.Layer = CollisionLayer.Wall;
+            this.BoxCollider.Layer = CollisionLayer.InvisibleWall;
             Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
 
             Initialize(BoxCollider, Rigidbody);

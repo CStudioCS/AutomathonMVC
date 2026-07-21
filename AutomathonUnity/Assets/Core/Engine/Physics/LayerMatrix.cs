@@ -12,6 +12,7 @@ namespace Automathon.Engine.Physics
         Wall = 4,
         Dash = 5,
         Shield = 6,
+        InvisibleWall = 7,
     }
 
     // Matrice de collision symétrique, stockée en (32 int de chacun 32 bits ça tombe bien).
@@ -25,6 +26,7 @@ namespace Automathon.Engine.Physics
             SetCollision(CollisionLayer.Dash, CollisionLayer.Bullet, false);
             SetCollision(CollisionLayer.Dash, CollisionLayer.Missile, false);
             SetCollision(CollisionLayer.Dash, CollisionLayer.Shield, false);
+            SetCollision(CollisionLayer.Bullet, CollisionLayer.InvisibleWall, false);
         }
 
         private static int[] Init()

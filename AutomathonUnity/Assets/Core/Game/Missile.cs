@@ -98,6 +98,13 @@ namespace Automathon.Game
 
         private void OnCollision(CollisionEvent collisionContact)
         {
+            if (collisionContact.Other.Layer == CollisionLayer.Wall || collisionContact.Other.Layer == CollisionLayer.Shield)
+            {
+                Wall wall = (Wall)collisionContact.Other.ParentEntity;
+
+                wall.OnHit?.Invoke(collisionContact.Contacts[0].Position, 5000);
+            }
+
             if (initCollidingWithTank && collisionContact.Other.ParentEntity == shotFromTank)
                 return; //we want the missile to be able to collide with the original player
 
