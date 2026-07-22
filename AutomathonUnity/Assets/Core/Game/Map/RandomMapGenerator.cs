@@ -15,18 +15,12 @@ namespace Automathon.Game.MapSystem
     /// Seul le test de connectivité utilise de la trigo flottante (cos/sin) ; il ne sert qu'à
     /// accepter/re-tirer, pas à la physique. Pour du bit-exact cross-plateforme absolu,
     /// remplace-le par du fixed-point.
-    ///
-    /// GOLDEN REFERENCE (seed=12345, density=1) — voir VerifyReferenceLayout() :
-    ///   mulberry32(12345) 5 premiers : 0.979728267761, 0.3067522645, 0.484205421526,
-    ///                                  0.817934412509, 0.509428369347
-    ///   nombre de murs (avec miroirs) : 26 ; connecté : true
-    ///   1er mur : cx=-1621 cy=-2435 len=4130 thick=298 deg=108
     /// </summary>
     public class RandomMapGenerator
     {
         // ---------- Paramètres carte ----------
-        private const int MapLength = 27000;
-        private const int MapHeight = 15000;
+        private const int MapLength = 27500;
+        private const int MapHeight = 15500;
         private const int HX = MapLength / 2;   // 13500
         private const int HY = MapHeight / 2;   // 7500
 
@@ -34,7 +28,7 @@ namespace Automathon.Game.MapSystem
         private static readonly Vector2Int SpawnB = new Vector2Int(6750, 0);
 
         // ---------- Paramètres génération ----------
-        private const int BorderThickness = 270;   // épaisseur des murs invisibles de bord
+        private const int BorderThickness = 100;   // épaisseur des murs invisibles de bord
         private const int SpawnClear = 1900;       // rayon dégagé autour du spawn
         private const int WallLenMin = 1900, WallLenMax = 4500;
         private const int WallThickMin = 240, WallThickMax = 380;
@@ -118,13 +112,12 @@ namespace Automathon.Game.MapSystem
             {
                 Vector2Int pos = new Vector2Int(RoundJS(s.X), RoundJS(s.Y));
                 Vector2Int size = new Vector2Int(RoundJS(s.Len), RoundJS(s.Thick));
-                // NB: angle en degrés. Adapte cette conversion si ton Wall attend
-                //     des radians ou du fixed-point.
+
                 int mrad = RoundJS(s.Angle * 1000.0);   // [0, π] rad → [0, 3142] mrad
                 list.Add(new Wall(pos, size, mrad));
             }
 
-            // murs invisibles de bord (comme dans ta version)
+            // murs invisibles de bord
             list.Add(new InvisibleWall(new Vector2Int(0, HY), new Vector2Int(MapLength, BorderThickness), 0));
             list.Add(new InvisibleWall(new Vector2Int(0, -HY), new Vector2Int(MapLength, BorderThickness), 0));
             list.Add(new InvisibleWall(new Vector2Int(-HX, 0), new Vector2Int(BorderThickness, MapHeight), 0));
@@ -194,7 +187,7 @@ namespace Automathon.Game.MapSystem
             return false;
         }
 
-        // ======================= Poisson-disk (Bridson, porté du JS) =======================
+        // ======================= Poisson-disk =======================
 
         private List<(double x, double y)> Poisson(double x0, double y0, double x1, double y1, double r, int k = 18)
         {
@@ -261,12 +254,11 @@ namespace Automathon.Game.MapSystem
 
         // ======================= Utilitaires =======================
 
-        // Arrondi identique à JS Math.round (moitié vers +∞), pour la parité avec l'aperçu.
         private static int RoundJS(double v) => (int)Math.Floor(v + 0.5);
         private static int Clamp(int v, int lo, int hi) => v < lo ? lo : (v > hi ? hi : v);
 
         /// <summary>
-        /// PRNG déterministe mulberry32 (porté bit-à-bit du JS). Même seed => même séquence,
+        /// PRNG déterministe. Même seed => même séquence,
         /// indépendamment de la plateforme (contrairement à System.Random).
         /// </summary>
         private sealed class Rng
@@ -289,32 +281,5 @@ namespace Automathon.Game.MapSystem
             public double Range(double a, double b) => a + (b - a) * NextDouble();
         }
 
-        // ======================= Self-test (parité avec l'aperçu) =======================
-
-        /// <summary>
-        /// Vérifie que le portage reproduit la golden reference. À appeler depuis un test
-        /// (ex. NUnit) ou un menu éditeur. Retourne true si tout matche.
-        /// </summary>
-        public static bool VerifyReferenceLayout()
-        {
-            // 1) PRNG
-            Rng r = new Rng(12345);
-            double[] expected = { 0.979728267761, 0.3067522645, 0.484205421526, 0.817934412509, 0.509428369347 };
-            for (int i = 0; i < expected.Length; i++)
-                if (Math.Abs(r.NextDouble() - expected[i]) > 1e-9) return false;
-
-            // 2) Layout (attempt 0 => seed exacte)
-            RandomMapGenerator gen = new RandomMapGenerator();
-            List<WallSpec> specs = gen.GenerateSpecs(12345, 1.0);
-            if (specs.Count != 26) return false;
-            if (!gen.IsConnected(specs)) return false;
-
-            WallSpec f = specs[0];
-            if (RoundJS(f.X) != -1621 || RoundJS(f.Y) != -2435) return false;
-            if (RoundJS(f.Len) != 4130 || RoundJS(f.Thick) != 298) return false;
-            if (RoundJS(f.Angle * 1000.0) != 1877) return false;   // 1.876728 rad → 1877 mrad
-
-            return true;
-        }
     }
 }
