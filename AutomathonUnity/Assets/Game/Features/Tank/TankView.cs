@@ -26,6 +26,7 @@ namespace Automathon.Game
         [SerializeField] private Transform turret;
         [SerializeField] private Transform turretTip;
         [SerializeField] private Transform body;
+        [SerializeField] private float bodyTurnTime = 0.1f; // characteristic time (s) for the body's smooth turn toward the move direction
 
         [SerializeField] private ParticleSystem dashBurstParticleSystem;
         [SerializeField] private ParticleSystem dashFlame;
@@ -33,9 +34,14 @@ namespace Automathon.Game
         [SerializeField] private HealthBarView healthBar;
 
         [SerializeField] private VisualEffect miniExplosion;
-        [SerializeField] private SpriteRenderer[] sprites;
+        [SerializeField] private SpriteRenderer[] sprites;          // dimmed during the dash fade (SetAlpha)
+        [SerializeField] private SpriteRenderer[] teamColorSprites; // recoloured with this player's team colour
+        [SerializeField] private Color player1Color = new Color32(0x00, 0x9b, 0x00, 0xff); // #009b00 team Green (P1)
+        [SerializeField] private Color player2Color = new Color32(0xff, 0x66, 0x00, 0xff); // #ff6600 team Red (P2)
 
         private CameraShaker cameraShaker;
+        private Quaternion smoothedBodyRotation;
+        private bool bodyRotationInitialized;
 
         public override void Initialize(Tank entity)
         {
@@ -53,15 +59,38 @@ namespace Automathon.Game
             if (entity.InputProvider is PlayerInputProvider p)
                 p.Setup(this);
 
-            if (entity.Team == Tank.TeamType.Red)
-                foreach (SpriteRenderer spriteRenderer in sprites)
-                    spriteRenderer.color = new Color(214 / 255f, 92 / 255f, 92 / 255f);
+            // Team colour: tint the serialized subset of sprites with this player's team colour.
+            Color teamColor = entity.Team == Tank.TeamType.Green ? player1Color : player2Color;
+            foreach (SpriteRenderer spriteRenderer in teamColorSprites)
+                if (spriteRenderer != null) spriteRenderer.color = teamColor;
 
+            // Dash flame/burst particles and the dash + driving trail renderers are coloured on
+            // the prefab components (authored in the editor).
         }
 
         protected override void LateUpdate()
         {
             base.LateUpdate();
+
+            // View-only smoothing: base.LateUpdate snaps the root to the entity's move-direction
+            // rotation; ease the body toward it instead. Shortest-arc via Slerp, frame-rate-
+            // independent exponential approach (time constant = bodyTurnTime). First frame snaps so
+            // the body spawns already facing its direction.
+            if (body != null)
+            {
+                Quaternion target = transform.rotation;
+                if (!bodyRotationInitialized)
+                {
+                    smoothedBodyRotation = target;
+                    bodyRotationInitialized = true;
+                }
+                else
+                {
+                    float k = bodyTurnTime > 0f ? 1f - Mathf.Exp(-Time.deltaTime / bodyTurnTime) : 1f;
+                    smoothedBodyRotation = Quaternion.Slerp(smoothedBodyRotation, target, k);
+                }
+                body.rotation = smoothedBodyRotation;
+            }
 
             turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X));
         }
@@ -77,12 +106,14 @@ namespace Automathon.Game
             cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
 
             EmitShootingMiniExplosion();
+            ScreenGlitch.Trigger();
         }
 
         public void SetAlpha(float alpha)
         {
-            foreach (SpriteRenderer sr in GetComponentsInChildren<SpriteRenderer>())
+            foreach (SpriteRenderer sr in sprites)
             {
+                if (sr == null) continue;
                 Color c = sr.color;
                 c.a = alpha;
                 sr.color = c;
@@ -134,6 +165,7 @@ namespace Automathon.Game
         private void OnDashAbility()
         {
             SoundManager.instance.PlaySound("Dash");
+            ScreenGlitch.Trigger();
             IsDashing = true;
             if (!cameraShaker)
             {
@@ -155,6 +187,7 @@ namespace Automathon.Game
         private void OnMissileAbility()
         {
             EmitShootingMiniExplosion();
+            ScreenGlitch.Trigger();
         }
 
         protected override void OnDestroy()

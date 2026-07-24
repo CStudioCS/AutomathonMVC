@@ -1,12 +1,10 @@
 using Automathon.Engine.Physics;
-using Automathon.Engine.Utility;
-using Automathon.Game.MapSystem;
 using Automathon.Game;
 using Automathon.Game.Input;
+using Automathon.Game.MapSystem;
 using Automathon.Utility;
 using NetMQ;
 using System;
-using System.IO;
 
 namespace Automathon.Engine
 {
@@ -28,15 +26,6 @@ namespace Automathon.Engine
 
             LayerMatrix.Initialize();
             PhysicsManager.Initialize();
-
-            //Wait for players to log in
-            //The View side / Headless side will handle calling Reset with the right input providers
-            //We can't do like LPI where we would just let players play from the beginning, since there is AI we'll have to
-            //have a menu to set it
-            //Once reset is called, update can be managed from the other project using AIStep or simply Update
-
-            //Last issue is -> if AI playing while not headless, we need to make sure to call the AI. Idk if we should do it from AIInputProvider
-            GenerateRandomMap();
         }
 
         //private static void GenerateRandomMap()
@@ -77,13 +66,7 @@ namespace Automathon.Engine
 
             ProcessAllEntityChanges();
 
-            Instantiate(new Wall(new Vector2Int(-5540, -1934), new Vector2Int(3975, 370), 3383));
-            Instantiate(new Wall(new Vector2Int(-5612, -7016), new Vector2Int(5058, 401), 1721));
-            Instantiate(new Wall(new Vector2Int(12536, 2478), new Vector2Int(4911, 417), 5639));
-            Instantiate(new Wall(new Vector2Int(6988, 715), new Vector2Int(3831, 589), 2451));
-            Instantiate(new Wall(new Vector2Int(1821, 5341), new Vector2Int(3729, 328), 5067));
-            Instantiate(new Wall(new Vector2Int(-12551, 3547), new Vector2Int(5759, 226), 6022));
-            Instantiate(new Wall(new Vector2Int(904, -236), new Vector2Int(4676, 482), 1242));
+            GenerateRandomMap();
 
             Tank1 = Instantiate(new Tank(Tank.TeamType.Green, new Vector2Int(-10000, 0), inputProvider1));
             Tank2 = Instantiate(new Tank(Tank.TeamType.Red, new Vector2Int(10000, 0), inputProvider2));

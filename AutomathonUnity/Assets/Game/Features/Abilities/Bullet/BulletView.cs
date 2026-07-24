@@ -5,8 +5,9 @@ namespace Automathon.Game
         public override void Initialize(Bullet entity)
         {
             base.Initialize(entity);
-            entity.HitWall += () => SoundManager.instance.PlaySound("HitWall");
-            entity.HitTank += () => SoundManager.instance.PlaySound("HitTank");
+            // Bullet colour is authored on the prefab's SpriteRenderer.
+            entity.HitWall += () => { SoundManager.instance.PlaySound("HitWall"); ScreenGlitch.Trigger(); };
+            entity.HitTank += () => { SoundManager.instance.PlaySound("HitTank"); ScreenGlitch.Trigger(); };
         }
     }
 }
