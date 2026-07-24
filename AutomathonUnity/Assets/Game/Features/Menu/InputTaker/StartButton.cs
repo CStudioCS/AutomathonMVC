@@ -6,8 +6,8 @@ namespace Automathon.Game.View
     public class StartButton : MonoBehaviour
     {
         [SerializeField] private GameObject inputMenu;
-        [SerializeField] private InputTaker inputTaker1;
-        [SerializeField] private InputTaker inputTaker2;
+        [SerializeField] private NewInputTaker inputTaker1;
+        [SerializeField] private NewInputTaker inputTaker2;
         [SerializeField] private Button button;
 
         private void Awake()
@@ -32,7 +32,6 @@ namespace Automathon.Game.View
                 }
 
                 WorldView.Instance.StartGame();
-                inputMenu.SetActive(false);
             }
         }
 
