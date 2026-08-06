@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 232f3a21e67ef8b45898d0f2a8d6480a
+guid: 3d27eea788c3cc5449c4f83c4c3a4879
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7798287506636931340
-    second: contros switch button_0
+      213: 5648650431285210901
+    second: header_lime_border_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,9 +51,9 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 256
-  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spriteGenerateFallbackPhysicsShape: 1
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 36, y: 30, z: 37, w: 32}
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: contros switch button_0
+      name: header_lime_border_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 38
-        height: 38
+        x: 12
+        y: 12
+        width: 948
+        height: 200
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c0106719b25193c60800000000000000
-      internalID: 7798287506636931340
+      spriteID: 51fac11b3a9046e40800000000000000
+      internalID: 5648650431285210901
       vertices: []
       indices: 
       edges: []
@@ -126,7 +126,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 0
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      contros switch button_0: 7798287506636931340
+      header_lime_border_0: 5648650431285210901
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

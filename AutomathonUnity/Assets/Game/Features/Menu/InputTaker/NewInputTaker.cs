@@ -16,7 +16,8 @@ namespace Automathon.Game.View
         [SerializeField] private InputManager inputManager;
 
         [Header("Device Images")]
-        [SerializeField] private Image noDeviceImg;
+        [SerializeField] private GameObject noInputGameObject;
+        private bool noInputActive;
         [SerializeField] private Image xboxControllerDeviceImg;
         [SerializeField] private Image playStationControllerDeviceImg;
         [SerializeField] private Image switchControllerDeviceImg;
@@ -31,18 +32,22 @@ namespace Automathon.Game.View
 
         [Header("AI Input")]
         [SerializeField] private TMP_InputField inputField;
-        [SerializeField] private TMP_Text testResultsText;
         [SerializeField] private TMP_Text tcpText;
 
         [Header("Misc")]
-        [SerializeField] private TMP_Text pressAnyInputText;
+        [SerializeField] private TMP_Text playerOrderAndFeedbackText;
 
-        [SerializeField] private GameObject tankImageGameObject;
+        [SerializeField] private GameObject tankImageGO;
 
         private bool waitingForInput;
 
         [SerializeField] private Button changePlayerAIButton;
         private bool isPlayer;
+        [SerializeField] private float connectionSuccessDisplayTime = 1f;
+
+        [SerializeField] private StartButton startButton;
+
+        [SerializeField] private InputTaking inputTaking;
 
         private void Awake()
         {
@@ -56,19 +61,24 @@ namespace Automathon.Game.View
             };
 
             inputField.onEndEdit.AddListener(FinishedTyping);
-            inputField.onValueChanged.AddListener(OnTyping);
+            inputField.onSelect.AddListener(OnSelect);
 
-            currentDeviceImg = noDeviceImg;
-            SetCurrentDeviceImg(noDeviceImg);
-
-            waitingForInput = true;
-            isPlayer = true;
+            SwitchToPlayer();
 
             changePlayerAIButton.onClick.AddListener(OnPlayerAIChange);
         }
 
+        public void Reset()
+        {
+            ResetInput();
+            SwitchToPlayer();
+        }
+
         private void OnPlayerAIChange()
         {
+            SoundManager.instance.PlaySound("MenuButton");
+            HideTankImage();
+            ResetInput();
             if (isPlayer)
             {
                 SwitchToAI();
@@ -77,13 +87,11 @@ namespace Automathon.Game.View
             {
                 SwitchToPlayer();
             }
-            isPlayer = !isPlayer;
         }
 
         private void FinishedTyping(string finalText)
         {
-            ResetButtonFields();
-            ResetInput();
+            ChangeIndicationTextOnFinishedTyping();
 
             try
             {
@@ -91,55 +99,95 @@ namespace Automathon.Game.View
 
                 if (aIInputProvider.TestPing())
                 {
-                    testResultsText.text = "Connection successful";
-                    SetInputProvider(aIInputProvider);
-                    SetCurrentDeviceImg(aiDeviceImg);
+                    SuccessfulAIConnection(aIInputProvider);
                 }
                 else
-                    testResultsText.text = "Could not connect to AI Server. Make sure Python's play script is already running.";
+                {
+                    FailedAIConnection_Ping();
+                }
             }
             catch
             {
-                testResultsText.text = "Invalid tcp address";
-
+                FailedAIConnection_Address();
             }
         }
 
-        private void OnTyping(string text)
+        private void SuccessfulAIConnection(AIInputProvider aIInputProvider)
+        {
+            SoundManager.instance.PlaySound("SuccessfullConnection");
+            SetInputProvider(aIInputProvider);
+            SetCurrentDeviceImg(aiDeviceImg);
+            HideTCPInput();
+            StartCoroutine(ShowSuccessThenTank());
+        }
+
+        private void FailedAIConnection_Ping()
+        {
+            SoundManager.instance.PlaySound("FailedConnection");
+            playerOrderAndFeedbackText.text = "COULD NOT CONNECT TO AI SERVER. MAKE SURE PYTHON'S PLAY SCRIPT IS ALREADY RUNNING.";
+        }
+
+        private void FailedAIConnection_Address()
+        {
+            SoundManager.instance.PlaySound("FailedConnection");
+            playerOrderAndFeedbackText.text = "INVALID TCP ADDRESS";
+        }
+
+        private void HideTCPInput()
+        {
+            tcpText.gameObject.SetActive(false);
+            inputField.gameObject.SetActive(false);
+        }
+        private void ShowTCPInput()
+        {
+            tcpText.gameObject.SetActive(true);
+            inputField.gameObject.SetActive(true);
+        }
+
+        private void OnSelect(string text)
         {
             ResetInput();
-            ResetButtonFields();
+            ChangeIndicationTextOnSelect();
+        }
+        private void ChangeIndicationTextOnSelect()
+        {
+            playerOrderAndFeedbackText.text = "ENTER TCP PORT NUMBER...";
+        }
+
+        private void ChangeIndicationTextOnFinishedTyping()
+        {
+            playerOrderAndFeedbackText.text = "";
         }
 
         private void Update()
         {
             if (waitingForInput && inputManager.TryFindNewInput(out PlayerInputProvider playerInputProvider))
             {
-                SetInputProvider(playerInputProvider);
-
-                Image img = controlsToImg[playerInputProvider.ControlsType];
-                SetCurrentDeviceImg(img);
-
-                waitingForInput = false;
-
-                pressAnyInputText.text = "";
-                testResultsText.text = "";
-
-                ShowTankImage();
+                SuccessfulPlayerConnection(playerInputProvider);
             }
         }
 
-        private void ResetButtonFields()
+        private void SuccessfulPlayerConnection(PlayerInputProvider playerInputProvider)
         {
+            SoundManager.instance.PlaySound("SuccessfullConnection");
+            SetInputProvider(playerInputProvider);
+            Image img = controlsToImg[playerInputProvider.ControlsType];
+            SetCurrentDeviceImg(img);
             waitingForInput = false;
-            pressAnyInputText.text = "";
-            testResultsText.text = "";
+            StartCoroutine(ShowSuccessThenTank());
+        }
+
+        private System.Collections.IEnumerator ShowSuccessThenTank()
+        {
+            playerOrderAndFeedbackText.text = "CONNECTION SUCCESSFUL !";
+            yield return new WaitForSeconds(connectionSuccessDisplayTime);
+            playerOrderAndFeedbackText.text = "";
+            ShowTankImage();
+
         }
 
         private void ResetInput()
         {
-            SetCurrentDeviceImg(noDeviceImg);
-
             if (InputProvider != null)
             {
                 WorldView.Instance.InputProviders[playerIndex] = null;
@@ -153,57 +201,72 @@ namespace Automathon.Game.View
         {
             InputProvider = inputProvider;
             WorldView.Instance.InputProviders[playerIndex] = inputProvider;
+            if (WorldView.Instance.InputProviders[0] != null && WorldView.Instance.InputProviders[1] != null)
+            {
+                startButton.gameObject.SetActive(true);
+                inputTaking.DeactivateMenu();
+                SoundManager.instance.PlaySound("AllPlayersConnected");
+            }
         }
+
+
 
         private void SetCurrentDeviceImg(Image img)
         {
-            currentDeviceImg.gameObject.SetActive(false);
+            noInputGameObject.SetActive(false);
+            if (currentDeviceImg)
+                currentDeviceImg.gameObject.SetActive(false);
+            if (img == null)
+                return;
             currentDeviceImg = img;
             currentDeviceImg.gameObject.SetActive(true);
         }
 
+        private void SetNoInput()
+        {
+            if (currentDeviceImg)
+                currentDeviceImg.gameObject.SetActive(false);
+            noInputGameObject.SetActive(true);
+        }
+
         private void ShowTankImage()
         {
-            tankImageGameObject.SetActive(true);
+            tankImageGO.SetActive(true);
         }
 
         private void HideTankImage()
         {
-            tankImageGameObject.SetActive(false);
+            tankImageGO.SetActive(false);
         }
 
         private void OnDestroy()
         {
             inputField.onEndEdit.RemoveAllListeners();
+            inputField.onSelect.RemoveAllListeners();
             changePlayerAIButton.onClick.RemoveAllListeners();
         }
 
         private void SwitchToAI()
         {
-            ResetInput();
+            HideTankImage();
+            isPlayer = false;
             waitingForInput = false;
             indicationText.text = "AI";
-            HideTankImage();
-            pressAnyInputText.text = "Enter TCP port number...";
-            SetCurrentDeviceImg(aiDeviceImg);
+            ChangeIndicationTextOnSelect();
+            SetCurrentDeviceImg(null);
             inputField.text = "";
-            inputField.gameObject.SetActive(true);
-            testResultsText.text = "";
-            testResultsText.gameObject.SetActive(true);
-            tcpText.gameObject.SetActive(true);
+            ShowTCPInput();
         }
 
         private void SwitchToPlayer()
         {
-            ResetInput();
-            waitingForInput = true;
-            indicationText.text = "Player";
             HideTankImage();
-            pressAnyInputText.text = "Press any input...";
-            SetCurrentDeviceImg(noDeviceImg);
-            inputField.gameObject.SetActive(false);
-            testResultsText.gameObject.SetActive(false);
-            tcpText.gameObject.SetActive(false);
+            isPlayer = true;
+            waitingForInput = true;
+            indicationText.text = "PLAYER";
+            playerOrderAndFeedbackText.text = "PRESS ANY INPUT...";
+            SetNoInput();
+            HideTCPInput();
         }
     }
 

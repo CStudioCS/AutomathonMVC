@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c81520d95a004564292caa01025cfc00
+guid: afee5e31c4edbce49b652d6d81083507
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7793522926525133956
-    second: left player indication frame_0
+      213: -320105082838248827
+    second: button_cyan_border_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,9 +51,9 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 256
-  spriteBorder: {x: 8, y: 7, z: 7, w: 7}
-  spriteGenerateFallbackPhysicsShape: 1
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 73, y: 71, z: 73, w: 72}
+  spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: left player indication frame_0
+      name: button_cyan_border_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 235
-        height: 54
+        x: 12
+        y: 12
+        width: 496
+        height: 176
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 484b4605fc7282c60800000000000000
-      internalID: 7793522926525133956
+      spriteID: 58211a68f12ce8bf0800000000000000
+      internalID: -320105082838248827
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      left player indication frame_0: 7793522926525133956
+      button_cyan_border_0: -320105082838248827
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
