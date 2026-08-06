@@ -212,11 +212,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 463626117440545294, guid: f3f29a0bca0cf7a4bb8590aa73432aaf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 463626117440545294, guid: f3f29a0bca0cf7a4bb8590aa73432aaf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 463626117440545294, guid: f3f29a0bca0cf7a4bb8590aa73432aaf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -267,21 +267,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 783220877154615822, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: maxIntensity
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2567404492823477716, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_Name
       value: Bloom Volume
       objectReference: {fileID: 0}
     - target: {fileID: 4251444066350437290, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 497.3349
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4251444066350437290, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 938.992
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 4251444066350437290, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.29220006
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4251444066350437290, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_LocalRotation.w
@@ -996,6 +1000,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Menu
       objectReference: {fileID: 0}
+    - target: {fileID: 8615235794833547436, guid: 60b0c8b70b41dd34bafc73eef527cb86, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 695313958}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
