@@ -50,17 +50,17 @@ State = Annotated[
 ]
 
 class GameState(BaseModel):
-    SelfTank: TankState | None = field(default_factory=lambda: None)
-    EnemyTank: TankState | None = field(default_factory=lambda: None)
-    BulletStates: List[BulletState]  = field(default_factory=lambda: [])
-    MissileStates: List[MissileState] = field(default_factory=lambda: [])
-    WallStates: List[WallState] = field(default_factory=lambda: [])
-    ShieldStates: List[ShieldState] = field(default_factory=lambda: [])
+    SelfTank: TankState | None = None
+    EnemyTank: TankState | None = None
+    BulletStates: List[BulletState]  = Field(default_factory=lambda: [])
+    MissileStates: List[MissileState] = Field(default_factory=lambda: [])
+    WallStates: List[WallState] = Field(default_factory=lambda: [])
+    ShieldStates: List[ShieldState] = Field(default_factory=lambda: [])
     Done: bool
 
 class AIAction(BaseModel):
-    MovingDirection: Vector2Int = field(default_factory=lambda: Vector2Int(X=1000, Y=0))
-    AimingDirection: Vector2Int = field(default_factory=lambda: Vector2Int(X=0, Y=1000))
+    MovingDirection: Vector2Int = Field(default_factory=lambda: Vector2Int(X=1000, Y=0))
+    AimingDirection: Vector2Int = Field(default_factory=lambda: Vector2Int(X=0, Y=1000))
     MachineGun: bool = False
     Missile: bool = False
     Shield: bool = False
