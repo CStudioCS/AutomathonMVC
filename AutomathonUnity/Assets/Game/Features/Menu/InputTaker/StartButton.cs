@@ -29,10 +29,7 @@ namespace Automathon.Game.View
 
         private void OnCancel(InputAction.CallbackContext ctx)
         {
-            inputTaker1.Reset();
-            inputTaker2.Reset();
-            inputTaking.ActivateMenu();
-            button.gameObject.SetActive(false);
+            inputTaking.ResetInputTaking();
         }
 
         private void OnButtonClick()
@@ -44,7 +41,6 @@ namespace Automathon.Game.View
                     Debug.LogError("World view didn't receive input providers sent by input takers");
                     return;
                 }
-
                 WorldView.Instance.StartGame();
                 SoundManager.instance.PlaySound("StartGame");
             }

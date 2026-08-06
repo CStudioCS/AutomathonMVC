@@ -18,6 +18,7 @@ namespace Automathon.Game
         [Header("UI")]
         [SerializeField] private UnityEngine.UI.Button playButton;
         [SerializeField] private GameObject inputTakingMenu;
+        [SerializeField] private InputTaking inputTaking;
         [SerializeField] private EndScreen endCard;
 
         public InputProvider[] InputProviders;
@@ -146,7 +147,9 @@ namespace Automathon.Game
         public void OnEndScreenDone()
         {
             LobbyState = LobbyStates.Input;
+            inputTaking.ResetInputTaking();
             inputTakingMenu.SetActive(true);
+
         }
 
         private void DebugForward(string message)

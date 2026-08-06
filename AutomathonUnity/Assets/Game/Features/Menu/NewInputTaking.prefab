@@ -55,6 +55,9 @@ MonoBehaviour:
   rightSwitchButton: {fileID: 2087733480866451321}
   leftInputField: {fileID: 3910425450494673787}
   rightInputField: {fileID: 6373519953285210216}
+  inputTaker1: {fileID: 7498185382984250745}
+  inputTaker2: {fileID: 448445143872263786}
+  startButton: {fileID: 979016771345084453}
 --- !u!1001 &3421255861329545928
 PrefabInstance:
   m_ObjectHideFlags: 0
