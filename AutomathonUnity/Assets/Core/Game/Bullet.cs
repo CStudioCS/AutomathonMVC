@@ -1,6 +1,5 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Utility;
 using System;
 
 namespace Automathon.Game
@@ -49,12 +48,9 @@ namespace Automathon.Game
             if (collisionContact.Other.ParentEntity == shotFromTank)
                 return;
 
-            if (collisionContact.Other.Layer == CollisionLayer.Wall || collisionContact.Other.Layer == CollisionLayer.Shield)
+            if (collisionContact.Other.ParentEntity is Wall wall)
             {
-                Wall wall = (Wall)collisionContact.Other.ParentEntity;
-
                 wall.OnHit?.Invoke(collisionContact.Contacts[0].Position, 500);
-
                 HitWall?.Invoke();
             }
 
