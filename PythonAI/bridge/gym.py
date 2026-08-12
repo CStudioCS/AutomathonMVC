@@ -19,10 +19,10 @@ class Gym:
         
         raise TimeoutError()
 
-    def reset(self, timeout : None | int=500) -> GameState:
+    def reset(self, tcp_connection_timeout : None | int=500) -> GameState:
         self.__send_action__(AIMessage(Reset=True, DoneWithTraining=False, SelfAction=None, EnemyAction=None))
         
-        if self.poller.poll(timeout):
+        if self.poller.poll(tcp_connection_timeout):
             return self.__receive_state__()
         
         raise TimeoutError("Make sure the Headless version of the game is running before launching the python training script!")
