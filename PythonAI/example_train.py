@@ -23,7 +23,7 @@ def train():
             state_from_enemy_pov: GameState = copy.deepcopy(state)
             state_from_enemy_pov.SelfTank = state.EnemyTank
             state_from_enemy_pov.EnemyTank = state.SelfTank
-            enemy_action = example_ai.decide_action(state) # in training, you decide the action of both players
+            enemy_action = example_ai.decide_action(state_from_enemy_pov) # in training, you decide the action of both players
 
             #this can raise a timeout error if your game's headless version isn't running before you start the project (or if the game takes more than 500ms to respond)
             next_state = env.step(action, enemy_action) 

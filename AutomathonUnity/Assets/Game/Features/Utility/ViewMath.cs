@@ -12,5 +12,11 @@ namespace Automathon.Game.View
 
         public static Vector3 ScreenToWorldSpace(this Vector2 screenPos)
             => Camera.main.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, 0));
+
+        public static float TriangleFunction(float period, float amplitude = 1f)
+        {
+            float tmp = Time.time / period;
+            return (amplitude * (1f - 2f * Mathf.Abs((tmp - Mathf.Floor(tmp)) - (1f / 2f))));
+        }
     }
 }

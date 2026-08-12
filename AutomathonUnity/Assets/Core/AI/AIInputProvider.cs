@@ -32,8 +32,8 @@ namespace Automathon.AI
             if (handleCallingAI)
             {
                 requestSocket = new RequestSocket();
-                requestSocket.Connect(tcpAddress);
                 requestSocket.Options.Linger = TimeSpan.Zero;
+                requestSocket.Connect(tcpAddress);
             }
         }
 
