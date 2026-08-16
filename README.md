@@ -1,6 +1,6 @@
 # Automathon
 
-The Hackathon Game !!! Sorry for being a bit late. The game isn't ready yet and still lacks a lot of polish regarding art and sound, but the main gameplay loop is here, with AI integration. Gameplay will probably receive a lot of tweaks before the actual release.
+The Hackathon Game ! The game isn't ready yet and still lacks a lot of polish regarding art and sound, but the main gameplay loop is here, with AI integration. Gameplay will probably receive a lot of tweaks before the actual release.
 
 # Installation
 
