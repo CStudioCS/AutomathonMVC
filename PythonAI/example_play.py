@@ -10,6 +10,6 @@ play = Play(decide_action, tcp_port=args.port)
 
 try:
     while True:
-        play.respond()
+        play.respond(timeout=None)
 except KeyboardInterrupt:
     print("Play server stopped.")
