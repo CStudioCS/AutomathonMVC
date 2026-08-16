@@ -16,8 +16,9 @@ namespace Automathon.Game
         [SerializeField] private EntityViewRegistry entityViewRegistry;
 
         [Header("UI")]
-        [SerializeField] private GameObject gameLogo;
+        [SerializeField] private UnityEngine.UI.Button playButton;
         [SerializeField] private GameObject inputTakingMenu;
+        [SerializeField] private InputTaking inputTaking;
         [SerializeField] private EndScreen endCard;
 
         public InputProvider[] InputProviders;
@@ -49,7 +50,18 @@ namespace Automathon.Game
             QualitySettings.vSyncCount = 0;
 
             LobbyState = LobbyStates.Logo;
-            gameLogo.SetActive(true);
+
+            playButton.gameObject.SetActive(true);
+            playButton.onClick.AddListener(OnStartButtonClicked);
+        }
+
+        private void OnStartButtonClicked()
+        {
+            SoundManager.instance.PlaySound("MenuButton");
+            playButton.gameObject.SetActive(false);
+
+            LobbyState = LobbyStates.Input;
+            inputTakingMenu.SetActive(true);
         }
 
         private void SpawnEntityViewFromDict(Entity entity)
@@ -58,7 +70,8 @@ namespace Automathon.Game
 
             if (entityViewPrefab == null)
             {
-                UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
+                //UnityEngine.Debug.LogError($"No view registered for {entity.GetType().Name}");
+                //pk une error hein on est pas obligé de spawn un view pour chaque entity, on peut juste pas en avoir besoin
                 return;
             }
 
@@ -85,25 +98,8 @@ namespace Automathon.Game
 #endif
 
             GameplayManager.Update();
-
-            if (GameplayManager.State == GameplayManager.GameplayState.Lobby)
-                LobbyUpdate();
         }
 
-
-        private void LobbyUpdate()
-        {
-            if (LobbyState == LobbyStates.Logo)
-            {
-                if (UnityEngine.Input.anyKeyDown)
-                {
-                    gameLogo.SetActive(false);
-
-                    LobbyState = LobbyStates.Input;
-                    inputTakingMenu.SetActive(true);
-                }
-            }
-        }
 
 #if AUTOMATHON_DEBUG
         // Dev-only solo play (gated by the AUTOMATHON_DEBUG scripting define symbol):
@@ -129,7 +125,7 @@ namespace Automathon.Game
 
         private void StartDebugGame()
         {
-            gameLogo.SetActive(false);
+            playButton.gameObject.SetActive(false);
 
             Automathon.Game.Input.DebugInputProvider.ControlledIndex = 0;
             InputProviders[0] = new Automathon.Game.Input.DebugInputProvider(0);
@@ -151,7 +147,9 @@ namespace Automathon.Game
         public void OnEndScreenDone()
         {
             LobbyState = LobbyStates.Input;
+            inputTaking.ResetInputTaking();
             inputTakingMenu.SetActive(true);
+
         }
 
         private void DebugForward(string message)
@@ -187,6 +185,7 @@ namespace Automathon.Game
 
             Debug.LogEvent -= DebugForward;
             Debug.LogErrorEvent -= DebugErrorForward;
+            playButton.onClick.RemoveAllListeners();
         }
     }
 }

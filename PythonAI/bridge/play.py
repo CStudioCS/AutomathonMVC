@@ -1,5 +1,4 @@
 import zmq
-import json
 from bridge.datatypes import *
 from collections.abc import Callable
 
@@ -31,8 +30,7 @@ class Play:
         if state_string == "Ping":
             return "Ping"
         
-        raw_dict = json.loads(state_string)
-        return GameState(**raw_dict)
+        return GameState.model_validate_json(state_string)
     
     def __send_action__(self, msg: AIMessage):
         s = msg.model_dump_json()

@@ -13,7 +13,7 @@ def train():
         # Initialize the environment and get its state
         # Note : The environment given by the game is not normalized, neither is it preprocessed
         # If you want a tank lidar etc, you'll have to build it yourself
-        state = env.reset()
+        state = env.reset(tcp_connection_timeout=None)
         print(f"Episode {i_episode}")
 
         while not state.Done and state.SelfTank != None:
@@ -23,10 +23,10 @@ def train():
             state_from_enemy_pov: GameState = copy.deepcopy(state)
             state_from_enemy_pov.SelfTank = state.EnemyTank
             state_from_enemy_pov.EnemyTank = state.SelfTank
-            enemy_action = example_ai.decide_action(state) # in training, you decide the action of both players
+            enemy_action = example_ai.decide_action(state_from_enemy_pov) # in training, you decide the action of both players
 
             #this can raise a timeout error if your game's headless version isn't running before you start the project (or if the game takes more than 500ms to respond)
-            next_state = env.step(action, enemy_action) 
+            next_state = env.step(action, enemy_action, tcp_connection_timeout=None) 
 
             reward = 10 # determine the best reward function yourself !!
 

@@ -1,5 +1,6 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
+using System;
 
 namespace Automathon.Game
 {
@@ -14,6 +15,8 @@ namespace Automathon.Game
         public Vector2Int Size;
         public Rigidbody Rigidbody { get; private set; }
         public BoxCollider BoxCollider { get; private set; }
+
+        public Action<Vector2Int, int> OnHit;   // (pos, power)
 
         public Wall(Vector2Int position, Vector2Int size, int rotationMilli) : base(position)
         {

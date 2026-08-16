@@ -26,8 +26,6 @@ namespace Automathon.Engine
 
             LayerMatrix.Initialize();
             PhysicsManager.Initialize();
-
-            GenerateRandomMap();
         }
 
         //private static void GenerateRandomMap()
@@ -68,13 +66,7 @@ namespace Automathon.Engine
 
             ProcessAllEntityChanges();
 
-            Instantiate(new Wall(new Vector2Int(-5540, -1934), new Vector2Int(3975, 370), 3383));
-            Instantiate(new Wall(new Vector2Int(-5612, -7016), new Vector2Int(5058, 401), 1721));
-            Instantiate(new Wall(new Vector2Int(12536, 2478), new Vector2Int(4911, 417), 5639));
-            Instantiate(new Wall(new Vector2Int(6988, 715), new Vector2Int(3831, 589), 2451));
-            Instantiate(new Wall(new Vector2Int(1821, 5341), new Vector2Int(3729, 328), 5067));
-            Instantiate(new Wall(new Vector2Int(-12551, 3547), new Vector2Int(5759, 226), 6022));
-            Instantiate(new Wall(new Vector2Int(904, -236), new Vector2Int(4676, 482), 1242));
+            GenerateRandomMap();
 
             Tank1 = Instantiate(new Tank(Tank.TeamType.Green, new Vector2Int(-10000, 0), inputProvider1));
             Tank2 = Instantiate(new Tank(Tank.TeamType.Red, new Vector2Int(10000, 0), inputProvider2));

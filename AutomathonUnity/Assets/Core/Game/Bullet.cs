@@ -48,8 +48,12 @@ namespace Automathon.Game
             if (collisionContact.Other.ParentEntity == shotFromTank)
                 return;
 
-            if (collisionContact.Other.Layer == CollisionLayer.Wall || collisionContact.Other.Layer == CollisionLayer.Shield)
+            if (collisionContact.Other.ParentEntity is Wall wall)
+            {
+                wall.OnHit?.Invoke(collisionContact.Contacts[0].Position, 500);
                 HitWall?.Invoke();
+            }
+
 
             if (collisionContact.Other.Layer == CollisionLayer.Tank)
                 HitTank?.Invoke();
