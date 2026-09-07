@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4251444066350437290}
   - component: {fileID: 4957400830382325274}
   - component: {fileID: 783220877154615822}
+  - component: {fileID: 8515286296428416024}
   m_Layer: 7
-  m_Name: Bloom Volume
+  m_Name: Overlay Volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,3 +67,29 @@ MonoBehaviour:
   pulsePeriod: 10
   minIntensity: 1
   maxIntensity: 10
+--- !u!114 &8515286296428416024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2567404492823477716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36d80f3ab2f404d10adf7c745079b3a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vhsMaterial: {fileID: 2100000, guid: 9a2b8c7d6e5f40312a1b0c9d8e7f6a5b, type: 2}
+  postVolume: {fileID: 4957400830382325274}
+  light:
+    duration: 0.1
+    vhsGlitchIntensity: 0.25
+    maxLineOffset: 0.0025
+    chromaticAberration: 0.5
+    lensDistortion: -0.25
+  heavy:
+    duration: 0.3
+    vhsGlitchIntensity: 1.5
+    maxLineOffset: 0.03
+    chromaticAberration: 1
+    lensDistortion: -0.5

@@ -14,12 +14,15 @@ public class InputTaking : MonoBehaviour
     [SerializeField] private NewInputTaker inputTaker2;
     [SerializeField] private StartButton startButton;
 
+    public bool isMenuActive = false;
+
     public void DeactivateMenu()
     {
         leftSwitchButton.interactable = false;
         rightSwitchButton.interactable = false;
         leftInputField.interactable = false;
         rightInputField.interactable = false;
+        isMenuActive = false;
     }
 
     public void ActivateMenu()
@@ -28,6 +31,7 @@ public class InputTaking : MonoBehaviour
         rightSwitchButton.interactable = true;
         leftInputField.interactable = true;
         rightInputField.interactable = true;
+        isMenuActive = true;
     }
 
     public void ResetInputTaking()

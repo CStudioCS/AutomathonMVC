@@ -273,7 +273,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2567404492823477716, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_Name
-      value: Bloom Volume
+      value: Overlay Volume
       objectReference: {fileID: 0}
     - target: {fileID: 4251444066350437290, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -314,6 +314,94 @@ PrefabInstance:
     - target: {fileID: 4251444066350437290, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: heavy.vhsGlitchSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: light.vhsGlitchSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: heavy.vhsGlitchDensity
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.duration
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: heavy.lensDistortionBoost
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: light.lensDistortionBoost
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: heavy.maxGlitchDesaturation
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: light.maxGlitchDesaturation
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.maxLineOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.lensDistortion
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.vhsGlitchSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransitionSound.maxVolume
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransitionSound.minVolume
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: heavy.chromaticAberrationBoost
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: light.chromaticAberrationBoost
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: heavy.maxStaticNoiseProbability
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: light.maxStaticNoiseProbability
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.vhsGlitchDensity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.vhsGlitchIntensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.lensDistortionBoost
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.maxGlitchDesaturation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      propertyPath: menuTransition.maxStaticNoiseProbability
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -767,7 +855,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
       propertyPath: sounds.Array.size
-      value: 12
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
       propertyPath: sounds.Array.data[7].clip
@@ -810,6 +898,14 @@ PrefabInstance:
       value: StartGame
       objectReference: {fileID: 0}
     - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
+      propertyPath: sounds.Array.data[12].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: d3997debc3c59d0488e7bb13015e6214, type: 3}
+    - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
+      propertyPath: sounds.Array.data[12].name
+      value: MenuTransition_Static
+      objectReference: {fileID: 0}
+    - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
       propertyPath: sounds.Array.data[7].volume
       value: 0.4
       objectReference: {fileID: 0}
@@ -828,6 +924,10 @@ PrefabInstance:
     - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
       propertyPath: sounds.Array.data[11].volume
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3149847853886613547, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
+      propertyPath: sounds.Array.data[12].volume
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 3233551531881089347, guid: e8fb8927c37ab71408b672782c5682a4, type: 3}
       propertyPath: m_LocalPosition.x

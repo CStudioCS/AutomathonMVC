@@ -47,11 +47,22 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public int PlaySound(string name)
+    public int PlaySound(string name, bool playOneShot = true, float startingVolume = -1f)
     {
         if (soundDict.TryGetValue(name, out Sound sound))
         {
-            sources[index].PlayOneShot(sound.clip, sound.volume);
+            if (startingVolume < 0f)
+                startingVolume = sound.volume;
+            if (playOneShot)
+            {
+                sources[index].PlayOneShot(sound.clip, startingVolume);
+            }
+            else
+            {
+                sources[index].clip = sound.clip;
+                sources[index].volume = startingVolume;
+                sources[index].Play();
+            }
         }
         else
         {
@@ -73,5 +84,10 @@ public class SoundManager : MonoBehaviour
     public void StopSound(int i)
     {
         sources[i].Stop();
+    }
+
+    public void SetVolume(int i, float volume)
+    {
+        sources[i].volume = volume;
     }
 }
