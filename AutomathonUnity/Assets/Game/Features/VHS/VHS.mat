@@ -39,9 +39,9 @@ Material:
     - _OnlyStaticNoise: 1
     - _PixelHeight: 360
     - _ScanCount: 90
-    - _ScanStrength: 0.12
+    - _ScanStrength: 0.05
     - _StaticNoiseProbability: 0
     m_Colors:
-    - _LineColor: {r: 0.16471, g: 0.14118, b: 0.27059, a: 1}
+    - _LineColor: {r: 0.16470996, g: 0.14117995, b: 0.27058998, a: 0.6}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
