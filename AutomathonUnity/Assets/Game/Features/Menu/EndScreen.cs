@@ -9,8 +9,6 @@ namespace Automathon.Game
         [SerializeField] private TMP_Text winnerText;
         [SerializeField] private Button endOfEndScreenButton;
 
-        [SerializeField] private InputTaking inputTaking;
-
         private void Awake()
         {
             endOfEndScreenButton.onClick.AddListener(Done);

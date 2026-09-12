@@ -1,3 +1,4 @@
+using Automathon.Game;
 using Automathon.Game.View;
 using TMPro;
 using UnityEngine;
@@ -34,11 +35,24 @@ public class InputTaking : MonoBehaviour
         isMenuActive = true;
     }
 
-    public void ResetInputTaking()
+    public void ResetInputTaking(bool resetInput = true)
     {
-        inputTaker1.Reset();
-        inputTaker2.Reset();
+        if (resetInput)
+        {
+            inputTaker1.Reset();
+            inputTaker2.Reset();
+        }
         ActivateMenu();
         startButton.gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (WorldView.Instance.InputProviders[0] != null && WorldView.Instance.InputProviders[1] != null)
+        {
+            startButton.gameObject.SetActive(true);
+            DeactivateMenu();
+            SoundManager.instance.PlaySound("AllPlayersConnected");
+        }
     }
 }

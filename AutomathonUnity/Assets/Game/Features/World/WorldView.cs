@@ -166,7 +166,7 @@ namespace Automathon.Game
         public void OnEndScreenDone()
         {
             LobbyState = LobbyStates.Input;
-            inputTaking.ResetInputTaking();
+            inputTaking.ResetInputTaking(resetInput: false);
             inputTakingMenu.SetActive(true);
 
         }
