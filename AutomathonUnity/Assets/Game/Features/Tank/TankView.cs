@@ -106,7 +106,7 @@ namespace Automathon.Game
             cameraShaker.CameraShake(bulletShakingDuration, bulletCameraShakingIntensity);
 
             EmitShootingMiniExplosion();
-            ScreenGlitch.Trigger();
+            //ScreenGlitch.Trigger();
         }
 
         public void SetAlpha(float alpha)
@@ -187,7 +187,7 @@ namespace Automathon.Game
         private void OnMissileAbility()
         {
             EmitShootingMiniExplosion();
-            ScreenGlitch.Trigger();
+            //ScreenGlitch.Trigger();
         }
 
         protected override void OnDestroy()
