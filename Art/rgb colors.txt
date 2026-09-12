@@ -1,0 +1,158 @@
+COLOR 1
+
+HEX
+#0a0a14
+RGB
+rgba(10, 10, 20)
+HSL
+240, 33, 6
+
+
+COLOR 2
+
+HEX
+#12101e
+RGB
+rgba(18, 16, 30)
+HSL
+249, 30, 9
+
+
+COLOR 3 - DARK PURPLE
+
+HEX
+#1c1830
+RGB
+rgba(28, 24, 48)
+HSL
+250, 33, 14
+
+
+COLOR 4 - PURPLE
+
+HEX
+#2a2445
+RGB
+rgba(42, 36, 69)
+HSL
+251, 31, 21
+
+
+COLOR 5 - DARK BLUE
+
+HEX
+#0d2240
+RGB
+rgba(13, 34, 64)
+HSL
+215, 66, 15
+
+
+COLOR 6 - BLUE 2
+
+HEX
+#0a3a5c
+RGB
+rgba(10, 58, 92)
+HSL
+205, 80, 20
+
+
+COLOR 7 - BLUE 3
+
+HEX
+#105080
+RGB
+rgba(16, 80, 128)
+HSL
+206, 78, 28
+
+
+COLOR 8 - BLUE
+
+HEX
+#1870a8
+RGB
+rgba(24, 112, 168)
+HSL
+203, 75, 38
+
+
+COLOR 9 - PINK1
+
+HEX
+#ff0090
+RGB
+rgba(255, 0, 144)
+HSL
+326, 100, 50
+
+
+COLOR 10 - PINK2
+
+HEX
+#ff44cc
+RGB
+rgba(255, 68, 204)
+HSL
+316, 100, 63
+
+
+COLOR 11 - CYAN
+
+HEX
+#00ffff
+RGB
+rgba(0, 255, 255)
+HSL
+180, 100, 50
+
+
+COLOR 12 - PALE BLUE
+
+HEX
+#00ccff
+RGB
+rgba(0, 204, 255)
+HSL
+192, 100, 50
+
+
+COLOR 13 - LIME
+
+HEX
+#ccff00
+RGB
+rgba(204, 255, 0)
+HSL
+72, 100, 50
+
+
+COLOR 14 - ORANGE
+
+HEX
+#ff6600
+RGB
+rgba(255, 102, 0)
+HSL
+24, 100, 50
+
+
+COLOR 15 - YELLOW
+
+HEX
+#ffe040
+RGB
+rgba(255, 224, 64)
+HSL
+50, 100, 63
+
+
+COLOR 16 - WHITE
+
+HEX
+#e8e8ff
+RGB
+rgba(232, 232, 255)
+HSL
+240, 100, 95

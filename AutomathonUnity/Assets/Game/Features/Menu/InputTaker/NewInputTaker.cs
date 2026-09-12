@@ -161,7 +161,7 @@ namespace Automathon.Game.View
 
         private void Update()
         {
-            if (waitingForInput && inputManager.TryFindNewInput(out PlayerInputProvider playerInputProvider))
+            if (waitingForInput && inputManager.TryFindNewInput(out PlayerInputProvider playerInputProvider) && inputTaking.isMenuActive)
             {
                 SuccessfulPlayerConnection(playerInputProvider);
             }

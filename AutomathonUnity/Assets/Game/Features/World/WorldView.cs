@@ -1,6 +1,8 @@
 using Automathon.Engine;
 using Automathon.Game.Input;
 using Automathon.Game.View;
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Automathon.Game
@@ -58,10 +60,27 @@ namespace Automathon.Game
         private void OnStartButtonClicked()
         {
             SoundManager.instance.PlaySound("MenuButton");
-            playButton.gameObject.SetActive(false);
+            playButton.enabled = false;
+            StartCoroutine(ScreenGlitchTransition(() =>
+            {
+                playButton.gameObject.SetActive(false);
+                inputTakingMenu.SetActive(true);
+                inputTaking.DeactivateMenu();
+            }, () =>
+            {
+                LobbyState = LobbyStates.Input;
+                inputTaking.ActivateMenu();
+            }));
+        }
 
-            LobbyState = LobbyStates.Input;
-            inputTakingMenu.SetActive(true);
+        private IEnumerator ScreenGlitchTransition(Action middleOfTransitionChanges, Action endOfTransitionChanges)
+        {
+            float transitionDuration = ScreenGlitch.instance.menuTransition.duration;
+            ScreenGlitch.TriggerMenuTransition();
+            yield return new WaitForSeconds(transitionDuration / 2f);
+            middleOfTransitionChanges();
+            yield return new WaitForSeconds(transitionDuration / 2f);
+            endOfTransitionChanges();
         }
 
         private void SpawnEntityViewFromDict(Entity entity)

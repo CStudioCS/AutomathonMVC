@@ -25,17 +25,22 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
+    - _ContrastBoost: 1.5
     - _GlitchAmplitude: 0.03
+    - _GlitchDesaturation: 0
     - _GlitchIntensity: 0
     - _GlitchLineBands: 64
-    - _GlitchLineDensity: 0.35
+    - _GlitchLineDensity: 0
     - _GlitchLineOffset: 0
-    - _GlitchSpeed: 60
+    - _GlitchSpeed: 0
     - _LineCount: 240
     - _LineOpacity: 0.22
+    - _NoisePixelHeight: 140
+    - _OnlyStaticNoise: 1
     - _PixelHeight: 360
     - _ScanCount: 90
     - _ScanStrength: 0.12
+    - _StaticNoiseProbability: 0
     m_Colors:
     - _LineColor: {r: 0.16471, g: 0.14118, b: 0.27059, a: 1}
   m_BuildTextureStacks: []
