@@ -159,6 +159,7 @@ namespace Automathon.Game
 
         private void OnEndGame(Tank.TeamType winner)
         {
+            LightExplosion.instance.LaunchLightExplosion(0.5f, 0.5f, 5f);
             endCard.Scroll(winner);
             LobbyState = LobbyStates.End;
         }

@@ -406,7 +406,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2567404492823477716, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1107165978}
   m_SourcePrefab: {fileID: 100100000, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
 --- !u!1 &519420028
 GameObject:
@@ -784,6 +787,27 @@ MonoBehaviour:
   particleColor: {r: 0, g: 0.8, b: 1, a: 1}
   particleMaterial: {fileID: 2100000, guid: 10a61aa4e75e64c53a29afcada808363, type: 2}
   mudLayer: {fileID: 766536939}
+--- !u!1 &1107165973 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2567404492823477716, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
+  m_PrefabInstance: {fileID: 274439667}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1107165978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1107165973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f69d8db796e60a4698675e6f3fa76e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _explosionGlobalAdvancement: 0
+  _advancementForFullScreen: 0.6
+  _brigthnessIncreaseSpeed: 3
+  lightExplosionMaterial: {fileID: 2100000, guid: be0a4fc4ae06e464aa4fe525f1f3634d, type: 2}
 --- !u!1001 &1128717514
 PrefabInstance:
   m_ObjectHideFlags: 0
