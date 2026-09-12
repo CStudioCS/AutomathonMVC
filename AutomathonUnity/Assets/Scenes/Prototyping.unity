@@ -377,7 +377,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: heavy.maxStaticNoiseProbability
-      value: 0
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 8515286296428416024, guid: 6a86b48f42d0d1b4ba888e646eb9d66d, type: 3}
       propertyPath: light.maxStaticNoiseProbability
