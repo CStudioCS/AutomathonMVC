@@ -34,6 +34,13 @@ public class LightExplosion : MonoBehaviour
         public float startTime;
     }
 
+    private void OnEnable()
+    {
+        lightExplosionMaterial.SetFloat(_globalAdvancementID, 0f);
+        lightExplosionMaterial.SetFloat(_brigthnessIncreaseSpeedID, _brigthnessIncreaseSpeed);
+        lightExplosionMaterial.SetFloat(_advancementForFullScreenID, _advancementForFullScreen);
+    }
+
     private void OnDisable()
     {
         lightExplosionMaterial.SetFloat(_globalAdvancementID, 0f);
@@ -54,7 +61,7 @@ public class LightExplosion : MonoBehaviour
         });
     }
 
-    private void Update()
+    private void Update()//inutile, il n'y en aura qu'une et là ça ne marche pas trop avec plusieurs puisqu'on ne garde qu'un épicentre
     {
         int nbExpl = activeLightExplosions.Count;
         for (int i = nbExpl - 1; i >= 0; i--)
@@ -67,6 +74,8 @@ public class LightExplosion : MonoBehaviour
             }
             float t = Mathf.Sin(Mathf.PI * temp);
             lightExplosionMaterial.SetFloat(_globalAdvancementID, t);
+            lightExplosionMaterial.SetFloat(_epicenterXId, exp.epicenterX);
+            lightExplosionMaterial.SetFloat(_epicenterYId, exp.epicenterY);
         }
     }
 }

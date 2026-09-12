@@ -111,7 +111,7 @@ namespace Automathon.Game
         private void Death()
         {
             GameplayManager.Destroy(this);
-            GameplayManager.EndGame(Team);
+            GameplayManager.EndGame(Team, Position);
         }
 
         public override State GetState()

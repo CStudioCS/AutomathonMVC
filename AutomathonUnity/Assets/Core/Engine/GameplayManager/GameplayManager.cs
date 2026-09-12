@@ -13,7 +13,7 @@ namespace Automathon.Engine
         private static DeferredList<Entity> entities = new();
         public static GameplayState State { get; private set; }
         public static event Action<Entity> EntitySpawned;
-        public static event Action<Tank.TeamType> GameEnded;
+        public static event Action<Tank.TeamType, Vector2Int> GameEnded;
 
         public static Tank Tank1;
         public static Tank Tank2;
@@ -76,12 +76,12 @@ namespace Automathon.Engine
             State = GameplayState.Game;
         }
 
-        public static void EndGame(Tank.TeamType loser)
+        public static void EndGame(Tank.TeamType loser, Vector2Int loserPosition)
         {
             State = GameplayState.Lobby;
 
             Tank.TeamType winner = loser == Tank1.Team ? Tank2.Team : Tank1.Team;
-            GameEnded?.Invoke(winner);
+            GameEnded?.Invoke(winner, loserPosition);
         }
 
         public static GameState GetState(InputProvider self)

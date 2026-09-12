@@ -157,9 +157,15 @@ namespace Automathon.Game
         }
 #endif
 
-        private void OnEndGame(Tank.TeamType winner)
+        private void OnEndGame(Tank.TeamType winner, Vector2Int loserPosition)
         {
-            LightExplosion.instance.LaunchLightExplosion(0.5f, 0.5f, 5f);
+            Vector2 loserPositionWC = loserPosition.ToVector2Scaled();
+            Debug.Log(loserPositionWC);
+            Vector2 explosionLocationSC = Camera.main.WorldToScreenPoint(loserPositionWC);
+            Debug.Log(explosionLocationSC);
+            Vector2 explosionLocationUV = new Vector2(explosionLocationSC.x / Screen.width, (1 - (explosionLocationSC.y / Screen.height)));
+            LightExplosion.instance.LaunchLightExplosion(explosionLocationUV.x, explosionLocationUV.y, 5f);
+            Debug.Log(explosionLocationUV);
             endCard.Scroll(winner);
             LobbyState = LobbyStates.End;
         }
