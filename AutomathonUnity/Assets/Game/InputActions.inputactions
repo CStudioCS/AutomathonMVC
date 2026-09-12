@@ -859,7 +859,18 @@
                     "path": "*/{Cancel}",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad;Touch;Joystick;XR;Keyboard_right",
+                    "groups": "Gamepad;Touch;Joystick;XR",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b24e60f-6650-4f26-b69d-b5c10c3a424e",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";WASD;Keyboard_left;Keyboard_right",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false

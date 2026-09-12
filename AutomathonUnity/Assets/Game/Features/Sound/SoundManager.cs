@@ -51,14 +51,14 @@ public class SoundManager : MonoBehaviour
     {
         if (soundDict.TryGetValue(name, out Sound sound))
         {
-            if (startingVolume < 0f)
-                startingVolume = sound.volume;
             if (playOneShot)
             {
-                sources[index].PlayOneShot(sound.clip, startingVolume);
+                sources[index].PlayOneShot(sound.clip, sound.volume);
             }
             else
             {
+                if (startingVolume < 0f)
+                    startingVolume = sound.volume;
                 sources[index].clip = sound.clip;
                 sources[index].volume = startingVolume;
                 sources[index].Play();

@@ -45,12 +45,12 @@ Material:
     - _ArcFreq: 6
     - _ArcSpeed: 4
     - _BeamThickness: 0.3
-    - _BodyIntensity: 1.15
-    - _CoreIntensity: 1.15
+    - _BodyIntensity: 1
+    - _CoreIntensity: 0.3
     - _CoreSharp: 0.3
     - _EnableExternalAlpha: 0
-    - _Falloff: 0.15
-    - _GlowIntensity: 1
+    - _Falloff: 0.6
+    - _GlowIntensity: 0.1
     - _ImpactArc: 2
     - _ImpactBright: 2.5
     - _ImpactDecay: 0.45
@@ -58,12 +58,12 @@ Material:
     - _ImpactSpread: 1.5
     - _ImpactSwell: 1.2
     - _ImpactWidth: 0.25
-    - _OrbCoreSharp: 0.18
+    - _OrbCoreSharp: 0.09
     - _OrbRadius: 1
     - _Pad: 0.5
     - _Phase: 0
     - _Pulse: 0.12
-    - _PulseSpeed: 8
+    - _PulseSpeed: 4
     - _ZWrite: 0
     m_Colors:
     - _BeamColor: {r: 0.1, g: 0.8, b: 1, a: 1}
