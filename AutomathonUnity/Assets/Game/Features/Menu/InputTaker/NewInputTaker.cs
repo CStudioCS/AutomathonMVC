@@ -201,12 +201,6 @@ namespace Automathon.Game.View
         {
             InputProvider = inputProvider;
             WorldView.Instance.InputProviders[playerIndex] = inputProvider;
-            if (WorldView.Instance.InputProviders[0] != null && WorldView.Instance.InputProviders[1] != null)
-            {
-                startButton.gameObject.SetActive(true);
-                inputTaking.DeactivateMenu();
-                SoundManager.instance.PlaySound("AllPlayersConnected");
-            }
         }
 
 

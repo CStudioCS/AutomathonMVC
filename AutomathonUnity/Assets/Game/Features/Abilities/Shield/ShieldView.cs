@@ -6,7 +6,7 @@ namespace Automathon.Game
         {
             base.Initialize(entity);
             SoundManager.instance.PlaySound("Shield");
-            ScreenGlitch.Trigger();
+            //ScreenGlitch.Trigger();
             // The neon outline is authored on the Shield prefab (Follow = true, so it self-updates).
         }
     }
