@@ -41,12 +41,40 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ActivateBlast: 0
+    - _ActivateLargeRays: 0
+    - _ActivateRays: 0
     - _AdvancementForFullScreen: 0.6
+    - _BlastAdvancement: 0
     - _BrigthnessIncreaseSpeed: 3
     - _EnableExternalAlpha: 0
     - _ExplosionEpicenterX: 0
     - _ExplosionEpicenterY: 0
     - _ExplosionGlobalAdvancement: 0
+    - _ExplosionRange: 0.5
+    - _FadingSpeed: 2
+    - _GlobalLuminosityDecrease: 1
+    - _IntensityMaxVariationThroughTime: 0.1
+    - _IntensityVariationSpeedFactor: 2
+    - _LargeRaysAdvancement: 0
+    - _LengthOverWidthIntensityWeight: 0.8
+    - _LengthOverWidthRatio: 20
+    - _MaxAngleDeviation: 1
+    - _MaxIntensity: 0.7
+    - _MaxLength: 0.8
+    - _MaxStartingAdvancementDelay: 0.2
+    - _MaxWidth: 0.01
+    - _MinIntensity: 0.1
+    - _MinLength: 0.05
+    - _MinWidth: 0.0001
+    - _RaysAdvancement: 0
+    - _RaysAdvancementDuration: 0.5
+    - _RaysCount: 12
+    - _RaysEndingAdvancement: 1
+    - _RaysSeed: 38.214924
+    - _RaysStartingAdvancement: 0
+    - _RingWidth: 0.02
+    - _WidthDeviationMaxPercentage: 0.2
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
