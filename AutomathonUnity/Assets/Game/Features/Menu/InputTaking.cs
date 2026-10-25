@@ -48,7 +48,7 @@ public class InputTaking : MonoBehaviour
 
     private void Update()
     {
-        if (WorldView.Instance.InputProviders[0] != null && WorldView.Instance.InputProviders[1] != null)
+        if (WorldView.Instance.InputProviders[0] != null && WorldView.Instance.InputProviders[1] != null && isMenuActive)
         {
             startButton.gameObject.SetActive(true);
             DeactivateMenu();
