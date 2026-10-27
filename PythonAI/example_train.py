@@ -6,6 +6,7 @@ import example_ai # this is where your ai will actually be implemented
 def train():
     env = Gym()
     num_episodes = 50
+    max_steps_per_episode = 60 * 60 # one minute of game time (the game runs at 60 steps per second), avoids endless stalemates
 
     print("Begin Training")
 
@@ -16,7 +17,9 @@ def train():
         state = env.reset(tcp_connection_timeout=None)
         print(f"Episode {i_episode}")
 
-        while not state.Done and state.SelfTank != None:
+        steps = 0
+        while not state.Done and state.SelfTank != None and steps < max_steps_per_episode:
+            steps += 1
             
             action = example_ai.decide_action(state)
         

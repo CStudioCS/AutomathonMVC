@@ -1,18 +1,23 @@
-﻿using Automathon.Engine;
+using Automathon.Engine;
 using System;
 
 namespace Automathon.Game
 {
     public class Health : Component
     {
-        public readonly int MaxHealth;
+        public readonly Fixed MaxHealth;
         private readonly Action onDeath;
         private readonly bool destroyOnDeath;
         private bool invincible;
 
-        public int CurrentHealth { get; private set; }
+        public Fixed CurrentHealth { get; private set; }
 
-        public Health(int maxHealth, bool destroyOnDeath = true, Action onDeath = null)
+        /// <summary>CurrentHealth / MaxHealth, in [0, 1].</summary>
+        public Fixed Ratio => MaxHealth > 0 ? CurrentHealth / MaxHealth : Fixed.Zero;
+
+        public bool IsDead => CurrentHealth <= 0;
+
+        public Health(Fixed maxHealth, bool destroyOnDeath = true, Action onDeath = null)
         {
             MaxHealth = maxHealth;
             CurrentHealth = maxHealth;
@@ -31,9 +36,9 @@ namespace Automathon.Game
             invincible = false;
         }
 
-        public void Damage(int damage)
+        public void Damage(Fixed damage)
         {
-            if(!invincible)
+            if (!invincible)
             {
                 CurrentHealth -= damage;
                 if (CurrentHealth <= 0)

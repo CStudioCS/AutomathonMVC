@@ -25,7 +25,7 @@ namespace Automathon.Game
 
         protected virtual void LateUpdate()
         {
-            transform.SetPositionAndRotation(Entity.Position.ToVector2Scaled(), ViewMath.MilliRadRotationToQuaternion(Entity.RotationMilli));
+            transform.SetPositionAndRotation(Entity.Position.ToVector2(), ViewMath.RadRotationToQuaternion(Entity.Rotation));
         }
 
         protected virtual void OnControllerDestroyed()

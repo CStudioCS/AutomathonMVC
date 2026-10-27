@@ -43,7 +43,19 @@ namespace Automathon.AI
         {
             string response = responseSocket.ReceiveFrameString();
 
-            AIMessage msg = JsonConvert.DeserializeObject<AIMessage>(response);
+            AIMessage msg;
+            try
+            {
+                msg = JsonConvert.DeserializeObject<AIMessage>(response);
+            }
+            catch (JsonException e)
+            {
+                // REQ/REP sockets must always answer, otherwise the python side would be stuck forever.
+                // Answer with the unchanged state so the trainer can keep going.
+                Debug.LogError("Could not parse the message sent from python: " + e.Message);
+                responseSocket.SendFrame(JsonConvert.SerializeObject(GameplayManager.GetState(selfInputProvider)));
+                return false;
+            }
 
             if (msg.Reset)
                 GameplayManager.Reset(selfInputProvider, enemyInputProvider);

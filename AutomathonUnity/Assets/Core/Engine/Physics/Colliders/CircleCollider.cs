@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 
 namespace Automathon.Engine.Physics
 {
     public class CircleCollider : Collider
     {
-        public Vector2Int WorldPosition => ParentEntity.Position + LocalPosition;
-        public Vector2Int LocalPosition { get; private set; }
-        public int Radius { get; private set; }
+        public FixedVector2 WorldPosition => ParentEntity.Position + LocalPosition;
+        public FixedVector2 LocalPosition { get; private set; }
+        public Fixed Radius { get; private set; }
 
-        public CircleCollider(Vector2Int localPosition, int radius) : base()
+        public CircleCollider(FixedVector2 localPosition, Fixed radius) : base()
         {
             LocalPosition = localPosition;
             Radius = radius;
@@ -20,11 +20,13 @@ namespace Automathon.Engine.Physics
                 return Collision.BoxCircle(b, this);
             else if (collider is CircleCollider c)
                 return Collision.CircleCircle(this, c);
+            else if (collider is CompositeCollider composite)
+                return composite.Colliding(this);
             else
                 throw new NotImplementedException();
         }
 
-        public override bool Contains(Vector2Int point)
-            => (point - WorldPosition).LengthSquared() <= Radius * Radius;
+        public override bool Contains(FixedVector2 point)
+            => (point - WorldPosition).LengthSquaredLong() <= FixedLong.Multiply(Radius, Radius);
     }
 }

@@ -1,8 +1,12 @@
-﻿using Automathon.Engine.Utility;
 using System;
 
 namespace Automathon.Engine.Physics
 {
+    /// <summary>
+    /// A contact point between two rigidbodies, solved with sequential impulses (accumulated impulse clamping,
+    /// Baumgarte position bias and Coulomb friction). Masses and accumulated impulses are stored as
+    /// <see cref="FixedLong"/> so very light / very heavy bodies don't overflow or lose precision.
+    /// </summary>
     public class Contact
     {
         public Rigidbody Reference { get; private set; }
@@ -11,33 +15,35 @@ namespace Automathon.Engine.Physics
         public Collider ReferenceCollider { get; private set; }
         public Collider IncidentCollider { get; private set; }
 
-        public Vector2Int Position { get; private set; }
-        public Vector2Int NormalMilli { get; private set; } //normal vector scaled by 1000
-        public int Penetration { get; private set; }
+        public FixedVector2 Position { get; private set; }
+        /// <summary>Unit normal pointing from the reference towards the incident body.</summary>
+        public FixedVector2 Normal { get; private set; }
+        public Fixed Penetration { get; private set; }
 
-        public int Pn; //accumulated impulses
-        public int Pt;
+        /// <summary>Accumulated normal and tangential impulses.</summary>
+        public FixedLong Pn;
+        public FixedLong Pt;
 
-        private int normalMassMilli;
-        private int tangentialMassMilli;
-        private int frictionMilli;
+        private FixedLong normalMass;
+        private FixedLong tangentialMass;
+        private readonly Fixed friction;
 
-        private Vector2Int r1;
-        private Vector2Int r2;
+        private FixedVector2 r1;
+        private FixedVector2 r2;
 
-        public Contact(Rigidbody reference, Rigidbody incident, Collider referenceCollider, Collider incidentCollider, Vector2Int position, Vector2Int normalMilli, int penetration)
+        public Contact(Rigidbody reference, Rigidbody incident, Collider referenceCollider, Collider incidentCollider, FixedVector2 position, FixedVector2 normal, Fixed penetration)
         {
             Reference = reference;
             Incident = incident;
             ReferenceCollider = referenceCollider;
             IncidentCollider = incidentCollider;
             Position = position;
-            NormalMilli = normalMilli;
+            Normal = normal;
             Penetration = penetration;
-            frictionMilli = IntMath.Isqrt(reference.FrictionMilli * incident.FrictionMilli) / 1000;
+            friction = FixedMath.Sqrt(reference.Friction * incident.Friction);
         }
 
-        public Vector2Int ComputeR(Collider collider)
+        public FixedVector2 ComputeR(Collider collider)
         {
             if (collider is BoxCollider boxCollider)
                 return Position - boxCollider.WorldPosition;
@@ -48,65 +54,65 @@ namespace Automathon.Engine.Physics
         }
 
         /// <summary>
-        /// Calculate Effective masses
+        /// Calculate effective masses
         /// </summary>
         public void PreStep()
         {
             r1 = ComputeR(ReferenceCollider);
             r2 = ComputeR(IncidentCollider);
 
-            Vector2Int DoubleVectProd(Vector2Int r, Vector2Int n)
-                => new Vector2Int(-r.Y * (r.X * n.Y - r.Y * n.X), r.X * (r.X * n.Y - r.Y * n.X));
+            FixedLong invMassSum = (FixedLong)Reference.InvMass + Incident.InvMass;
 
-            //one division by 1000 because the normal is mult by 1000, and another one because of InvIMilli
-            Vector2Int v = (Reference.InvIMicro * DoubleVectProd(r1, NormalMilli) + Incident.InvIMicro * DoubleVectProd(r2, NormalMilli)) / 1000000000 / 1000000;
-            normalMassMilli = 1000 * 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) + v.Dot(NormalMilli) * 1000);
+            FixedLong EffectiveMass(FixedVector2 direction)
+            {
+                FixedLong rn1 = r1.CrossLong(direction);
+                FixedLong rn2 = r2.CrossLong(direction);
+                FixedLong k = invMassSum + Reference.InvInertia * rn1 * rn1 + Incident.InvInertia * rn2 * rn2;
+                return k > FixedLong.Zero ? FixedLong.One / k : FixedLong.Zero;
+            }
 
-            Vector2Int tangent = NormalMilli.OrthogonalCounterClockwise();
-            tangentialMassMilli = 1000 * 1000 / ((Reference.InvMassMilli + Incident.InvMassMilli) + v.Dot(tangent) * 1000);
+            normalMass = EffectiveMass(Normal);
+            tangentialMass = EffectiveMass(Normal.OrthogonalCounterClockwise());
         }
+
+        private static FixedVector2 PointVelocity(Rigidbody body, FixedVector2 r)
+            => body.Velocity + r.OrthogonalCounterClockwise() * body.AngularVelocity; // v + w x r
 
         public void ApplyImpulse()
         {
-            //You will fucking cry reading this
-            //The normalMilli vector is scaled by 1000
-            //InvMassMilli and InvIMilli are also scaled by 1000
-            //normalMassMilli and tangentialMassMilli are also scaled by 1000
-            //oh yeah also frictionMilli
-            //Therefore there is a bunch of /1000 everywhere in the code
-
             if (ReferenceCollider.IsTrigger || IncidentCollider.IsTrigger)
                 return;
 
-            Vector2Int dV = Incident.Velocity + Incident.AngularVelocityMilli * new Vector2Int(-r2.Y, r2.X) / 1000 - (Reference.Velocity + Reference.AngularVelocityMilli * new Vector2Int(-r1.Y, r1.X) / 1000); //Vector Product translated in coords because not 3D lol
+            // Relative velocity at the contact point
+            FixedVector2 dV = PointVelocity(Incident, r2) - PointVelocity(Reference, r1);
 
-            int vn = dV.Dot(NormalMilli) / 1000;
-            int vbias = PhysicsManager.KBiasMilli * Math.Max(0, Penetration - PhysicsManager.SlopPenetration) * GameplayConstants.FRAMERATE / 1000;
-            int pnt = Math.Max((-vn + vbias) * normalMassMilli / 1000, 0);
-            int tpp = pnt;
+            // Normal impulse
+            FixedLong vn = dV.DotLong(Normal);
+            Fixed penetrationToResolve = FixedMath.Max(Fixed.Zero, Penetration - PhysicsManager.SlopPenetration);
+            FixedLong vbias = (FixedLong)PhysicsManager.KBias * penetrationToResolve * GameplayConstants.FRAMERATE;
+            FixedLong dPn = normalMass * (vbias - vn);
 
-            int temp = Pn; //Accumulated impulse
-            Pn = Math.Max(Pn + pnt, 0);
-            pnt = Pn - temp;
+            FixedLong previousPn = Pn;
+            Pn = FixedMath.Max(previousPn + dPn, FixedLong.Zero);
+            dPn = Pn - previousPn;
 
-            /*if (Math.Abs(tpp - pnt) >= 0.01f)   
-                Debug.Log(pnt - tpp);*/
+            // Friction impulse
+            FixedVector2 tangent = Normal.OrthogonalCounterClockwise();
+            FixedLong vt = dV.DotLong(tangent);
+            FixedLong dPt = -(tangentialMass * vt);
 
-            Vector2Int tangent = NormalMilli.OrthogonalCounterClockwise();
-            int vt = dV.Dot(tangent) / 1000;
+            FixedLong maxPt = (FixedLong)friction * Pn;
+            FixedLong previousPt = Pt;
+            Pt = FixedMath.Clamp(previousPt + dPt, -maxPt, maxPt);
+            dPt = Pt - previousPt;
 
-            int ptt = (int)Math.Clamp(-vt * tangentialMassMilli / 1000, -frictionMilli * Pn / 1000, frictionMilli * Pn / 1000);
-            temp = Pt;
-            Pt = Math.Clamp(Pt + ptt, -frictionMilli * Pn, frictionMilli * Pn);
-            ptt = Pt - temp;
+            FixedVector2 P = Normal * dPn + tangent * dPt;
 
-            Vector2Int P = pnt * NormalMilli / 1000 + ptt * tangent / 1000;
+            Reference.Velocity -= P * Reference.InvMass;
+            Reference.AngularVelocity -= Reference.InvInertia * r1.Cross(P);
 
-            Reference.Velocity -= P * Reference.InvMassMilli / 1000;
-            Reference.AngularVelocityMilli -= Reference.InvIMicro * (r1.X * P.Y - r1.Y * P.X) / 1000000;
-
-            Incident.Velocity += P * Incident.InvMassMilli / 1000;
-            Incident.AngularVelocityMilli += Incident.InvIMicro * (r2.X * P.Y - r2.Y * P.X) / 1000000;
+            Incident.Velocity += P * Incident.InvMass;
+            Incident.AngularVelocity += Incident.InvInertia * r2.Cross(P);
         }
     }
 }

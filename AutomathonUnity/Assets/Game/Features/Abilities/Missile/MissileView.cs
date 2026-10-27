@@ -23,13 +23,13 @@ namespace Automathon.Game
             ScreenGlitch.TriggerHeavy();
 
             VisualEffect bigExplosion = Instantiate(BigExplosion, transform.position, Quaternion.identity);
-            bigExplosion.SetFloat("Radius", Missile.AOE_RADIUS / 1000);
+            bigExplosion.SetFloat("Radius", Missile.AOE_RADIUS.ToWorldLength());
 
             if (Camera.main != null)
                 Camera.main.GetComponent<CameraShaker>().CameraShake(cameraShakeDuration, cameraShakeIntensity);
 
             // Leave a black scorch mark in the mud at the blast.
-            Automathon.Game.View.MudLayerController.AddExplosionMark(transform.position, Missile.AOE_RADIUS / 1000f);
+            Automathon.Game.View.MudLayerController.AddExplosionMark(transform.position, Missile.AOE_RADIUS.ToWorldLength());
 
             base.OnControllerDestroyed();
         }

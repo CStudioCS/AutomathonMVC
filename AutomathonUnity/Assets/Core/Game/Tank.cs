@@ -1,4 +1,4 @@
-﻿using Automathon.Engine;
+using Automathon.Engine;
 using Automathon.Engine.Physics;
 using Automathon.Game.Input;
 
@@ -8,11 +8,14 @@ namespace Automathon.Game
     {
         public class TankState : State
         {
-            public int Width;
-            public int Height;
-            public Vector2Int Velocity;
+            public Fixed Width;
+            public Fixed Height;
+            public Fixed Radius;
+            public Fixed Rotation;
+            public FixedVector2 Velocity;
+            public FixedVector2 AimingDirection;
 
-            public int Health;
+            public Fixed Health;
 
             public int ShieldCooldownFramesLeft;
             public int MissileCooldownFramesLeft;
@@ -22,11 +25,14 @@ namespace Automathon.Game
 
         public enum TeamType { Red, Green }
 
-        private const int TANK_HEIGHT = 838;
-        private const int TANK_WIDTH = 1138;
-        private const int SPEED = 7000;
-        public const int MAX_HEALTH = 1000;
-        public const int SPAWN_DISTANCE_FROM_TANK = 700;
+        public static readonly Fixed TANK_HEIGHT = 0.838;
+        public static readonly Fixed TANK_WIDTH = 1.138;
+        /// <summary>Max speed in units per second.</summary>
+        public static readonly Fixed SPEED = 7;
+        public static readonly Fixed MAX_HEALTH = 1000;
+        public static readonly Fixed SPAWN_DISTANCE_FROM_TANK = 0.7;
+        // Circular hitbox: diameter = the smaller side of the sprite's rectangle (min(W, H)).
+        public static readonly Fixed RADIUS = FixedMath.Min(TANK_WIDTH, TANK_HEIGHT) / 2;
 
         public TeamType Team;
         //public BulletAbility BulletAbility;
@@ -40,27 +46,27 @@ namespace Automathon.Game
         public InputProvider InputProvider { get; private set; }
         public Rigidbody Rigidbody;
 
-        public Vector2Int LastMilliDirection { get; private set; } = new Vector2Int(1000, 0);
-        public Vector2Int LastMovingMilliDirection { get; private set; } = new Vector2Int(1000, 0);
+        /// <summary>Last non-zero aiming direction (unit vector).</summary>
+        public FixedVector2 LastDirection { get; private set; } = FixedVector2.Right;
+        /// <summary>Last non-zero movement direction.</summary>
+        public FixedVector2 LastMovingDirection { get; private set; } = FixedVector2.Right;
         public bool IsReady { get; set; }
         public bool IsDashing { get; set; }
 
-        public Tank(TeamType team, Vector2Int position, InputProvider inputProvider) : base(position)
+        public Tank(TeamType team, FixedVector2 position, InputProvider inputProvider) : base(position)
         {
             InputProvider = inputProvider;
             Team = team;
 
-            // Circular hitbox: diameter = the smaller side of the old rectangle (min(W, H)).
-            int radius = System.Math.Min(TANK_WIDTH, TANK_HEIGHT) / 2;
-            CircleCollider circleCollider = new CircleCollider(Vector2Int.Zero, radius);
+            CircleCollider circleCollider = new CircleCollider(FixedVector2.Zero, RADIUS);
             circleCollider.Layer = CollisionLayer.Tank;
-            Rigidbody = new Rigidbody(circleCollider, 1000, 500, 200);
+            Rigidbody = new Rigidbody(circleCollider, invMass: 1, invInertia: 0.5, friction: 0);
 
             Initialize(
                 circleCollider,
                 Rigidbody,
                 inputProvider,
-                MachineGunAbility = new MachineGunAbility(10, 500, inputProvider.ShouldShoot),
+                MachineGunAbility = new MachineGunAbility(10, 0.5, inputProvider.ShouldShoot),
                 MissileAbility = new MissileAbility(inputProvider.ShouldMissile),
                 ShieldAbility = new ShieldAbility(inputProvider.ShouldShield),
                 DashAbility = new DashAbility(inputProvider.ShouldDash),
@@ -74,38 +80,30 @@ namespace Automathon.Game
         {
             if (GameplayManager.State != GameplayManager.GameplayState.Game)
             {
-                Rigidbody.Velocity = Vector2Int.Zero;
-                Rigidbody.AngularVelocityMilli = 0;
+                Rigidbody.Velocity = FixedVector2.Zero;
+                Rigidbody.AngularVelocity = Fixed.Zero;
                 return;
             }
 
             base.Update();
 
-            Vector2Int movementInput = InputProvider.GetMilliMovementDir();
+            FixedVector2 movementInput = InputProvider.GetMovementDir().ClampMagnitude(1);
 
             // Only update velocity if not dashing (dash manages its own velocity)
             if (!IsDashing)
-                Rigidbody.Velocity = movementInput * SPEED / 1000;
+                Rigidbody.Velocity = movementInput * SPEED;
 
-            Vector2Int aimingInput = InputProvider.GetMilliAimingDir();
+            FixedVector2 aimingInput = InputProvider.GetAimingDir();
 
-            /*if (InputProvider is PlayerInputProvider playerInputProvider && playerInputProvider.PlayerControls == PlayerInputProvider.PlayerControlsType.RightKeyboard)
-                aimingInput = new Vector2Int(aimingInput.X - Position.X, aimingInput.Y - Position.Y);
-            */
-
-
-            if (movementInput != Vector2Int.Zero)
+            if (movementInput != FixedVector2.Zero)
             {
-                LastMovingMilliDirection = movementInput;
-                RotationMilli = Atan2Int.Atan2(movementInput.X, movementInput.Y);
-                Rigidbody.AngularVelocityMilli = 0;
-
-                /*if (InputProvider is PlayerInputProvider p && (p.ControlsType == PlayerInputProvider.PlayerControlsType.LeftKeyboard || p.ControlsType == PlayerInputProvider.PlayerControlsType.RightKeyboard))
-                    LastMilliDirection = movementInput;*/
+                LastMovingDirection = movementInput;
+                Rotation = movementInput.Angle();
+                Rigidbody.AngularVelocity = Fixed.Zero;
             }
 
-            if (aimingInput != Vector2Int.Zero)
-                LastMilliDirection = aimingInput;
+            if (aimingInput != FixedVector2.Zero)
+                LastDirection = aimingInput.Normalized();
         }
 
         private void Death()
@@ -120,7 +118,10 @@ namespace Automathon.Game
                 Position = this.Position,
                 Width = TANK_WIDTH,
                 Height = TANK_HEIGHT,
+                Radius = RADIUS,
+                Rotation = this.Rotation,
                 Velocity = Rigidbody.Velocity,
+                AimingDirection = LastDirection,
                 Health = Health.CurrentHealth,
                 DashCooldownFramesLeft = DashAbility.FramesOfCooldownLeft,
                 MachineGunCooldownFramesLeft = MachineGunAbility.FramesOfCooldownLeft,

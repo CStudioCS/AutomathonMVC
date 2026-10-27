@@ -17,6 +17,7 @@ namespace Automathon.Game
     public class State
     {
         public string Type => this.GetType().Name;
-        public Vector2Int Position;
+        /// <summary>World position (1 = 1 Unity unit).</summary>
+        public FixedVector2 Position;
     }
 }

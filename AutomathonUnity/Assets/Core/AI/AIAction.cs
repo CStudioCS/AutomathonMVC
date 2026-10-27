@@ -1,9 +1,11 @@
-﻿namespace Automathon.AI
+namespace Automathon.AI
 {
     public class AIAction
     {
-        public Vector2Int MovingDirection;
-        public Vector2Int AimingDirection;
+        /// <summary>Movement direction. Vectors longer than 1 are normalized, shorter ones move the tank slower.</summary>
+        public FixedVector2 MovingDirection;
+        /// <summary>Aiming direction, normalized by the game. A zero vector keeps the previous aiming direction.</summary>
+        public FixedVector2 AimingDirection;
         public bool MachineGun;
         public bool Missile;
         public bool Shield;

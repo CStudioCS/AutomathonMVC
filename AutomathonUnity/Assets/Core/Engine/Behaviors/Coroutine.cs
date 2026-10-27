@@ -34,10 +34,10 @@ namespace Automathon.Engine
             Enumerator = stack.Pop();
         }
 
-        private struct WaitForMilliseconds
+        private struct WaitForSeconds
         {
-            public int TimeMilliseconds;
-            public WaitForMilliseconds(int milliseconds) { TimeMilliseconds = milliseconds; }
+            public Fixed Seconds;
+            public WaitForSeconds(Fixed seconds) { Seconds = seconds; }
         }
 
         private struct PausedUntil
@@ -61,8 +61,8 @@ namespace Automathon.Engine
                     waitTimer = 0;
                 else if (Enumerator.Current is int returnedInt)
                     waitTimer = returnedInt;
-                else if (Enumerator.Current is WaitForMilliseconds wait)
-                    waitTimer = wait.TimeMilliseconds / GameplayConstants.FRAMERATE;
+                else if (Enumerator.Current is WaitForSeconds wait)
+                    waitTimer = GameplayConstants.SecondsToFrames(wait.Seconds);
                 else if (Enumerator.Current is PausedUntil paused)
                 {
                     pausedUntil = paused.Until;
@@ -89,14 +89,14 @@ namespace Automathon.Engine
             action();
         }
 
-        public static IEnumerator WaitMilliseconds(int milliseconds)
+        public static IEnumerator WaitSeconds(Fixed seconds)
         {
-            yield return new WaitForMilliseconds(milliseconds);
+            yield return new WaitForSeconds(seconds);
         }
 
-        public static IEnumerator WaitMilisecondsThen(int milliSeconds, Action action)
+        public static IEnumerator WaitSecondsThen(Fixed seconds, Action action)
         {
-            yield return new WaitForMilliseconds(milliSeconds);
+            yield return new WaitForSeconds(seconds);
             action();
         }
 

@@ -1,148 +1,114 @@
-﻿using System;
+using System;
 
 namespace Automathon.Engine.Physics
 {
     public static class Collision
     {
-        //There's gonna be a lot of approximations here, and the game would probably run better
-        //if they FUIBZEIFUBEZFOUB let me use floats
-
         public static bool BoxCircle(BoxCollider box, CircleCollider circle)
         {
-            //Calculate the circle coordinates in the boxes relative coordinate system, then simply use AABB-Circle collision with the box at position (0, 0)
-            //We basically rotate the circle instead of the rectangle
-            Vector2Int boxRight = box.WorldVertices[1] - box.WorldVertices[0];
-            Vector2Int boxDown = box.WorldVertices[3] - box.WorldVertices[0];
+            // Express the circle center in the box's local frame, then do an AABB-circle test
+            FixedVector2 right = (box.WorldVertices[1] - box.WorldVertices[0]).Normalized();
+            FixedVector2 up = (box.WorldVertices[1] - box.WorldVertices[2]).Normalized();
+            FixedVector2 relative = circle.WorldPosition - box.WorldPosition;
 
-            Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldVertices[0];
-            Vector2Int rectCoordCirclePos = new Vector2Int(relativeCirclePos.Dot(boxRight) / box.Width, relativeCirclePos.Dot(boxDown) / box.Height);
+            Fixed halfWidth = box.Width / 2;
+            Fixed halfHeight = box.Height / 2;
+            FixedVector2 local = new FixedVector2(relative.Dot(right), relative.Dot(up));
+            FixedVector2 closest = new FixedVector2(
+                FixedMath.Clamp(local.X, -halfWidth, halfWidth),
+                FixedMath.Clamp(local.Y, -halfHeight, halfHeight));
 
-            return AABBCircle(Vector2Int.Zero, box.Width, box.Height, rectCoordCirclePos, circle.Radius);
-        }
-
-        public static bool AABBCircle(Vector2Int rectTopLeftPos, int width, int height, Vector2Int cPosition, int cRadius)
-        {
-            //work in doubled coord space else it don't work
-            rectTopLeftPos *= 2;
-            cPosition *= 2;
-            cRadius *= 2;
-
-            //Since everything is scaled by 2, original width and height are now half width and half height in the doubled coord space
-            Vector2Int halfSize = new Vector2Int(width, height);
-
-
-            int distX = Math.Abs(cPosition.X - (rectTopLeftPos.X + halfSize.X));
-            int distY = Math.Abs(cPosition.Y - (rectTopLeftPos.Y - halfSize.Y));
-
-            if (distX >= cRadius + halfSize.X || distY >= cRadius + halfSize.Y)
-                return false;
-            if (distX < halfSize.X && distY < halfSize.Y)
-                return true;
-
-            distX -= halfSize.X;
-            distY -= halfSize.Y;
-
-            if (distX <= halfSize.X || distY <= halfSize.Y)
-                return true;
-
-            if (distX * distX + distY * distY < cRadius * cRadius)
-                return true;
-
-            return false;
+            return (local - closest).LengthSquaredLong() < FixedLong.Multiply(circle.Radius, circle.Radius);
         }
 
         public static bool CircleCircle(CircleCollider circle1, CircleCollider circle2)
-            => (circle2.WorldPosition - circle1.WorldPosition).LongLengthSquared() < ((long)circle1.Radius + (long)circle2.Radius) * ((long)circle1.Radius + (long)circle2.Radius);
+        {
+            Fixed radiusSum = circle1.Radius + circle2.Radius;
+            return (circle2.WorldPosition - circle1.WorldPosition).LengthSquaredLong() < FixedLong.Multiply(radiusSum, radiusSum);
+        }
 
         public class SATOutput
         {
             public bool IsCollision { get; private set; }
-            public Vector2Int MinPenetrationAxis { get; private set; }
-            public int Penetration { get; private set; }
+            /// <summary>Unit axis of minimum penetration.</summary>
+            public FixedVector2 MinPenetrationAxis { get; private set; }
+            public Fixed Penetration { get; private set; }
             public int AxisIndex { get; private set; }
 
-            public SATOutput(bool isCollision, Vector2Int minPenetrationAxis, int penetrationMilli, int axisIndex)
+            public SATOutput(bool isCollision, FixedVector2 minPenetrationAxis, Fixed penetration, int axisIndex)
             {
                 IsCollision = isCollision;
                 MinPenetrationAxis = minPenetrationAxis;
-                Penetration = penetrationMilli;
+                Penetration = penetration;
                 AxisIndex = axisIndex;
             }
         }
 
-        public static SATOutput SAT(Vector2Int[] polygon1, Vector2Int[] polygon2, Vector2Int[] axies)
+        public static SATOutput SAT(FixedVector2[] polygon1, FixedVector2[] polygon2, FixedVector2[] axes)
         {
-            for (int i = 0; i < axies.Length; i++)
-                axies[i].NormalizeAtScale(1000); //normalized to a scale of 1000
+            for (int i = 0; i < axes.Length; i++)
+                axes[i] = axes[i].Normalized();
 
-            bool isCollision = true;
-            Vector2Int minPenetrationAxis = Vector2Int.Zero;
-            long penetration = int.MaxValue;
+            FixedVector2 minPenetrationAxis = FixedVector2.Zero;
+            FixedLong penetration = FixedLong.MaxValue;
             int axisIndex = -1;
 
-            for (int i = 0; i < axies.Length; i++)
+            for (int i = 0; i < axes.Length; i++)
             {
-                long min1 = long.MaxValue;
-                long max1 = long.MinValue;
-                long min2 = long.MaxValue;
-                long max2 = long.MinValue;
+                FixedLong min1 = FixedLong.MaxValue;
+                FixedLong max1 = FixedLong.MinValue;
+                FixedLong min2 = FixedLong.MaxValue;
+                FixedLong max2 = FixedLong.MinValue;
 
-                foreach (Vector2Int point in polygon1)
+                foreach (FixedVector2 point in polygon1)
                 {
-                    long axisPos = point.Dot(axies[i]);
-                    min1 = Math.Min(min1, axisPos);
-                    max1 = Math.Max(max1, axisPos);
+                    FixedLong axisPos = point.DotLong(axes[i]);
+                    min1 = FixedMath.Min(min1, axisPos);
+                    max1 = FixedMath.Max(max1, axisPos);
                 }
 
-                foreach (Vector2Int point in polygon2)
+                foreach (FixedVector2 point in polygon2)
                 {
-                    long axisPos = point.Dot(axies[i]);
-                    min2 = Math.Min(min2, axisPos);
-                    max2 = Math.Max(max2, axisPos);
+                    FixedLong axisPos = point.DotLong(axes[i]);
+                    min2 = FixedMath.Min(min2, axisPos);
+                    max2 = FixedMath.Max(max2, axisPos);
                 }
 
                 if (min2 >= max1 || max2 <= min1)
+                    return new SATOutput(false, FixedVector2.Zero, Fixed.Zero, -1);
+
+                if (max1 - min2 <= max2 - min1)
                 {
-                    isCollision = false;
-                    minPenetrationAxis = Vector2Int.Zero;
-                    penetration = 0;
-                    axisIndex = -1;
-                    return new SATOutput(isCollision, minPenetrationAxis, (int)penetration, axisIndex);
+                    if (max1 - min2 < penetration)
+                    {
+                        penetration = max1 - min2;
+                        minPenetrationAxis = axes[i];
+                        axisIndex = i;
+                    }
                 }
-                else
+                else if (max2 - min1 < penetration)
                 {
-                    if (max1 >= min2 && max1 - min2 <= max2 - min1 && max1 - min2 < penetration)
-                    {
-                        penetration = (int)(max1 - min2);
-                        minPenetrationAxis = axies[i];
-                        axisIndex = i;
-                    }
-                    else if (max2 - min1 < penetration)
-                    {
-                        penetration = (int)(max2 - min1);
-                        minPenetrationAxis = axies[i];
-                        axisIndex = i;
-                    }
+                    penetration = max2 - min1;
+                    minPenetrationAxis = axes[i];
+                    axisIndex = i;
                 }
             }
 
-            isCollision = true;
-            //The true penetration is penetration / 1000 since the axis is normalized at a scale by 1000
-            return new SATOutput(isCollision, minPenetrationAxis, (int)(penetration / 1000), axisIndex);
+            return new SATOutput(true, minPenetrationAxis, (Fixed)penetration, axisIndex);
         }
 
         public static SATOutput BoxBoxSAT(BoxCollider box, BoxCollider box2)
         {
             //Indexes: UL = 0, UR = 1, LR = 2, LL = 3
-            Vector2Int[] axies = new Vector2Int[4]
+            FixedVector2[] axes = new FixedVector2[4]
             {
                 box.WorldVertices[1] - box.WorldVertices[0], //UR - UL
                 box.WorldVertices[1] - box.WorldVertices[2], //UR - LR
-                box2.WorldVertices[1] - box2.WorldVertices[0], //UL - UR
-                box2.WorldVertices[1] - box2.WorldVertices[2], //UL - LL
+                box2.WorldVertices[1] - box2.WorldVertices[0],
+                box2.WorldVertices[1] - box2.WorldVertices[2],
             };
 
-            return SAT(box.WorldVertices, box2.WorldVertices, axies);
+            return SAT(box.WorldVertices, box2.WorldVertices, axes);
         }
 
         public class CollisionContact
@@ -151,17 +117,18 @@ namespace Automathon.Engine.Physics
 
             public Collider Reference;
             public Collider Incident;
-            public Vector2Int Position;
-            public Vector2Int Normal;
-            public int Penetration;
+            public FixedVector2 Position;
+            /// <summary>Unit normal, pointing from the reference towards the incident collider.</summary>
+            public FixedVector2 Normal;
+            public Fixed Penetration;
         }
 
         public class BoxContact : CollisionContact
         {
-            public Vector2Int ReferenceFaceCoord1;
-            public Vector2Int ReferenceFaceCoord2;
-            public Vector2Int ClippedIncidentFaceCoord1;
-            public Vector2Int ClippedIncidentFaceCoord2;
+            public FixedVector2 ReferenceFaceCoord1;
+            public FixedVector2 ReferenceFaceCoord2;
+            public FixedVector2 ClippedIncidentFaceCoord1;
+            public FixedVector2 ClippedIncidentFaceCoord2;
         }
 
         public static BoxContact BoxBoxClipping(BoxCollider b1, BoxCollider b2)
@@ -179,40 +146,33 @@ namespace Automathon.Engine.Physics
             if (sat.AxisIndex >= 4)
                 throw new Exception("sat axis index is not within expected bounds");
 
-            BoxCollider reference, incident;
-            reference = sat.AxisIndex <= 1 ? b1 : b2;
-            incident = sat.AxisIndex <= 1 ? b2 : b1;
-
+            BoxCollider reference = sat.AxisIndex <= 1 ? b1 : b2;
+            BoxCollider incident = sat.AxisIndex <= 1 ? b2 : b1;
 
             contact.Colliding = true;
             contact.Reference = reference;
             contact.Incident = incident;
             contact.Penetration = sat.Penetration;
 
-            Vector2Int refToInc = incident.WorldPosition - reference.WorldPosition;
+            FixedVector2 refToInc = incident.WorldPosition - reference.WorldPosition;
 
             //Switch normal direction to be ref -> inc
-            if (refToInc.Dot(sat.MinPenetrationAxis) >= 0)
-                contact.Normal = sat.MinPenetrationAxis;
-            else
-                contact.Normal = -sat.MinPenetrationAxis;
+            contact.Normal = refToInc.DotLong(sat.MinPenetrationAxis) >= FixedLong.Zero ? sat.MinPenetrationAxis : -sat.MinPenetrationAxis;
 
-            (Vector2Int, Vector2Int) GetCollisionFace(BoxCollider box, Vector2Int n, bool isXAxis)
+            (FixedVector2, FixedVector2) GetCollisionFace(BoxCollider box, FixedVector2 n, bool isXAxis)
             {
                 if (isXAxis)
                 {
                     //Contact normal is more parallel to the face along the x axis, so the face is along the y axis
-
-                    //Check between which of the faces corresponding to the axis is actually the one being collided with
-                    //(is the one facing the other box)
-                    if (n.Dot(box.WorldVertices[1] - box.WorldVertices[0]) >= 0)
+                    //Check which of the two faces corresponding to the axis is the one facing the other box
+                    if (n.DotLong(box.WorldVertices[1] - box.WorldVertices[0]) >= FixedLong.Zero)
                         return (box.WorldVertices[1], box.WorldVertices[2]);
 
                     return (box.WorldVertices[3], box.WorldVertices[0]);
                 }
                 else
                 {
-                    if (n.Dot(box.WorldVertices[0] - box.WorldVertices[3]) >= 0)
+                    if (n.DotLong(box.WorldVertices[0] - box.WorldVertices[3]) >= FixedLong.Zero)
                         return (box.WorldVertices[0], box.WorldVertices[1]);
 
                     return (box.WorldVertices[2], box.WorldVertices[3]);
@@ -221,9 +181,11 @@ namespace Automathon.Engine.Physics
 
             (contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2) = GetCollisionFace(reference, contact.Normal, sat.AxisIndex % 2 == 0);
 
-            //ignore multiplication by height and width, just there for scaling
-            bool incidentXAxis = Math.Abs(contact.Normal.Dot((incident.WorldVertices[1] - incident.WorldVertices[0]) * incident.Height)) >= Math.Abs(contact.Normal.Dot((incident.WorldVertices[2] - incident.WorldVertices[1]) * incident.Width));
-            (Vector2Int inc1, Vector2Int inc2) = GetCollisionFace(incident, -contact.Normal, incidentXAxis); //incident face
+            // Which incident face is the most parallel to the normal (compare with unit edge directions)
+            FixedVector2 incidentRight = (incident.WorldVertices[1] - incident.WorldVertices[0]).Normalized();
+            FixedVector2 incidentDown = (incident.WorldVertices[2] - incident.WorldVertices[1]).Normalized();
+            bool incidentXAxis = contact.Normal.DotLong(incidentRight).Abs() >= contact.Normal.DotLong(incidentDown).Abs();
+            (FixedVector2 inc1, FixedVector2 inc2) = GetCollisionFace(incident, -contact.Normal, incidentXAxis); //incident face
 
             //Clip the incident face to the reference face
             contact.ClippedIncidentFaceCoord1 = inc1.ClipBetween(contact.ReferenceFaceCoord1, contact.ReferenceFaceCoord2);
@@ -236,47 +198,36 @@ namespace Automathon.Engine.Physics
         {
             CollisionContact collisionContact = new CollisionContact();
 
-            // Calculate Box right and up direction vectors manually using RotationMillirad at milli scale (1000)
-            Vector2Int rightMilli = box.WorldVertices[1] - box.WorldVertices[0];
-            Vector2Int upMilli = box.WorldVertices[1] - box.WorldVertices[2];
-            rightMilli.NormalizeAtScale(1000);
-            upMilli.NormalizeAtScale(1000);
+            // Box right and up unit vectors
+            FixedVector2 right = (box.WorldVertices[1] - box.WorldVertices[0]).Normalized();
+            FixedVector2 up = (box.WorldVertices[1] - box.WorldVertices[2]).Normalized();
 
-            int halfWidth = box.Width / 2;
-            int halfHeight = box.Height / 2;
+            Fixed halfWidth = box.Width / 2;
+            Fixed halfHeight = box.Height / 2;
 
             // Transform circle center into box local space
-            Vector2Int relativeCirclePos = circle.WorldPosition - box.WorldPosition;
-
-            Vector2Int localCircleCenter = new Vector2Int(
-                relativeCirclePos.Dot(rightMilli) / 1000,
-                relativeCirclePos.Dot(upMilli) / 1000
-            );
+            FixedVector2 relativeCirclePos = circle.WorldPosition - box.WorldPosition;
+            FixedVector2 localCircleCenter = new FixedVector2(relativeCirclePos.Dot(right), relativeCirclePos.Dot(up));
 
             // Find closest point on box by clamping to half-extents
-            Vector2Int closest = new Vector2Int(
-                Math.Clamp(localCircleCenter.X, -halfWidth, halfWidth),
-                Math.Clamp(localCircleCenter.Y, -halfHeight, halfHeight)
-            );
+            FixedVector2 closest = new FixedVector2(
+                FixedMath.Clamp(localCircleCenter.X, -halfWidth, halfWidth),
+                FixedMath.Clamp(localCircleCenter.Y, -halfHeight, halfHeight));
 
             // If circle center is inside the box, snap closest to the nearest face
             bool inside = localCircleCenter == closest;
             if (inside)
             {
-                // To compare x / hw and y / hh correctly with integers, cross multiply:
-                // |x| * hh > |y| * hw
-                long absX_hh = Math.Abs(localCircleCenter.X) * halfHeight;
-                long absY_hw = Math.Abs(localCircleCenter.Y) * halfWidth;
-
-                bool nearerToX = absX_hh > absY_hw;
+                // |x| / hw > |y| / hh  <=>  |x| * hh > |y| * hw
+                bool nearerToX = FixedLong.Multiply(localCircleCenter.X.Abs(), halfHeight) > FixedLong.Multiply(localCircleCenter.Y.Abs(), halfWidth);
                 if (nearerToX)
                     closest.X = localCircleCenter.X > 0 ? halfWidth : -halfWidth;
                 else
                     closest.Y = localCircleCenter.Y > 0 ? halfHeight : -halfHeight;
             }
 
-            Vector2Int delta = localCircleCenter - closest;
-            long dist = delta.LengthLong();
+            FixedVector2 delta = localCircleCenter - closest;
+            Fixed dist = delta.Length();
 
             // Early out: circle is outside and not touching
             if (!inside && dist > circle.Radius)
@@ -286,29 +237,19 @@ namespace Automathon.Engine.Physics
             }
 
             // Normal in local space, pointing from box surface toward circle center
-            // Scaled by 1000 to maintain milli format
-            Vector2Int localNormalMilli = dist > 0 ? delta * 1000 / dist : new Vector2Int(0, 1000);
-            if (inside) localNormalMilli = -localNormalMilli;
+            FixedVector2 localNormal = delta != FixedVector2.Zero ? delta.Normalized() : FixedVector2.Up;
+            if (inside) localNormal = -localNormal;
 
-            // Rotate normal back to world space.
-            Vector2Int normalMilli = new Vector2Int(
-                (int)(((long)rightMilli.X * localNormalMilli.X + (long)upMilli.X * localNormalMilli.Y) / 1000),
-                (int)(((long)rightMilli.Y * localNormalMilli.X + (long)upMilli.Y * localNormalMilli.Y) / 1000)
-            );
+            // Rotate normal back to world space
+            FixedVector2 normal = (right * localNormal.X + up * localNormal.Y).Normalized();
 
-            normalMilli.NormalizeAtScale(1000);
+            Fixed separation = inside ? -(circle.Radius + dist) : dist - circle.Radius;
 
-            int separation = (int)(inside ? -(circle.Radius + dist) : dist - circle.Radius);
-
-            int contactOffsetSign = inside ? 1 : -1;
-            Vector2Int contactPosition = new Vector2Int(
-                circle.WorldPosition.X + contactOffsetSign * (int)((long)normalMilli.X * circle.Radius / 1000),
-                circle.WorldPosition.Y + contactOffsetSign * (int)((long)normalMilli.Y * circle.Radius / 1000)
-            );
-
+            Fixed contactOffsetSign = inside ? 1 : -1;
+            FixedVector2 contactPosition = circle.WorldPosition + normal * (circle.Radius * contactOffsetSign);
 
             collisionContact.Colliding = true;
-            collisionContact.Normal = normalMilli;
+            collisionContact.Normal = normal;
             collisionContact.Reference = box;
             collisionContact.Incident = circle;
             collisionContact.Penetration = -separation;

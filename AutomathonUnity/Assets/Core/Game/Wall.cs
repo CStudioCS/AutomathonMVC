@@ -8,28 +8,29 @@ namespace Automathon.Game
     {
         public class WallState : State
         {
-            public Vector2Int Size;
-            public int RotationMilli;
+            public FixedVector2 Size;
+            /// <summary>Rotation in radians.</summary>
+            public Fixed Rotation;
         }
 
-        public Vector2Int Size;
+        public FixedVector2 Size;
         public Rigidbody Rigidbody { get; private set; }
         public BoxCollider BoxCollider { get; private set; }
 
-        public Action<Vector2Int, int> OnHit;   // (pos, power)
+        public Action<FixedVector2, int> OnHit;   // (pos, power)
 
-        public Wall(Vector2Int position, Vector2Int size, int rotationMilli) : base(position)
+        public Wall(FixedVector2 position, FixedVector2 size, Fixed rotation) : base(position)
         {
-            RotationMilli = rotationMilli;
+            Rotation = rotation;
             Size = size;
-            BoxCollider = new BoxCollider(Vector2Int.Zero, size.X, size.Y, 0);
+            BoxCollider = new BoxCollider(FixedVector2.Zero, size.X, size.Y, 0);
             this.BoxCollider.Layer = CollisionLayer.Wall;
-            Rigidbody = new Rigidbody(BoxCollider, 0, 0, 200);
+            Rigidbody = new Rigidbody(BoxCollider, invMass: 0, invInertia: 0, friction: 0);
 
             Initialize(BoxCollider, Rigidbody);
         }
 
         public override State GetState()
-            => new WallState() { Position = this.Position, RotationMilli = RotationMilli, Size = this.Size };
+            => new WallState() { Position = this.Position, Rotation = Rotation, Size = this.Size };
     }
 }

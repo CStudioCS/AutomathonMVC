@@ -33,6 +33,9 @@ namespace Automathon.Game
 
         [SerializeField] private HealthBarView healthBar;
 
+        // Dash duration (Fixed seconds in the simulation) in milliseconds for the view effects
+        private static int DashDurationMillis => Mathf.RoundToInt((float)DashAbility.DASH_DURATION * 1000f);
+
         [SerializeField] private VisualEffect miniExplosion;
         [SerializeField] private SpriteRenderer[] sprites;          // dimmed during the dash fade (SetAlpha)
         [SerializeField] private SpriteRenderer[] teamColorSprites; // recoloured with this player's team colour
@@ -47,7 +50,7 @@ namespace Automathon.Game
         {
             base.Initialize(entity);
 
-            healthBar.Bind(() => (float)Entity.Health.CurrentHealth / Entity.Health.MaxHealth);
+            healthBar.Bind(() => (float)Entity.Health.Ratio);
 
             //Entity.BulletAbility.AbilityActivated += OnShooting;
             //Entity.GrenadeAbility.AbilityActivated += OnGrenadeAbility;
@@ -92,7 +95,7 @@ namespace Automathon.Game
                 body.rotation = smoothedBodyRotation;
             }
 
-            turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(Entity.LastMilliDirection.Y, Entity.LastMilliDirection.X));
+            turret.rotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2((float)Entity.LastDirection.Y, (float)Entity.LastDirection.X));
         }
 
         private void OnMachineGunAbilityBulletShot()
@@ -171,11 +174,11 @@ namespace Automathon.Game
             {
                 cameraShaker = Camera.main.GetComponent<CameraShaker>();
             }
-            StartCoroutine(Shaker.Translate(turret, new Vector2(0, -1), DashAbility.DASH_DURATION_MILLIS, DashShakingIntensity));
-            cameraShaker.CameraTranslate(body.right, DashAbility.DASH_DURATION_MILLIS, DashCameraShakingIntensity);
+            StartCoroutine(Shaker.Translate(turret, new Vector2(0, -1), DashDurationMillis, DashShakingIntensity));
+            cameraShaker.CameraTranslate(body.right, DashDurationMillis, DashCameraShakingIntensity);
 
             //dashBurstParticleSystem.Play();  imo pas besoin de burst initiale mais bon c'est implémenté quoi
-            StartCoroutine(Dash(DashAbility.DASH_DURATION_MILLIS));
+            StartCoroutine(Dash(DashDurationMillis));
         }
 
         private void OnGrenadeAbility()
@@ -205,7 +208,7 @@ namespace Automathon.Game
         private void EmitShootingMiniExplosion()
         {
             VisualEffect miniExplosionVFX = Instantiate(miniExplosion, turretTip.position, Quaternion.identity);
-            miniExplosionVFX.SetVector2("InitVelocity", Entity.Rigidbody.Velocity.ToVector2Scaled());
+            miniExplosionVFX.SetVector2("InitVelocity", Entity.Rigidbody.Velocity.ToVector2());
             float rot = turret.rotation.eulerAngles.z * Mathf.Deg2Rad;
             miniExplosionVFX.SetVector2("Direction", new Vector2(Mathf.Cos(rot), Mathf.Sin(rot)));
         }

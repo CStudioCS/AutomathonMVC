@@ -28,26 +28,6 @@ namespace Automathon.Engine
             PhysicsManager.Initialize();
         }
 
-        //private static void GenerateRandomMap()
-        //{
-        //    Random r = new();
-        //    Debug.Log(Directory.GetCurrentDirectory());
-        //    string s = "";
-        //    for (int i = 0; i < 7; i++)
-        //    {
-        //        int big = r.Next(3000, 6000);
-        //        int small = r.Next(200, 600);
-        //        int rot = r.Next(0, IntMath.PI_MILLI * 2);
-        //        int posX = r.Next(-13500, 13500);
-        //        int posY = r.Next(-7500, 7500);
-
-        //        Instantiate(new Wall(new Vector2Int(posX, posY), new Vector2Int(big, small), rot));
-        //        s += $"Instantiate(new Wall(new Vector2Int({posX}, {posY}), new Vector2Int({big}, {small}), {rot}));\n";
-        //    }
-
-        //    File.WriteAllText("./Assets/Maps/lastGeneratedMapData.txt", s);
-        //}
-
         private static void GenerateRandomMap()
             => RandomMapGenerator.GenerateRandomMap();
 
@@ -68,8 +48,8 @@ namespace Automathon.Engine
 
             GenerateRandomMap();
 
-            Tank1 = Instantiate(new Tank(Tank.TeamType.Green, new Vector2Int(-10000, 0), inputProvider1));
-            Tank2 = Instantiate(new Tank(Tank.TeamType.Red, new Vector2Int(10000, 0), inputProvider2));
+            Tank1 = Instantiate(new Tank(Tank.TeamType.Green, new FixedVector2(-10, 0), inputProvider1));
+            Tank2 = Instantiate(new Tank(Tank.TeamType.Red, new FixedVector2(10, 0), inputProvider2));
 
             ProcessAllEntityChanges();
 

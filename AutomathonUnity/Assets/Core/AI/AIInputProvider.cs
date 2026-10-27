@@ -23,8 +23,8 @@ namespace Automathon.AI
         public AIInputProvider(string tcpAddress = null)
         {
             lastAction = new AIAction();
-            lastAction.MovingDirection = new Vector2Int(1000, 0);
-            lastAction.AimingDirection = new Vector2Int(1000, 0);
+            lastAction.MovingDirection = FixedVector2.Right;
+            lastAction.AimingDirection = FixedVector2.Right;
 
             this.handleCallingAI = tcpAddress != null;
             this.tcpAddress = tcpAddress;
@@ -43,6 +43,8 @@ namespace Automathon.AI
             if (requestSocket.TryReceiveFrameString(TimeSpan.FromMilliseconds(500), out string response))
                 return response == "Pong";
 
+            // A REQ socket that didn't get its reply can't send anymore: reset it so TestPing can be retried
+            Reconnect();
             return false;
         }
 
@@ -84,7 +86,8 @@ namespace Automathon.AI
                     return;
                 }
 
-                UpdateFromAction(msg.SelfAction);
+                if (msg.SelfAction != null)
+                    UpdateFromAction(msg.SelfAction);
                 return;
             }
 
@@ -105,23 +108,17 @@ namespace Automathon.AI
 
         public void UpdateFromAction(AIAction action)
         {
-            void NormalizeAndCheckDir(ref Vector2Int dir, bool allowLower)
-            {
-                //prevent int overflow
-                if (dir.X > 1000 * 1000)
-                    dir.X = 1000;
-                if (dir.Y > 1000 * 1000)
-                    dir.Y = 1000;
-
-                if (dir.LengthSquared() > 1000000 || !allowLower)
-                    dir.NormalizeAtScale(1000);
-            }
-
-            NormalizeAndCheckDir(ref action.MovingDirection, true);
-            NormalizeAndCheckDir(ref action.AimingDirection, false);
-
             //Attention : Data du user donc programmer defensivement pour eviter les erreurs
-            if (action.AimingDirection == Vector2Int.Zero)
+            if (action == null)
+                return;
+
+            // Fixed values saturate instead of overflowing, and normalization works on the whole range,
+            // so any user value ends up as a valid direction.
+            if (action.MovingDirection.LengthSquaredLong() > FixedLong.One)
+                action.MovingDirection = action.MovingDirection.Normalized();
+
+            action.AimingDirection = action.AimingDirection.Normalized();
+            if (action.AimingDirection == FixedVector2.Zero)
                 action.AimingDirection = lastAction.AimingDirection;
 
             lastAction = action;
@@ -140,10 +137,10 @@ namespace Automathon.AI
             requestSocket = null;
         }
 
-        public override Vector2Int GetMilliAimingDir()
+        public override FixedVector2 GetAimingDir()
             => lastAction.AimingDirection;
 
-        public override Vector2Int GetMilliMovementDir()
+        public override FixedVector2 GetMovementDir()
             => lastAction.MovingDirection;
 
         public override bool ShouldDash()

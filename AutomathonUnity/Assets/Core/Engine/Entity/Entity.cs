@@ -8,16 +8,18 @@ namespace Automathon.Engine
     {
         public EntityData Data { get; }
 
-        public Vector2Int Position
+        /// <summary>World position (1 = 1 Unity unit).</summary>
+        public FixedVector2 Position
         {
             get => Data.Position;
             set => Data.Position = value;
         }
 
-        public int RotationMilli
+        /// <summary>Rotation in radians.</summary>
+        public Fixed Rotation
         {
-            get => Data.RotationMilli;
-            set => Data.RotationMilli = value;
+            get => Data.Rotation;
+            set => Data.Rotation = value;
         }
 
         public event Action Destroyed;
@@ -32,7 +34,7 @@ namespace Automathon.Engine
             Data = data;
         }
 
-        protected Entity(Vector2Int position) : this(new EntityData(position)) { }
+        protected Entity(FixedVector2 position) : this(new EntityData(position)) { }
 
         protected void Initialize(params Component[] components)
         {
