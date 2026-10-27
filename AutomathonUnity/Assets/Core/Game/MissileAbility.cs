@@ -5,14 +5,15 @@ namespace Automathon.Game
 {
     public class MissileAbility : Ability
     {
-        private const int COOLDOWN_MILLI = 1500;
+        private static readonly Fixed COOLDOWN = 1.5; // seconds
+        private static readonly Fixed SPAWN_DISTANCE_FROM_TANK = 1.5;
 
-        public MissileAbility(Func<bool> shouldActivate) : base(COOLDOWN_MILLI, shouldActivate)
+        public MissileAbility(Func<bool> shouldActivate) : base(COOLDOWN, shouldActivate)
         { }
 
         protected override void Activate()
         {
-            Vector2Int position = Tank.Position + Tank.LastMilliDirection * 1500 / 1000;
+            FixedVector2 position = Tank.Position + Tank.LastDirection * SPAWN_DISTANCE_FROM_TANK;
             GameplayManager.Instantiate(new Missile(position, Tank));
         }
     }

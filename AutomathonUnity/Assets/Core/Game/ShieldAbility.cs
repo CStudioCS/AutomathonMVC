@@ -1,26 +1,24 @@
 using Automathon.Engine;
-using Automathon.Engine.Utility;
 using System;
 
 namespace Automathon.Game
 {
     public class ShieldAbility : Ability
     {
-        private const int COOLDOWN_MILLIS = 2000;
-        private const int SPAWN_DISTANCE_FROM_TANK = 2000;
+        private static readonly Fixed COOLDOWN = 2; // seconds
+        private static readonly Fixed SPAWN_DISTANCE_FROM_TANK = 2;
 
-        public ShieldAbility(Func<bool> shouldActivate) : base(COOLDOWN_MILLIS, shouldActivate: shouldActivate)
+        public ShieldAbility(Func<bool> shouldActivate) : base(COOLDOWN, shouldActivate: shouldActivate)
         { }
 
         protected override void Activate()
         {
-            Vector2Int direction = Tank.LastMilliDirection;
-            direction.NormalizeAtScale(1000);
+            FixedVector2 direction = Tank.LastDirection.Normalized();
 
-            Vector2Int position = Tank.Position + direction * SPAWN_DISTANCE_FROM_TANK / 1000;
-            int rotationMilliRad = Atan2Int.Atan2(Tank.LastMilliDirection.X, Tank.LastMilliDirection.Y) + IntMath.PI_MILLI / 2;
+            FixedVector2 position = Tank.Position + direction * SPAWN_DISTANCE_FROM_TANK;
+            Fixed rotation = direction.Angle() + Fixed.HalfPi;
 
-            GameplayManager.Instantiate(new Shield(position, rotationMilliRad));
+            GameplayManager.Instantiate(new Shield(position, rotation));
         }
     }
 }

@@ -2,18 +2,19 @@ namespace Automathon.Engine
 {
     /// <summary>
     /// Intrinsic data of an <see cref="Entity"/> (position, rotation, and any extra fields added by subclasses).
-    /// Owned by the entity itself — Position and RotationMilli on Entity are read/written through this object.
+    /// Owned by the entity itself — Position and Rotation on Entity are read/written through this object.
     /// Subclasses (e.g. WallData) add entity-specific fields and may implement IEntityFactory to be reconstructable.
+    /// Position is in world units (1 = 1 Unity unit), Rotation in radians.
     /// </summary>
     public class EntityData
     {
-        public Vector2Int Position;
-        public int RotationMilli;
+        public FixedVector2 Position;
+        public Fixed Rotation;
 
-        public EntityData(Vector2Int position, int rotationMilli = 0)
+        public EntityData(FixedVector2 position, Fixed rotation = default)
         {
             Position = position;
-            RotationMilli = rotationMilli;
+            Rotation = rotation;
         }
     }
 }

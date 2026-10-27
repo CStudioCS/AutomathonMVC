@@ -1,8 +1,5 @@
-﻿using Automathon.Engine;
+using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Engine.Utility;
-using Automathon.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,21 +9,24 @@ namespace Automathon.Game
     {
         public class MissileState : State
         {
-            public int Radius;
-            public Vector2Int Velocity;
+            public Fixed Radius;
+            public Fixed Rotation;
+            public FixedVector2 Velocity;
         }
 
         private const bool AIMED = true; //do we aim the missile with the right stick ?
 
-        private const int DAMAGE = 400;
-        private const int DIRECT_DAMAGE = 600;
+        private static readonly Fixed DAMAGE = 400;
+        private static readonly Fixed DIRECT_DAMAGE = 600;
 
-        public const int RADIUS = 300;
-        public const int SPEED = 9000;
-        private const int LIFESPAN_MILLI = 5000;
-        private const int ROTATION_MAX_STEP = 40;
+        public static readonly Fixed RADIUS = 0.3;
+        /// <summary>Speed in units per second.</summary>
+        public static readonly Fixed SPEED = 9;
+        private static readonly Fixed LIFESPAN = 5; // seconds
+        /// <summary>Max rotation per frame (radians) when steering towards the aiming direction.</summary>
+        private static readonly Fixed ROTATION_MAX_STEP = 0.04;
 
-        public const int AOE_RADIUS = 1000;
+        public static readonly Fixed AOE_RADIUS = 1;
 
         private Tank shotFromTank;
         private CircleCollider circleCollider;
@@ -37,31 +37,30 @@ namespace Automathon.Game
         private List<Entity> oldAoeCollisions = new();
         private List<Entity> aoeCollisions = new();
 
-        public Missile(Vector2Int position, Tank shotFromTank) : base(position)
+        public Missile(FixedVector2 position, Tank shotFromTank) : base(position)
         {
             this.shotFromTank = shotFromTank;
 
-            circleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
+            circleCollider = new CircleCollider(FixedVector2.Zero, RADIUS);
             circleCollider.Layer = CollisionLayer.Missile;
-            aoeCollider = new CircleCollider(Vector2Int.Zero, AOE_RADIUS);
+            aoeCollider = new CircleCollider(FixedVector2.Zero, AOE_RADIUS);
             aoeCollider.IsTrigger = true;
 
-            rigidbody = new Rigidbody(new CompositeCollider(circleCollider, aoeCollider), 3000, 300, 200);
+            rigidbody = new Rigidbody(new CompositeCollider(circleCollider, aoeCollider), invMass: 3, invInertia: 0.3, friction: 0);
 
             circleCollider.OnCollision += OnCollision;
             aoeCollider.OnCollision += OnAoeCollision;
 
             Initialize(circleCollider, aoeCollider, rigidbody);
 
-
-            RotationMilli = Atan2Int.Atan2(shotFromTank.LastMilliDirection.X, shotFromTank.LastMilliDirection.Y);
+            Rotation = shotFromTank.LastDirection.Angle();
 
             if (shotFromTank.TryGetComponent<Collider>(out Collider coll))
                 initCollidingWithTank = coll.Colliding(circleCollider);
 
-            rigidbody.Velocity = new Vector2Int(TrigTable.Cos(RotationMilli), TrigTable.Sin(RotationMilli)) * SPEED / 1000;
+            rigidbody.Velocity = FixedVector2.FromAngle(Rotation) * SPEED;
 
-            AddBehavior(new Timer(LIFESPAN_MILLI, null, () => GameplayManager.Destroy(this)));
+            AddBehavior(new Timer(LIFESPAN, null, () => GameplayManager.Destroy(this)));
         }
 
         public override void Update()
@@ -76,19 +75,13 @@ namespace Automathon.Game
 
             if (AIMED)
             {
-                int goalRotationMilli = Atan2Int.Atan2(shotFromTank.LastMilliDirection.X, shotFromTank.LastMilliDirection.Y);
-                int step = goalRotationMilli - RotationMilli;
+                Fixed goalRotation = shotFromTank.LastDirection.Angle();
+                Fixed step = FixedMath.DeltaAngle(Rotation, goalRotation);
 
-                if (step > IntMath.PI_MILLI)
-                    step -= IntMath.PI_MILLI * 2;
-
-                if (step < -IntMath.PI_MILLI)
-                    step += IntMath.PI_MILLI * 2;
-
-                RotationMilli += Math.Clamp(step, -ROTATION_MAX_STEP, ROTATION_MAX_STEP);
+                Rotation += FixedMath.Clamp(step, -ROTATION_MAX_STEP, ROTATION_MAX_STEP);
             }
 
-            rigidbody.Velocity = new Vector2Int(TrigTable.Cos(RotationMilli), TrigTable.Sin(RotationMilli)) * SPEED / 1000;
+            rigidbody.Velocity = FixedVector2.FromAngle(Rotation) * SPEED;
         }
 
         private void OnAoeCollision(CollisionEvent collisionContact)
@@ -136,6 +129,7 @@ namespace Automathon.Game
             {
                 Position = this.Position,
                 Radius = RADIUS,
+                Rotation = this.Rotation,
                 Velocity = rigidbody.Velocity,
             };
         }

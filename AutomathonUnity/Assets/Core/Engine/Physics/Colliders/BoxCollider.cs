@@ -1,24 +1,27 @@
-﻿using System;
+using System;
 
 namespace Automathon.Engine.Physics
 {
     public class BoxCollider : Collider
     {
-        public Vector2Int WorldPosition => ParentEntity.Position + LocalCenterPosition;
-        public Vector2Int LocalCenterPosition { get; private set; }
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public int LocalRotationMillirad { get; private set; }
-        public int RotationMillirad => ParentEntity.RotationMilli + LocalRotationMillirad;
+        public FixedVector2 WorldPosition => ParentEntity.Position + LocalCenterPosition;
+        public FixedVector2 LocalCenterPosition { get; private set; }
+        public Fixed Width { get; private set; }
+        public Fixed Height { get; private set; }
+        /// <summary>Rotation relative to the parent entity, in radians.</summary>
+        public Fixed LocalRotation { get; private set; }
+        /// <summary>World rotation in radians.</summary>
+        public Fixed Rotation => ParentEntity.Rotation + LocalRotation;
 
-        public Vector2Int[] WorldVertices { get; private set; }
+        /// <summary>Corners in world space. Indexes: UL = 0, UR = 1, LR = 2, LL = 3 (in the box's local frame).</summary>
+        public FixedVector2[] WorldVertices { get; private set; }
 
-        public BoxCollider(Vector2Int localPosition, int width, int height, int localRotationMillirad) : base()
+        public BoxCollider(FixedVector2 localPosition, Fixed width, Fixed height, Fixed localRotation) : base()
         {
             LocalCenterPosition = localPosition;
             Width = width;
             Height = height;
-            LocalRotationMillirad = localRotationMillirad;
+            LocalRotation = localRotation;
         }
 
         public override void Initialize(Entity parentEntity)
@@ -33,33 +36,37 @@ namespace Automathon.Engine.Physics
                 return Collision.BoxBoxSAT(b, this).IsCollision;
             else if (collider is CircleCollider c)
                 return Collision.BoxCircle(this, c);
+            else if (collider is CompositeCollider composite)
+                return composite.Colliding(this);
             else
                 throw new NotImplementedException();
         }
 
-        public override bool Contains(Vector2Int point)
+        public override bool Contains(FixedVector2 point)
         {
-            Vector2Int r = point - WorldVertices[0];
-            long sc1 = r.Dot(WorldVertices[1] - WorldVertices[0]);
-            long sc2 = r.Dot(WorldVertices[3] - WorldVertices[0]);
-            if (sc1 < 0 || sc1 > (WorldVertices[1] - WorldVertices[0]).LengthSquared() || sc2 < 0 || sc2 > (WorldVertices[3] - WorldVertices[0]).LengthSquared())
-                return false;
-            return true;
+            FixedVector2 r = point - WorldVertices[0];
+            FixedVector2 right = WorldVertices[1] - WorldVertices[0];
+            FixedVector2 down = WorldVertices[3] - WorldVertices[0];
+            FixedLong sc1 = r.DotLong(right);
+            FixedLong sc2 = r.DotLong(down);
+            return sc1 >= FixedLong.Zero && sc1 <= right.LengthSquaredLong()
+                && sc2 >= FixedLong.Zero && sc2 <= down.LengthSquaredLong();
         }
 
         public override void PhysicsUpdate()
         {
-            Vector2Int right = Vector2Int.MilliDirectionFromMilliRad(RotationMillirad); //cos multiplied by 1000
-            Vector2Int up = right.OrthogonalCounterClockwise();
-            int halfWidth = Width / 2; //width and height are divisible by 2 by design
-            int halfHeight = Height / 2;
+            FixedVector2 right = FixedVector2.FromAngle(Rotation);
+            FixedVector2 up = right.OrthogonalCounterClockwise();
+            FixedVector2 halfRight = right * (Width / 2);
+            FixedVector2 halfUp = up * (Height / 2);
+            FixedVector2 center = WorldPosition;
 
-            WorldVertices = new Vector2Int[4]
+            WorldVertices = new FixedVector2[4]
             {
-                WorldPosition + (-right * halfWidth + up * halfHeight) / 1000,
-                WorldPosition + (right * halfWidth + up * halfHeight) / 1000,
-                WorldPosition + (right * halfWidth - up * halfHeight) / 1000,
-                WorldPosition + (-right * halfWidth - up * halfHeight) / 1000,
+                center - halfRight + halfUp,
+                center + halfRight + halfUp,
+                center + halfRight - halfUp,
+                center - halfRight - halfUp,
             };
         }
     }

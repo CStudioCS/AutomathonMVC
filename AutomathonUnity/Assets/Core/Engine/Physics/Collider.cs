@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Automathon.Engine.Physics
 {
@@ -9,7 +9,7 @@ namespace Automathon.Engine.Physics
         public Action<CollisionEvent> OnCollision;
 
         public abstract bool Colliding(Collider collider);
-        public abstract bool Contains(Vector2Int point);
+        public abstract bool Contains(FixedVector2 point);
         public virtual void PhysicsUpdate() { }
     }
 }

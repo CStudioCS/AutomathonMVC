@@ -6,7 +6,8 @@ namespace Automathon.Game
     public abstract class Ability : Component
     {
         public int FramesOfCooldownLeft;
-        private int coolDownMillis;
+        /// <summary>Cooldown duration in seconds.</summary>
+        public Fixed Cooldown { get; private set; }
         private bool isOnCooldown = false;
         private Func<bool> shouldActivate;
 
@@ -15,9 +16,12 @@ namespace Automathon.Game
 
         public Tank Tank { get; private set; }
 
-        public Ability(int cooldownMilli, Func<bool> shouldActivate)
+        /// <summary>Cooldown left before the ability can be used again, in seconds.</summary>
+        public Fixed CooldownLeft => GameplayConstants.FramesToSeconds(FramesOfCooldownLeft);
+
+        public Ability(Fixed cooldown, Func<bool> shouldActivate)
         {
-            this.coolDownMillis = cooldownMilli;
+            this.Cooldown = cooldown;
             this.shouldActivate = shouldActivate;
         }
 
@@ -47,7 +51,7 @@ namespace Automathon.Game
                 return;
 
             isOnCooldown = true;
-            ParentEntity.AddBehavior(new Timer(coolDownMillis, (t) => FramesOfCooldownLeft = t.ValueFrames, OnComplete: () =>
+            ParentEntity.AddBehavior(new Timer(Cooldown, (t) => FramesOfCooldownLeft = t.ValueFrames, OnComplete: () =>
             {
                 isOnCooldown = false;
                 CooldownElapsed?.Invoke();

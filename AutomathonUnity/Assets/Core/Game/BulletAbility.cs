@@ -5,15 +5,15 @@ namespace Automathon.Game
 {
     public class BulletAbility : Ability
     {
-        private const int COOLDOWN_MILLIS = 300;
+        private static readonly Fixed COOLDOWN = 0.3; // seconds
 
-        public BulletAbility(Func<bool> shouldActivate) : base(cooldownMilli: COOLDOWN_MILLIS, shouldActivate: shouldActivate)
+        public BulletAbility(Func<bool> shouldActivate) : base(cooldown: COOLDOWN, shouldActivate: shouldActivate)
         { }
 
         protected override void Activate()
         {
-            Vector2Int position = Tank.Position + Tank.LastMilliDirection * Tank.SPAWN_DISTANCE_FROM_TANK / 1000;
-            GameplayManager.Instantiate(new Bullet(position, Tank.LastMilliDirection, Tank));
+            FixedVector2 position = Tank.Position + Tank.LastDirection * Tank.SPAWN_DISTANCE_FROM_TANK;
+            GameplayManager.Instantiate(new Bullet(position, Tank.LastDirection, Tank));
         }
     }
 }

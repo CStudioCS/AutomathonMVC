@@ -6,6 +6,12 @@ namespace Automathon.Engine
     {
         public readonly int MaxValueFrames;
         public int ValueFrames;
+
+        /// <summary>Time left before completion, in seconds.</summary>
+        public Fixed ValueSeconds => GameplayConstants.FramesToSeconds(ValueFrames);
+
+        /// <summary>Time elapsed since the timer started, in seconds.</summary>
+        public Fixed ElapsedSeconds => GameplayConstants.FramesToSeconds(MaxValueFrames - ValueFrames);
         public Func<bool> PausedFunc = () => false;
 
         private Action OnComplete;
@@ -14,12 +20,12 @@ namespace Automathon.Engine
         /// <summary>
         /// Timer ticks down from the given time to 0, then calls OnComplete. UpdateAction is called every update while the timer is still ticking.
         /// </summary>
-        /// <param name="timerValueMilliseconds"></param>
+        /// <param name="durationSeconds">Duration of the timer, in seconds (rounded to the nearest frame, at least one frame).</param>
         /// <param name="UpdateAction"></param>
         /// <param name="OnComplete"></param>
-        public Timer(int timerValueMilliseconds, Action<Timer> UpdateAction = null, Action OnComplete = null)
+        public Timer(Fixed durationSeconds, Action<Timer> UpdateAction = null, Action OnComplete = null)
         {
-            this.MaxValueFrames = Math.Max(timerValueMilliseconds * GameplayConstants.FRAMERATE / 1000, 1);
+            this.MaxValueFrames = Math.Max(GameplayConstants.SecondsToFrames(durationSeconds), 1);
             ValueFrames = MaxValueFrames;
             this.OnComplete = OnComplete;
             this.UpdateAction = UpdateAction;

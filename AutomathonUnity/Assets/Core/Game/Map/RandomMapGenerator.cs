@@ -24,8 +24,9 @@ namespace Automathon.Game.MapSystem
         private const int HX = MapLength / 2;   // 13500
         private const int HY = MapHeight / 2;   // 7500
 
-        private static readonly Vector2Int SpawnA = new Vector2Int(-6750, 0);
-        private static readonly Vector2Int SpawnB = new Vector2Int(6750, 0);
+        // Generation works in thousandths of a unit (1000 = 1 world unit), the output is converted to Fixed.
+        private const int SpawnAX = -6750, SpawnAY = 0;
+        private const int SpawnBX = 6750, SpawnBY = 0;
 
         // ---------- Paramètres génération ----------
         private const int BorderThickness = 100;   // épaisseur des murs invisibles de bord
@@ -84,7 +85,7 @@ namespace Automathon.Game.MapSystem
             foreach (var p in pts)
             {
                 // dégagement du spawn AVANT tout tirage (préserve la parité RNG)
-                double dx = p.x - SpawnA.X, dy = p.y - SpawnA.Y;
+                double dx = p.x - SpawnAX, dy = p.y - SpawnAY;
                 if (dx * dx + dy * dy < (double)SpawnClear * SpawnClear)
                     continue;
 
@@ -110,18 +111,19 @@ namespace Automathon.Game.MapSystem
 
             foreach (WallSpec s in specs)
             {
-                Vector2Int pos = new Vector2Int(RoundJS(s.X), RoundJS(s.Y));
-                Vector2Int size = new Vector2Int(RoundJS(s.Len), RoundJS(s.Thick));
+                // rounded to integer thousandths first (parity with the preview tool), then converted exactly to Fixed
+                FixedVector2 pos = Milli(RoundJS(s.X), RoundJS(s.Y));
+                FixedVector2 size = Milli(RoundJS(s.Len), RoundJS(s.Thick));
 
-                int mrad = RoundJS(s.Angle * 1000.0);   // [0, π] rad → [0, 3142] mrad
-                list.Add(new Wall(pos, size, mrad));
+                Fixed rotation = Fixed.FromMilli(RoundJS(s.Angle * 1000.0));   // [0, π] rad
+                list.Add(new Wall(pos, size, rotation));
             }
 
             // murs invisibles de bord
-            list.Add(new InvisibleWall(new Vector2Int(0, HY), new Vector2Int(MapLength, BorderThickness), 0));
-            list.Add(new InvisibleWall(new Vector2Int(0, -HY), new Vector2Int(MapLength, BorderThickness), 0));
-            list.Add(new InvisibleWall(new Vector2Int(-HX, 0), new Vector2Int(BorderThickness, MapHeight), 0));
-            list.Add(new InvisibleWall(new Vector2Int(HX, 0), new Vector2Int(BorderThickness, MapHeight), 0));
+            list.Add(new InvisibleWall(Milli(0, HY), Milli(MapLength, BorderThickness), 0));
+            list.Add(new InvisibleWall(Milli(0, -HY), Milli(MapLength, BorderThickness), 0));
+            list.Add(new InvisibleWall(Milli(-HX, 0), Milli(BorderThickness, MapHeight), 0));
+            list.Add(new InvisibleWall(Milli(HX, 0), Milli(BorderThickness, MapHeight), 0));
 
             return list;
         }
@@ -143,15 +145,15 @@ namespace Automathon.Game.MapSystem
                     free[j * gw + i] = !Blocked(wx, wy, specs);
                 }
 
-            int Cell(Vector2Int v, out int cy)
+            int Cell(int x, int y, out int cy)
             {
-                int cx = Clamp((int)((v.X + HX) / cw), 0, gw - 1);
-                cy = Clamp((int)((v.Y + HY) / ch), 0, gh - 1);
+                int cx = Clamp((int)((x + HX) / cw), 0, gw - 1);
+                cy = Clamp((int)((y + HY) / ch), 0, gh - 1);
                 return cx;
             }
 
-            int ax = Cell(SpawnA, out int ay);
-            int bx = Cell(SpawnB, out int by);
+            int ax = Cell(SpawnAX, SpawnAY, out int ay);
+            int bx = Cell(SpawnBX, SpawnBY, out int by);
             if (!free[ay * gw + ax] || !free[by * gw + bx]) return false;
 
             bool[] seen = new bool[gw * gh];
@@ -255,6 +257,7 @@ namespace Automathon.Game.MapSystem
         // ======================= Utilitaires =======================
 
         private static int RoundJS(double v) => (int)Math.Floor(v + 0.5);
+        private static FixedVector2 Milli(int x, int y) => new FixedVector2(Fixed.FromMilli(x), Fixed.FromMilli(y));
         private static int Clamp(int v, int lo, int hi) => v < lo ? lo : (v > hi ? hi : v);
 
         /// <summary>

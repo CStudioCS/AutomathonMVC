@@ -61,10 +61,10 @@ namespace Automathon.Game.Input
         public override bool ShouldMissile()
             => missileAction.WasPressedThisFrame();
 
-        public override Vector2Int GetMilliMovementDir()
+        public override FixedVector2 GetMovementDir()
         {
             Vector2 movementDir = moveAction.ReadValue<Vector2>();
-            return movementDir.ToVector2IntScaled();
+            return movementDir.ToFixedVector2();
         }
 
         public override bool ShouldShield()
@@ -73,22 +73,21 @@ namespace Automathon.Game.Input
         public override bool ShouldShoot()
             => shootAction.IsPressed();
 
-        public override Vector2Int GetMilliAimingDir()
+        public override FixedVector2 GetAimingDir()
         {
             Vector2 readInput = aimAction.ReadValue<Vector2>();
 
             if (ControlsType == PlayerControlsType.LeftKeyboard)
             {
                 Vector2 mouseWorldPos = readInput.ScreenToWorldSpace();
-                Vector2Int aimingVector = mouseWorldPos.ToVector2IntScaled() - ParentEntity.Position;
+                FixedVector2 aimingVector = mouseWorldPos.ToFixedVector2() - ParentEntity.Position;
 
-                if (aimingVector != Vector2Int.Zero)
-                    aimingVector.NormalizeAtScale(1000);
+                aimingVector = aimingVector.Normalized(); // zero stays zero
 
                 return aimingVector;
             }
 
-            return readInput.ToVector2IntScaled();
+            return readInput.ToFixedVector2();
         }
     }
 }

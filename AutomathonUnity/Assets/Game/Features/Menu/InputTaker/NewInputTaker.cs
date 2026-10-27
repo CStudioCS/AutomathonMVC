@@ -103,6 +103,7 @@ namespace Automathon.Game.View
                 }
                 else
                 {
+                    aIInputProvider.EndLife(); // release the socket, a new provider is created on the next try
                     FailedAIConnection_Ping();
                 }
             }

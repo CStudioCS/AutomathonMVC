@@ -1,15 +1,11 @@
 from bridge.datatypes import *
-from math import sqrt
 
 # this is an example of an AI that just goes towards the player and does every action it can as fast as possible
-
-def length_squared(v):
-    return v.X * v.X + v.Y * v.Y
-
-def normalize(v: Vector2Int):
-    length = sqrt(length_squared(v))
-    v.X = int(v.X * 1000 / length)
-    v.Y = int(v.Y * 1000 / length)
+#
+# Every number coming from the game is a Fixed (fixed point number) and every vector a FixedVector2.
+# They work like floats / 2D vectors: you can add, multiply, compare them with ints and floats,
+# pass them to math.sqrt, convert them with float(...), etc.
+# Distances are in world units (the map is ~27.5 x 15.5 units), angles in radians, speeds in units per second.
 
 def decide_action(state: GameState):
 
@@ -21,41 +17,20 @@ def decide_action(state: GameState):
     # that the game doesn't look like a slide show
 
     if state.SelfTank is not None and state.EnemyTank is not None:
-        movingDir = Vector2Int(X=0, Y=0)
-        aimDir = Vector2Int(X=0, Y=0)
+        to_enemy = state.EnemyTank.Position - state.SelfTank.Position
+        forward = to_enemy.length() > 4  # go towards the enemy until we're 4 units away, then back off
 
-        aimDir.X = state.EnemyTank.Position.X - state.SelfTank.Position.X
-        aimDir.Y = state.EnemyTank.Position.Y - state.SelfTank.Position.Y
-        forward = length_squared(aimDir) > 4000 * 4000
+        aim_dir = to_enemy.normalized()
+        moving_dir = aim_dir if forward else -aim_dir
 
-        normalize(aimDir)
-        movingDir = aimDir if forward else Vector2Int(X=-aimDir.X, Y=-aimDir.Y)
-
-        action = AIAction(MovingDirection=movingDir, AimingDirection=aimDir) 
+        action = AIAction(MovingDirection=moving_dir, AimingDirection=aim_dir)
 
         action.MachineGun = state.SelfTank.MachineGunCooldownFramesLeft == 0 # act if we can (the cooldown is at zero)
         action.Missile = state.SelfTank.MissileCooldownFramesLeft == 0
         action.Shield = state.SelfTank.ShieldCooldownFramesLeft == 0
         action.Dash = state.SelfTank.DashCooldownFramesLeft == 0
-
-        """for e in state.SelfTank:
-            match e:
-                case TankState() as t:
-                    if aimDir.X != 0 or aimDir.Y != 0:
-                        aimDir.X = t.Position.X - aimDir.X
-                        aimDir.Y = t.Position.Y - aimDir.Y
-                        forward = length_squared(aimDir) > 1000 * 1000
-
-                        normalize(aimDir)
-                        movingDir = aimDir if forward else Vector2Int(X=-aimDir.X, Y=-aimDir.Y)
-                        
-                    else:
-                        aimDir = t.Position
-                        meTank = t
-                case _:
-                    pass"""
         
     else:
-        action = AIAction(MovingDirection=Vector2Int(X=1000, Y=0), AimingDirection=Vector2Int(X=0, Y=1000))
+        action = AIAction(MovingDirection=FixedVector2(1, 0), AimingDirection=FixedVector2(0, 1))
     
     return action

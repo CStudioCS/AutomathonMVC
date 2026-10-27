@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Automathon.Engine.Physics
 {
@@ -9,25 +9,33 @@ namespace Automathon.Engine.Physics
 
         public Collider Collider;
 
-        public Vector2Int Velocity;
-        public int AngularVelocityMilli;
-        public int FrictionMilli;
+        /// <summary>Linear velocity in units per second.</summary>
+        public FixedVector2 Velocity;
+        /// <summary>Angular velocity in radians per second.</summary>
+        public Fixed AngularVelocity;
+        public Fixed Friction;
 
-        public int InvMassMilli;
-        public int InvIMicro;
+        /// <summary>1 / mass. 0 means infinite mass (static body).</summary>
+        public Fixed InvMass;
+        /// <summary>1 / moment of inertia. 0 means the body can't be rotated by collisions.</summary>
+        public Fixed InvInertia;
 
-        public Vector2Int Forces;
-        public int TorqueMilli;
+        /// <summary>Forces accumulated during the frame, cleared after each physics step.</summary>
+        public FixedVector2 Forces;
+        public Fixed Torque;
 
-        public Rigidbody(Collider collider, int invMassMilli, int invIMicro, int frictionMilli)
+        public Rigidbody(Collider collider, Fixed invMass, Fixed invInertia, Fixed friction)
         {
             Collider = collider;
-            InvMassMilli = invMassMilli;
-            InvIMicro = invIMicro;
-            FrictionMilli = frictionMilli;
+            InvMass = invMass;
+            InvInertia = invInertia;
+            Friction = friction;
 
             Added?.Invoke(this);
         }
+
+        public void AddForce(FixedVector2 force) => Forces += force;
+        public void AddTorque(Fixed torque) => Torque += torque;
 
         public override void OnDestroyed()
         {

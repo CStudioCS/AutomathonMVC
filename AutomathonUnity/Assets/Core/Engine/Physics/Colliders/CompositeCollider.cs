@@ -8,8 +8,19 @@ namespace Automathon.Engine
         public CompositeCollider(params Collider[] colliders)
         {
             Colliders = colliders;
+        }
+
+        public override void Initialize(Entity parentEntity)
+        {
+            base.Initialize(parentEntity);
             foreach (Collider collider in Colliders)
-                collider.Initialize(ParentEntity);
+                collider.Initialize(parentEntity);
+        }
+
+        public override void PhysicsUpdate()
+        {
+            foreach (Collider collider in Colliders)
+                collider.PhysicsUpdate();
         }
 
         public override bool Colliding(Collider collider)
@@ -20,7 +31,7 @@ namespace Automathon.Engine
             return false;
         }
 
-        public override bool Contains(Vector2Int point)
+        public override bool Contains(FixedVector2 point)
         {
             foreach (Collider c in Colliders)
                 if (c.Contains(point))

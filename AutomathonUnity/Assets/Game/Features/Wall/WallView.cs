@@ -1,5 +1,5 @@
+using Automathon;
 using Automathon.Game;
-using Automathon.Utility;
 using UnityEngine;
 
 public class WallView : EntityView<Wall>
@@ -13,8 +13,8 @@ public class WallView : EntityView<Wall>
         this.wall = wall;
 
         zapper.SetSize(new Vector2(
-            wall.BoxCollider.Width / (float)WorldConstants.SPACE_SCALE,
-            wall.BoxCollider.Height / (float)WorldConstants.SPACE_SCALE));
+            wall.BoxCollider.Width.ToWorldLength(),
+            wall.BoxCollider.Height.ToWorldLength()));
 
         wall.OnHit += HandleHit;
     }
@@ -25,21 +25,20 @@ public class WallView : EntityView<Wall>
         base.OnDestroy();
     }
 
-    private void HandleHit(Automathon.Vector2Int collisionPos, int power)
+    private void HandleHit(FixedVector2 collisionPos, int power)
     {
-        Automathon.Vector2Int d = collisionPos - wall.Position;
+        FixedVector2 d = collisionPos - wall.Position;
 
         bool horizontal = wall.Size.X >= wall.Size.Y;   // >= pour matcher le shader
-        int L = horizontal ? wall.Size.X : wall.Size.Y;
+        Fixed length = horizontal ? wall.Size.X : wall.Size.Y;
 
-        // Grand axe unitaire, à l'échelle 1000 de TrigTable
-        Automathon.Vector2Int dir = horizontal
-            ? new Automathon.Vector2Int(TrigTable.Cos(wall.RotationMilli), TrigTable.Sin(wall.RotationMilli))
-            : new Automathon.Vector2Int(-TrigTable.Sin(wall.RotationMilli), TrigTable.Cos(wall.RotationMilli));
+        // Grand axe unitaire
+        FixedVector2 right = FixedVector2.FromAngle(wall.Rotation);
+        FixedVector2 dir = horizontal ? right : right.OrthogonalCounterClockwise();
 
-
-        int dot = d.X * dir.X + d.Y * dir.Y;
-        int t = Mathf.Clamp(500 + dot / L, 0, 1000);
+        // Position of the hit along the long axis, 0..1000 (0 = the -right/-up end, 1000 = the other)
+        Fixed alongAxis = d.Dot(dir) / length; // in [-0.5, 0.5] when on the wall
+        int t = Mathf.Clamp((alongAxis * 1000).RoundToInt() + 500, 0, 1000);
 
         zapper.Impact(t, power);
     }

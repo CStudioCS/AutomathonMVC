@@ -30,10 +30,10 @@ namespace Automathon.Game.Input
 
         private bool IsControlled => ControlledIndex == index;
 
-        public override Vector2Int GetMilliMovementDir()
+        public override FixedVector2 GetMovementDir()
         {
             Keyboard kb = Keyboard.current;
-            if (!IsControlled || kb == null) return Vector2Int.Zero;
+            if (!IsControlled || kb == null) return FixedVector2.Zero;
 
             Vector2 dir = Vector2.zero;
             if (kb.wKey.isPressed || kb.zKey.isPressed) dir.y += 1f; // W (QWERTY) / Z (AZERTY)
@@ -44,20 +44,19 @@ namespace Automathon.Game.Input
             if (dir != Vector2.zero)
                 dir = dir.normalized;
 
-            return dir.ToVector2IntScaled();
+            return dir.ToFixedVector2();
         }
 
-        public override Vector2Int GetMilliAimingDir()
+        public override FixedVector2 GetAimingDir()
         {
             Mouse mouse = Mouse.current;
-            if (!IsControlled || mouse == null) return Vector2Int.Zero;
+            if (!IsControlled || mouse == null) return FixedVector2.Zero;
 
             // Mirrors PlayerInputProvider's LeftKeyboard aim: mouse screen pos -> world -> direction from tank.
             Vector2 mouseWorldPos = mouse.position.ReadValue().ScreenToWorldSpace();
-            Vector2Int aimingVector = mouseWorldPos.ToVector2IntScaled() - ParentEntity.Position;
+            FixedVector2 aimingVector = mouseWorldPos.ToFixedVector2() - ParentEntity.Position;
 
-            if (aimingVector != Vector2Int.Zero)
-                aimingVector.NormalizeAtScale(1000);
+            aimingVector = aimingVector.Normalized(); // zero stays zero
 
             return aimingVector;
         }

@@ -1,7 +1,5 @@
 using Automathon.Engine;
 using Automathon.Engine.Physics;
-using Automathon.Engine.Utility;
-using Automathon.Utility;
 using System;
 
 namespace Automathon.Game
@@ -10,29 +8,29 @@ namespace Automathon.Game
     {
         public class GrenadeState : State
         {
-            public int Radius;
-            public Vector2Int Velocity;
+            public Fixed Radius;
+            public FixedVector2 Velocity;
             public int NumFramesLeftBeforeExplosion;
         }
 
         private int numFramesLeftBeforeExplosion;
-        private const int RADIUS = 300;
-        private const int SPEED = 1800;
-        private const int EXPLOSION_DELAY = 2000;
+        private static readonly Fixed RADIUS = 0.3;
+        private static readonly Fixed SPEED = 1.8;           // units per second
+        private static readonly Fixed EXPLOSION_DELAY = 2;   // seconds
         private const int FRAGMENT_NUMBER = 12;
         public Action Explode;
 
         public CircleCollider CircleCollider { get; private set; }
         public Rigidbody Rigidbody { get; private set; }
 
-        public Grenade(Vector2Int position, Vector2Int direction) : base(position)
+        public Grenade(FixedVector2 position, FixedVector2 direction) : base(position)
         {
-            CircleCollider = new CircleCollider(Vector2Int.Zero, RADIUS);
-            Rigidbody = new Rigidbody(CircleCollider, 1000, 500, 200);
+            CircleCollider = new CircleCollider(FixedVector2.Zero, RADIUS);
+            Rigidbody = new Rigidbody(CircleCollider, invMass: 1, invInertia: 0.5, friction: 0);
 
             Initialize(CircleCollider, Rigidbody);
 
-            Rigidbody.Velocity = direction * SPEED / 1000;
+            Rigidbody.Velocity = direction.Normalized() * SPEED;
 
             AddBehavior(new Timer(EXPLOSION_DELAY, (t) => numFramesLeftBeforeExplosion = t.ValueFrames, BlowUp));
         }
@@ -41,19 +39,18 @@ namespace Automathon.Game
         {
             Explode?.Invoke();
 
+            // angle between two fragments
+            Fixed alpha = Fixed.TwoPi / FRAGMENT_NUMBER;
+
+            // minimum distance from the center so that the fragments don't touch each other
+            // (* 1.2 in order to space them out enough, it's kinda arbitrary but it works)
+            Fixed dist = 2 * Bullet.RADIUS * FixedMath.Cos(alpha) / FixedMath.Sin(alpha) * 1.2;
+
             for (int i = 0; i < FRAGMENT_NUMBER; i++)
             {
-                int theta = i * IntMath.PI_MILLI * 2 / FRAGMENT_NUMBER;
+                FixedVector2 dir = FixedVector2.FromAngle(alpha * i);
 
-                Vector2Int dir = new Vector2Int(TrigTable.Cos(theta), TrigTable.Sin(theta));
-
-                //calcule la distance min du centre pour que les fragments ne se touchent pas
-                int alpha = IntMath.PI_MILLI * 2 / FRAGMENT_NUMBER;
-
-                // * 1200 / 1000 in order to space them out enough, it's kinda arbitrary but it works
-                int dist = 2 * Bullet.RADIUS * TrigTable.Cos(alpha) / TrigTable.Sin(alpha) * 1200 / 1000;
-
-                Bullet bullet = new Bullet(Position + dir * dist / 1000, dir, null);
+                Bullet bullet = new Bullet(Position + dir * dist, dir, null);
                 GameplayManager.Instantiate(bullet);
             }
 
